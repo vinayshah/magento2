@@ -691,7 +691,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
             }
             $categories[] = $categoryPath;
         }
-        $dataRow[self::COL_CATEGORY] = implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, $categories);
+        $dataRow[self::COL_CATEGORY] = implode($this->getMultipleValueSeparator(), $categories);
         unset($rowCategories[$productId]);
 
         return true;
@@ -1029,7 +1029,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
                         if (!empty($this->collectedMultiselectsData[$storeId][$productLinkId][$code])) {
                             $additionalAttributes[$code] = $fieldName .
                                 ImportProduct::PAIR_NAME_VALUE_SEPARATOR . implode(
-                                    ImportProduct::PSEUDO_MULTI_LINE_SEPARATOR,
+                                    $this->getMultipleLineSeparator(),
                                     $this->wrapValue($this->collectedMultiselectsData[$storeId][$productLinkId][$code])
                                 );
                         }
@@ -1039,7 +1039,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
                 if (!empty($additionalAttributes)) {
                     $additionalAttributes = array_map('htmlspecialchars_decode', $additionalAttributes);
                     $data[$itemId][$storeId][self::COL_ADDITIONAL_ATTRIBUTES] =
-                        implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, $additionalAttributes);
+                        implode($this->getMultipleValueSeparator(), $additionalAttributes);
                 } else {
                     unset($data[$itemId][$storeId][self::COL_ADDITIONAL_ATTRIBUTES]);
                 }
@@ -1145,7 +1145,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     protected function collectMultiselectValues($item, $attrCode, $storeId)
     {
         $attrValue = $item->getData($attrCode);
-        $optionIds = explode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, $attrValue);
+        $optionIds = explode($this->getMultipleValueSeparator(), $attrValue);
         $options = array_intersect_key(
             $this->_attributeValues[$attrCode],
             array_flip($optionIds)
@@ -1197,6 +1197,8 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
      */
     private function appendMultirowData(&$dataRow, $multiRawData)
     {
+        \var_dump('asda');
+        exit;
         $productId = $dataRow['product_id'];
         $productLinkId = $dataRow['product_link_id'];
         $storeId = $dataRow['store_id'];
@@ -1220,7 +1222,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
                     $websiteCodes[] = $this->_websiteIdToCode[$productWebsite];
                 }
                 $dataRow[self::COL_PRODUCT_WEBSITES] =
-                    implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, $websiteCodes);
+                    implode($this->getMultipleValueSeparator(), $websiteCodes);
                 $multiRawData['rowWebsites'][$productId] = [];
             }
             if (!empty($multiRawData['mediaGalery'][$productLinkId])) {
@@ -1238,11 +1240,11 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
                     }
                 }
                 $dataRow['additional_images'] =
-                    implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, $additionalImages);
+                    implode($this->getMultipleValueSeparator(), $additionalImages);
                 $dataRow['additional_image_labels'] =
-                    implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, $additionalImageLabels);
+                    implode($this->getMultipleValueSeparator(), $additionalImageLabels);
                 $dataRow['hide_from_product_page'] =
-                    implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, $additionalImageIsDisabled);
+                    implode($this->getMultipleValueSeparator(), $additionalImageIsDisabled);
                 $multiRawData['mediaGalery'][$productLinkId] = [];
             }
             foreach ($this->_linkTypeProvider->getLinkTypes() as $linkTypeName => $linkId) {
@@ -1262,9 +1264,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
                     $multiRawData['linksRows'][$productLinkId][$linkId] = [];
                     asort($associations);
                     $dataRow[$colPrefix . 'skus'] =
-                        implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, array_keys($associations));
+                        implode($this->getMultipleValueSeparator(), array_keys($associations));
                     $dataRow[$colPrefix . 'position'] =
-                        implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, array_values($associations));
+                        implode($this->getMultipleValueSeparator(), array_values($associations));
                 }
             }
             $dataRow = $this->rowCustomizer->addData($dataRow, $productId);
@@ -1281,7 +1283,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
             }
             if ($additionalImageIsDisabled) {
                 $dataRow['hide_from_product_page'] =
-                    implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, $additionalImageIsDisabled);
+                    implode($this->getMultipleValueSeparator(), $additionalImageIsDisabled);
             }
         }
 
@@ -1289,7 +1291,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
             foreach (array_keys($this->collectedMultiselectsData[$storeId][$productId]) as $attrKey) {
                 if (!empty($this->collectedMultiselectsData[$storeId][$productId][$attrKey])) {
                     $dataRow[$attrKey] = implode(
-                        Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR,
+                        $this->getMultipleValueSeparator(),
                         $this->collectedMultiselectsData[$storeId][$productId][$attrKey]
                     );
                 }
@@ -1311,7 +1313,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
 
             if ($shouldBeMerged) {
                 $multiRawData['customOptionsData'][$productLinkId][$storeId] = [];
-                $customOptions = implode(ImportProduct::PSEUDO_MULTI_LINE_SEPARATOR, $customOptionsRows);
+                $customOptions = implode($this->getMultipleLineSeparator(), $customOptionsRows);
                 $dataRow = array_merge($dataRow, ['custom_options' => $customOptions]);
             }
         }
@@ -1390,8 +1392,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
         foreach ($option as $key => $value) {
             $result[] = $key . ImportProduct::PAIR_NAME_VALUE_SEPARATOR . $value;
         }
-
-        return implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, $result);
+        \var_dump('safsdfnaosidfnoiasfn');
+        exit;
+        return implode($this->getMultipleValueSeparator(), $result);
     }
 
     /**

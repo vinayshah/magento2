@@ -27,6 +27,26 @@ class Export extends \Magento\ImportExport\Model\AbstractModel
     const FIELDS_ENCLOSURE = 'fields_enclosure';
 
     /**
+     * Export multiple value separator.
+     */
+    const FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR = '_export_multiple_value_separator';
+
+    /**
+     * default delimiter for several values in one cell as default for FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR
+     */
+    const DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR = ',';
+
+    /**
+     * Export multiple value separator.
+     */
+    const FIELD_FIELD_MULTIPLE_LINE_SEPARATOR = '_export_multiple_line_separator';
+
+    /**
+     * default delimiter for several values in one cell as default for FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR
+     */
+    const DEFAULT_GLOBAL_MULTI_LINE_SEPARATOR = '|';
+
+    /**
      * Filter fields types.
      */
     const FILTER_TYPE_SELECT = 'select';

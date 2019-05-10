@@ -11,6 +11,9 @@
  */
 namespace Magento\ImportExport\Block\Adminhtml\Export\Edit;
 
+use Magento\ImportExport\Model\Export;
+use Magento\ImportExport\Model\Import;
+
 class Form extends \Magento\Backend\Block\Widget\Form\Generic
 {
     /**
@@ -87,13 +90,39 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
             ]
         );
         $fieldset->addField(
-            \Magento\ImportExport\Model\Export::FIELDS_ENCLOSURE,
+            Export::FIELDS_ENCLOSURE,
             'checkbox',
             [
-                'name' => \Magento\ImportExport\Model\Export::FIELDS_ENCLOSURE,
+                'name' => Export::FIELDS_ENCLOSURE,
                 'label' => __('Fields Enclosure'),
                 'title' => __('Fields Enclosure'),
                 'value' => 1,
+            ]
+        );
+
+        $fieldset->addField(
+            Export::FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR,
+            'text',
+            [
+                'name' => Export::FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR,
+                'label' => __('Multiple value separator'),
+                'title' => __('Multiple value separator'),
+                'required' => true,
+                'disabled' => false,
+                'value' => Export::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR,
+            ]
+        );
+
+        $fieldset->addField(
+            Export::FIELD_FIELD_MULTIPLE_LINE_SEPARATOR,
+            'text',
+            [
+                'name' => Export::FIELD_FIELD_MULTIPLE_LINE_SEPARATOR,
+                'label' => __('Multiple Line separator'),
+                'title' => __('Multiple Line separator'),
+                'required' => true,
+                'disabled' => false,
+                'value' => Export::DEFAULT_GLOBAL_MULTI_LINE_SEPARATOR,
             ]
         );
 

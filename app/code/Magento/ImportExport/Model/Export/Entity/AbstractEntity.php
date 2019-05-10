@@ -7,6 +7,7 @@ namespace Magento\ImportExport\Model\Export\Entity;
 
 use Magento\Framework\App\ResourceConnection;
 use Magento\ImportExport\Model\Export\Adapter\AbstractAdapter;
+use Magento\ImportExport\Model\Export;
 
 /**
  * Export entity abstract model
@@ -566,5 +567,33 @@ abstract class AbstractEntity
     public function __destruct()
     {
         self::$attrCodes = null;
+    }
+
+    /**
+     * Multiple value separator getter.
+     *
+     * @return string
+     */
+    public function getMultipleValueSeparator()
+    {
+        if (!empty($this->_parameters[Export::FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR])) {
+            return $this->_parameters[Export::FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR];
+        }
+        \var_dump($this->_parameters);
+        exit;
+        return Export::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR;
+    }
+
+    /**
+     * Multiple Line separator getter.
+     *
+     * @return string
+     */
+    public function getMultipleLineSeparator()
+    {
+        if (!empty($this->_parameters[Export::FIELD_FIELD_MULTIPLE_LINE_SEPARATOR])) {
+            return $this->_parameters[Export::FIELD_FIELD_MULTIPLE_LINE_SEPARATOR];
+        }
+        return Export::DEFAULT_GLOBAL_MULTI_LINE_SEPARATOR;
     }
 }
