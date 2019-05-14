@@ -1246,10 +1246,18 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
                 $additionalImages = [];
                 $additionalImageLabels = [];
                 $additionalImageIsDisabled = [];
+                $videoUrl = [];
+                $videoDescription = [];
+                $videoTitle = [];
                 foreach ($multiRawData['mediaGalery'][$productLinkId] as $mediaItem) {
                     if ((int)$mediaItem['_media_store_id'] === Store::DEFAULT_STORE_ID) {
                         $additionalImages[] = $mediaItem['_media_image'];
                         $additionalImageLabels[] = $mediaItem['_media_label'];
+                        if (isset($mediaItem['_media_url']) && !empty($mediaItem['_media_url'])) {
+                            $videoUrl[] = $mediaItem['_media_url'];
+                            $videoDescription[] = $mediaItem['_media_description'];
+                            $videoTitle[] = $mediaItem['_media_label'];
+                        }
 
                         if ($mediaItem['_media_is_disabled'] == true) {
                             $additionalImageIsDisabled[] = $mediaItem['_media_image'];
@@ -1262,6 +1270,18 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
                     implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, $additionalImageLabels);
                 $dataRow['hide_from_product_page'] =
                     implode(Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, $additionalImageIsDisabled);
+                $dataRow['video_url'] = implode(
+                    Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR,
+                    $videoUrl
+                );
+                $dataRow['video_title'] = implode(
+                    Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR,
+                    $videoTitle
+                );
+                $dataRow['video_description'] = implode(
+                    Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR,
+                    $videoDescription
+                );
                 $multiRawData['mediaGalery'][$productLinkId] = [];
             }
             foreach ($this->_linkTypeProvider->getLinkTypes() as $linkTypeName => $linkId) {
