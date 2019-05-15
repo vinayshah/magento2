@@ -25,6 +25,7 @@
                 <item name="website" xsi:type="object">Magento\CatalogImportExport\Model\Import\Product\Validator\Website</item>
                 <item name="weight" xsi:type="object">Magento\CatalogImportExport\Model\Import\Product\Validator\Weight</item>
                 <item name="quantity" xsi:type="object">Magento\CatalogImportExport\Model\Import\Product\Validator\Quantity</item>
+                <item name="video" xsi:type="object">Magento\CatalogImportExport\Model\Import\Product\Validator\Video</item>
             </argument>
         </arguments>
     </type>
