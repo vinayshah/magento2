@@ -10,6 +10,7 @@ namespace Magento\CatalogImportExport\Model\Import\Product\Validator;
 
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Url\Validator;
+use function var_dump;
 
 class Video extends AbstractImportValidator
 {
@@ -48,18 +49,18 @@ class Video extends AbstractImportValidator
         $valid = true;
         if (isset($value[self::VIDEO_URL]) && $value[self::VIDEO_URL] !== '') {
             foreach (explode($this->context->getMultipleValueSeparator(), $value[self::VIDEO_URL]) as $video) {
-                if (!$this->checkValidUrl($video) && !$this->validator->isValid($video)) {
+                if (!$this->checkValidUrl($video)) {
                     $this->_addMessages(
                         [
                             sprintf(
-                                $this->context->retrieveMessageTemplate(self::ERROR_INVALID_MEDIA_URL_OR_PATH),
+                                $this->context->retrieveMessageTemplate(self::ERROR_INVALID_VIDEO_URL),
                                 self::VIDEO_URL
                             ),
                         ]
                     );
                     $valid = false;
+                    break;
                 }
-                break;
             }
         }
         return $valid;
@@ -73,9 +74,9 @@ class Video extends AbstractImportValidator
     protected function checkValidUrl($url)
     {
         $valid = false;
-        if (strpos($url, 'youtube') > 0) {
+        if (strpos($url, 'youtube') !== false) {
             $valid = true;
-        } elseif (strpos($url, 'vimeo') > 0) {
+        } elseif (strpos($url, 'vimeo') !== false) {
             $valid = true;
         }
         return $valid;

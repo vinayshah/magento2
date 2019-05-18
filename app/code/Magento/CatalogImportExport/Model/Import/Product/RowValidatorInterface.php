@@ -79,6 +79,8 @@ interface RowValidatorInterface extends \Magento\Framework\Validator\ValidatorIn
 
     const ERROR_INVALID_MEDIA_URL_OR_PATH = 'invalidMediaUrlPath';
 
+    const ERROR_INVALID_VIDEO_URL = 'invalidVideoUrl';
+
     const ERROR_MEDIA_URL_NOT_ACCESSIBLE = 'mediaUrlNotAvailable';
 
     const ERROR_MEDIA_PATH_NOT_ACCESSIBLE = 'mediaPathNotAvailable';
