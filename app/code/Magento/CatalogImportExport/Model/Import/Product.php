@@ -294,6 +294,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         ValidatorInterface::ERROR_DUPLICATE_UNIQUE_ATTRIBUTE => 'Duplicated unique attribute',
         ValidatorInterface::ERROR_INVALID_VARIATIONS_CUSTOM_OPTIONS => 'Value for \'%s\' sub attribute in \'%s\' attribute contains incorrect value, acceptable values are: \'dropdown\', \'checkbox\', \'radio\', \'text\'',
         ValidatorInterface::ERROR_INVALID_MEDIA_URL_OR_PATH => 'Wrong URL/path used for attribute %s',
+        ValidatorInterface::ERROR_INVALID_VIDEO_URL => 'Wrong URL used for attribute %s',
         ValidatorInterface::ERROR_MEDIA_PATH_NOT_ACCESSIBLE => 'Imported resource (image) does not exist in the local media storage',
         ValidatorInterface::ERROR_MEDIA_URL_NOT_ACCESSIBLE => 'Imported resource (image) could not be downloaded from external resource due to timeout or access permissions',
         ValidatorInterface::ERROR_INVALID_WEIGHT => 'Product weight is invalid',
@@ -1570,6 +1571,17 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     }
 
     /**
+     * Get existing videos for current bunch
+     *
+     * @param array $bunch
+     * @return array
+     */
+    protected function getExistingVideos(array $bunch)
+    {
+        return $this->mediaProcessor->getExistingVideos($bunch);
+    }
+
+    /**
      * Retrieve image from row.
      *
      * @param array $rowData
@@ -1633,6 +1645,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
             $previousType = null;
             $prevAttributeSet = null;
             $existingImages = $this->getExistingImages($bunch);
+            $existingVideos = $this->getExistingVideos($bunch);
 
             foreach ($bunch as $rowNum => $rowData) {
                 // reset category processor's failed categories array
