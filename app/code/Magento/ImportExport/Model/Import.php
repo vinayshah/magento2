@@ -11,6 +11,7 @@ use Magento\Framework\App\ObjectManager;
 use Magento\Framework\HTTP\Adapter\FileTransferFactory;
 use Magento\Framework\Message\ManagerInterface;
 use Magento\Framework\Stdlib\DateTime\DateTime;
+use Magento\ImportExport\Model\Import\AbstractEntity;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingError;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorInterface;
 
@@ -19,15 +20,16 @@ use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorI
  *
  * @api
  *
- * @method string getBehavior() getBehavior()
- * @method \Magento\ImportExport\Model\Import setEntity() setEntity(string $value)
+ * @method                                           string getBehavior() getBehavior()
+ * @method                                           Import setEntity() setEntity(string $value)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
- * @since 100.0.2
+ * @since                                            100.0.2
  */
 class Import extends \Magento\ImportExport\Model\AbstractModel
 {
-    /**#@+
+    /**
+     * #@+
      * Import behaviors
      */
     const BEHAVIOR_APPEND = 'append';
@@ -39,12 +41,6 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
     const BEHAVIOR_DELETE = 'delete';
 
     const BEHAVIOR_CUSTOM = 'custom';
-
-    /**#@-*/
-
-    /**#@+
-     * Form field names (and IDs)
-     */
 
     /**
      * Import source file.
@@ -96,8 +92,6 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
      */
     const FIELDS_ENCLOSURE = 'fields_enclosure';
 
-    /**#@-*/
-
     /**
      * default delimiter for several values in one cell as default for FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR
      */
@@ -113,7 +107,8 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
      */
     const DEFAULT_EMPTY_ATTRIBUTE_VALUE_CONSTANT = '__EMPTY__VALUE__';
 
-    /**#@+
+    /**
+     * #@+
      * Import constants
      */
     const DEFAULT_SIZE = 50;
@@ -124,9 +119,9 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
 
     const IMPORT_DIR = 'import/';
 
-    /**#@-*/
-
-    /**#@-*/
+    /**
+     * #@-
+     */
     protected $_entityAdapter;
 
     /**
@@ -274,14 +269,14 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
                         __('Please enter a correct entity model.')
                     );
                 }
-                if (!$this->_entityAdapter instanceof \Magento\ImportExport\Model\Import\Entity\AbstractEntity &&
-                    !$this->_entityAdapter instanceof \Magento\ImportExport\Model\Import\AbstractEntity
+                if (!$this->_entityAdapter instanceof \Magento\ImportExport\Model\Import\Entity\AbstractEntity
+                    && !$this->_entityAdapter instanceof AbstractEntity
                 ) {
                     throw new \Magento\Framework\Exception\LocalizedException(
                         __(
                             'The entity adapter object must be an instance of %1 or %2.',
                             \Magento\ImportExport\Model\Import\Entity\AbstractEntity::class,
-                            \Magento\ImportExport\Model\Import\AbstractEntity::class
+                            AbstractEntity::class
                         )
                     );
                 }
@@ -304,6 +299,7 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
      * Returns source adapter object.
      *
      * @param string $sourceFile Full path to source file
+     *
      * @return \Magento\ImportExport\Model\Import\AbstractSource
      * @throws \Magento\Framework\Exception\FileSystemException
      */
@@ -320,6 +316,7 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
      * Return operation result messages
      *
      * @param ProcessingErrorAggregatorInterface $validationResult
+     *
      * @return string[]
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -365,6 +362,7 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
      * Get attribute type for upcoming validation.
      *
      * @param \Magento\Eav\Model\Entity\Attribute\AbstractAttribute|\Magento\Eav\Model\Entity\Attribute $attribute
+     *
      * @return string
      */
     public static function getAttributeType(\Magento\Eav\Model\Entity\Attribute\AbstractAttribute $attribute)
@@ -524,7 +522,9 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
      */
     public function uploadSource()
     {
-        /** @var $adapter \Zend_File_Transfer_Adapter_Http */
+        /**
+         * @var $adapter \Zend_File_Transfer_Adapter_Http
+         */
         $adapter = $this->_httpFactory->create();
         if (!$adapter->isValid(self::FIELD_NAME_SOURCE_FILE)) {
             $errors = $adapter->getErrors();
@@ -537,7 +537,9 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
         }
 
         $entity = $this->getEntity();
-        /** @var $uploader \Magento\MediaStorage\Model\File\Uploader */
+        /**
+         * @var $uploader \Magento\MediaStorage\Model\File\Uploader
+         */
         $uploader = $this->_uploaderFactory->create(['fileId' => self::FIELD_NAME_SOURCE_FILE]);
         $uploader->skipDbProcessing(true);
         $result = $uploader->save($this->getWorkingDir());
@@ -596,6 +598,7 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
      * Remove BOM from a file
      *
      * @param string $sourceFile
+     *
      * @return $this
      * @throws \Magento\Framework\Exception\FileSystemException
      */
@@ -616,6 +619,7 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
      * with 'validation strategy' and 'allowed error count' values to allow using this parameters in validation process.
      *
      * @param \Magento\ImportExport\Model\Import\AbstractSource $source
+     *
      * @return bool
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -699,7 +703,9 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
         foreach ($entities as $entityCode => $entityData) {
             $behaviorClassName = isset($entityData['behaviorModel']) ? $entityData['behaviorModel'] : null;
             if ($behaviorClassName && class_exists($behaviorClassName)) {
-                /** @var $behavior \Magento\ImportExport\Model\Source\Import\AbstractBehavior */
+                /**
+                 * @var $behavior \Magento\ImportExport\Model\Source\Import\AbstractBehavior
+                 */
                 $behavior = $this->_behaviorFactory->create($behaviorClassName);
                 $behaviourData[$entityCode] = [
                     'token' => $behaviorClassName,
@@ -741,7 +747,8 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
     /**
      * Retrieve processed reports entity types
      *
-     * @param string|null $entity
+     * @param  string|null $entity
+     *
      * @return bool
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -776,7 +783,7 @@ class Import extends \Magento\ImportExport\Model\AbstractModel
      * @param string $sourceFileRelative
      * @param string $entity
      * @param string $extension
-     * @param array $result
+     * @param  array  $result
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
