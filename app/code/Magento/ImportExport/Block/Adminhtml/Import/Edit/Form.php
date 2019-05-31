@@ -11,7 +11,7 @@ use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorI
 /**
  * Import edit form block
  *
- * @author      Magento Core Team <core@magentocommerce.com>
+ * @author Magento Core Team <core@magentocommerce.com>
  */
 class Form extends \Magento\Backend\Block\Widget\Form\Generic
 {
@@ -33,13 +33,13 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
     protected $_behaviorFactory;
 
     /**
-     * @param \Magento\Backend\Block\Template\Context $context
-     * @param \Magento\Framework\Registry $registry
-     * @param \Magento\Framework\Data\FormFactory $formFactory
-     * @param \Magento\ImportExport\Model\Import $importModel
-     * @param \Magento\ImportExport\Model\Source\Import\EntityFactory $entityFactory
+     * @param \Magento\Backend\Block\Template\Context                    $context
+     * @param \Magento\Framework\Registry                                $registry
+     * @param \Magento\Framework\Data\FormFactory                        $formFactory
+     * @param \Magento\ImportExport\Model\Import                         $importModel
+     * @param \Magento\ImportExport\Model\Source\Import\EntityFactory    $entityFactory
      * @param \Magento\ImportExport\Model\Source\Import\Behavior\Factory $behaviorFactory
-     * @param array $data
+     * @param array                                                      $data
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
@@ -59,12 +59,15 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
     /**
      * Add fieldsets
      *
-     * @return $this
+     * @return                                        $this
+     * @throws \Magento\Framework\Exception\LocalizedException
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function _prepareForm()
     {
-        /** @var \Magento\Framework\Data\Form $form */
+        /**
+         * @var \Magento\Framework\Data\Form $form
+         */
         $form = $this->_formFactory->create(
             [
                 'data' => [
