@@ -5,12 +5,12 @@
  */
 namespace Magento\BundleImportExport\Model\Export;
 
+use Magento\Bundle\Model\ResourceModel\Selection\Collection as SelectionCollection;
+use Magento\Catalog\Model\Product\Type\AbstractType;
 use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\CatalogImportExport\Model\Export\RowCustomizerInterface;
 use Magento\CatalogImportExport\Model\Import\Product as ImportProductModel;
-use Magento\Bundle\Model\ResourceModel\Selection\Collection as SelectionCollection;
 use Magento\ImportExport\Model\Import as ImportModel;
-use Magento\Catalog\Model\Product\Type\AbstractType;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
@@ -135,6 +135,7 @@ class RowCustomizer implements RowCustomizerInterface
 
     /**
      * Retrieve list of bundle specific columns
+     *
      * @return array
      */
     private function getBundleColumns()
@@ -147,7 +148,9 @@ class RowCustomizer implements RowCustomizerInterface
      *
      * @param \Magento\Catalog\Model\ResourceModel\Product\Collection $collection
      * @param int[] $productIds
+     *
      * @return $this
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     public function prepareData($collection, $productIds)
     {
@@ -166,7 +169,7 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Set headers columns
      *
-     * @param array $columns
+     * @param  array $columns
      * @return array
      */
     public function addHeaderColumns($columns)
@@ -179,8 +182,8 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Add data for export
      *
-     * @param array $dataRow
-     * @param int $productId
+     * @param  array $dataRow
+     * @param  int   $productId
      * @return array
      */
     public function addData($dataRow, $productId)
@@ -195,9 +198,9 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Calculate the largest links block
      *
-     * @param array $additionalRowsCount
-     * @param int $productId
-     * @return array
+     * @param                                         array $additionalRowsCount
+     * @param                                         int   $productId
+     * @return                                        array
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getAdditionalRowsCount($additionalRowsCount, $productId)
@@ -209,7 +212,9 @@ class RowCustomizer implements RowCustomizerInterface
      * Populate bundle product data
      *
      * @param \Magento\Catalog\Model\ResourceModel\Product\Collection $collection
+     *
      * @return $this
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     protected function populateBundleData($collection)
     {
@@ -231,7 +236,9 @@ class RowCustomizer implements RowCustomizerInterface
      * Retrieve formatted bundle options
      *
      * @param \Magento\Catalog\Model\Product $product
+     *
      * @return string
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     protected function getFormattedBundleOptionValues(\Magento\Catalog\Model\Product $product): string
     {
@@ -254,8 +261,8 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Retrieve formatted bundle selections
      *
-     * @param string $optionValues
-     * @param SelectionCollection $selections
+     * @param  string              $optionValues
+     * @param  SelectionCollection $selections
      * @return string
      */
     protected function getFormattedBundleSelections($optionValues, SelectionCollection $selections)
@@ -292,21 +299,24 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Retrieve option value of bundle product
      *
-     * @param \Magento\Bundle\Model\Option $option
-     * @param string[] $optionTitles
+     * @param  \Magento\Bundle\Model\Option $option
+     * @param  string[]                     $optionTitles
      * @return string
      */
     protected function getFormattedOptionValues(
         \Magento\Bundle\Model\Option $option,
         array $optionTitles = []
     ): string {
-        $names = implode(ImportModel::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR, array_map(
-            function ($title, $storeName) {
-                return $storeName . ImportProductModel::PAIR_NAME_VALUE_SEPARATOR . $title;
-            },
-            $optionTitles[$option->getOptionId()],
-            array_keys($optionTitles[$option->getOptionId()])
-        ));
+        $names = implode(
+            ImportModel::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR,
+            array_map(
+                function ($title, $storeName) {
+                    return $storeName . ImportProductModel::PAIR_NAME_VALUE_SEPARATOR . $title;
+                },
+                $optionTitles[$option->getOptionId()],
+                array_keys($optionTitles[$option->getOptionId()])
+            )
+        );
         return $names . ImportModel::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR
             . 'type' . ImportProductModel::PAIR_NAME_VALUE_SEPARATOR
             . $option->getType() . ImportModel::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR
@@ -317,7 +327,7 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Retrieve bundle type value by code
      *
-     * @param string $type
+     * @param  string $type
      * @return string
      */
     protected function getTypeValue($type)
@@ -328,7 +338,7 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Retrieve bundle price view value by code
      *
-     * @param string $type
+     * @param  string $type
      * @return string
      */
     protected function getPriceViewValue($type)
@@ -339,7 +349,7 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Retrieve bundle price type value by code
      *
-     * @param string $type
+     * @param  string $type
      * @return string
      */
     protected function getPriceTypeValue($type)
@@ -350,7 +360,7 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Retrieve bundle shipment type value by code
      *
-     * @param string $type
+     * @param  string $type
      * @return string
      */
     private function getShipmentTypeValue($type)
@@ -361,7 +371,7 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Remove bundle specified additional attributes as now they are stored in specified columns
      *
-     * @param array $dataRow
+     * @param  array $dataRow
      * @return array
      */
     protected function cleanNotBundleAdditionalAttributes($dataRow)
@@ -377,7 +387,7 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Retrieve not bundle additional attributes
      *
-     * @param array $additionalAttributes
+     * @param  array $additionalAttributes
      * @return string
      */
     protected function getNotBundleAttributes($additionalAttributes)
@@ -394,7 +404,7 @@ class RowCustomizer implements RowCustomizerInterface
     /**
      * Retrieves additional attributes as array code=>value.
      *
-     * @param string $additionalAttributes
+     * @param  string $additionalAttributes
      * @return array
      */
     private function parseAdditionalAttributes($additionalAttributes)
@@ -429,13 +439,17 @@ class RowCustomizer implements RowCustomizerInterface
      *  - 'name_specific_store=Specific store name' for store view with 'specific_store' store code
      *
      * @param \Magento\Catalog\Model\Product $product
+     *
      * @return array
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     private function getBundleOptionTitles(\Magento\Catalog\Model\Product $product): array
     {
         $optionCollections = $this->getProductOptionCollection($product);
         $optionsTitles = [];
-        /** @var \Magento\Bundle\Model\Option $option */
+        /**
+         * @var \Magento\Bundle\Model\Option $option
+         */
         foreach ($optionCollections->getItems() as $option) {
             $optionsTitles[$option->getId()]['name'] = $option->getTitle();
         }
@@ -443,7 +457,9 @@ class RowCustomizer implements RowCustomizerInterface
         if (count($storeIds) > 1) {
             foreach ($storeIds as $storeId) {
                 $optionCollections = $this->getProductOptionCollection($product, (int)$storeId);
-                /** @var \Magento\Bundle\Model\Option $option */
+                /**
+                 * @var \Magento\Bundle\Model\Option $option
+                 */
                 foreach ($optionCollections->getItems() as $option) {
                     $optionTitle = $option->getTitle();
                     if ($optionsTitles[$option->getId()]['name'] != $optionTitle) {
@@ -461,8 +477,8 @@ class RowCustomizer implements RowCustomizerInterface
      *
      * Set given store id to the product if it was defined (default store id will be set if was not).
      *
-     * @param \Magento\Catalog\Model\Product $product $product
-     * @param int $storeId
+     * @param  \Magento\Catalog\Model\Product $product $product
+     * @param  int                            $storeId
      * @return \Magento\Bundle\Model\ResourceModel\Option\Collection
      */
     private function getProductOptionCollection(
@@ -486,7 +502,9 @@ class RowCustomizer implements RowCustomizerInterface
      * Collect store id in $storeIdToCode[] private variable if it was not initialized earlier.
      *
      * @param int $storeId
+     *
      * @return string
+     * @throws \Magento\Framework\Exception\NoSuchEntityException
      */
     private function getStoreCodeById(int $storeId): string
     {
