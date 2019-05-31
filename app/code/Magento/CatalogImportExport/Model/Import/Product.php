@@ -164,6 +164,11 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     const URL_KEY = 'url_key';
 
     /**
+     *
+     */
+    const VIDEO_URL = 'video_url';
+
+    /**
      * Attribute cache
      *
      * @var array
@@ -1565,20 +1570,9 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * @param array $bunch
      * @return array
      */
-    protected function getExistingImages($bunch)
+    protected function getExistingImagesAndVideos($bunch)
     {
-        return $this->mediaProcessor->getExistingImages($bunch);
-    }
-
-    /**
-     * Get existing videos for current bunch
-     *
-     * @param array $bunch
-     * @return array
-     */
-    protected function getExistingVideos(array $bunch)
-    {
-        return $this->mediaProcessor->getExistingVideos($bunch);
+        return $this->mediaProcessor->getExistingImagesAndVideos($bunch);
     }
 
     /**
@@ -1644,8 +1638,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
             $uploadedImages = [];
             $previousType = null;
             $prevAttributeSet = null;
-            $existingImages = $this->getExistingImages($bunch);
-            $existingVideos = $this->getExistingVideos($bunch);
+            [$existingImages, $existingVideos] = $this->getExistingImages($bunch);
 
             foreach ($bunch as $rowNum => $rowData) {
                 // reset category processor's failed categories array

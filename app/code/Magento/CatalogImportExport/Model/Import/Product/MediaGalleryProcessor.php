@@ -75,6 +75,11 @@ class MediaGalleryProcessor
     /**
      * @var string
      */
+    private $mediaGalleryVideoTableName;
+
+    /**
+     * @var string
+     */
     private $productEntityTableName;
 
     /**
@@ -216,9 +221,10 @@ class MediaGalleryProcessor
      * @param array $bunch
      * @return array
      */
-    public function getExistingImages(array $bunch)
+    public function getExistingImagesAndVideos(array $bunch)
     {
-        $result = [];
+        $resultImages = [];
+        $resultVideos = [];
         if ($this->errorAggregator->hasToBeTerminated()) {
             return $result;
         }
@@ -249,6 +255,17 @@ class MediaGalleryProcessor
                 'label' => 'mgv.label',
                 'disabled' => 'mgv.disabled',
             ]
+        )->joinLeft(
+            ['mgvv' => $this->mediaGalleryVideoTableName],
+            \sprintf(
+                '(mg.value_id = mgvv.value_id AND mgv.store_id = %d)',
+                Store::DEFAULT_STORE_ID
+            ),
+            [
+                'title' => 'mgvv.title',
+                'url' => 'mgvv.url',
+                'description' => 'mgvv.description'
+            ]
         )->joinInner(
             ['pe' => $this->productEntityTableName],
             "(mgvte.{$this->getProductEntityLinkField()} = pe.{$this->getProductEntityLinkField()})",
@@ -259,10 +276,11 @@ class MediaGalleryProcessor
         );
 
         foreach ($this->connection->fetchAll($select) as $image) {
-            $result[$image['sku']][$image['value']] = $image;
+            $resultImages[$image['sku']][$image['value']] = $image;
+            $resultVideos[$image['sku']][$image['url']] = $image;
         }
 
-        return $result;
+        return [$resultImages, $resultVideos];
     }
 
     /**
@@ -280,6 +298,9 @@ class MediaGalleryProcessor
             );
             $this->mediaGalleryEntityToValueTableName = $this->getResource()->getTable(
                 'catalog_product_entity_media_gallery_value_to_entity'
+            );
+            $this->mediaGalleryVideoTableName = $this->getResource()->getTable(
+                'catalog_product_entity_media_gallery_value_video'
             );
         }
     }
