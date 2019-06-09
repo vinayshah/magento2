@@ -47,14 +47,14 @@ class CategoryProcessor
     /**
      * Failed categories during creation
      *
-     * @var array
+     * @var   array
      * @since 100.1.0
      */
     protected $failedCategories = [];
 
     /**
      * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryColFactory
-     * @param \Magento\Catalog\Model\CategoryFactory $categoryFactory
+     * @param \Magento\Catalog\Model\CategoryFactory                          $categoryFactory
      */
     public function __construct(
         \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryColFactory,
@@ -90,7 +90,9 @@ class CategoryProcessor
                         $name = $collection->getItemById((int)$structure[$i])->getName();
                         $path[] = $this->quoteDelimiter($name);
                     }
-                    /** @var string $index */
+                    /**
+ * @var string $index 
+*/
                     $index = $this->standardizeString(
                         implode(self::DELIMITER_CATEGORY, $path)
                     );
@@ -104,13 +106,15 @@ class CategoryProcessor
     /**
      * Creates a category.
      *
-     * @param string $name
-     * @param int $parentId
+     * @param  string $name
+     * @param  int    $parentId
      * @return int
      */
     protected function createCategory($name, $parentId)
     {
-        /** @var \Magento\Catalog\Model\Category $category */
+        /**
+ * @var \Magento\Catalog\Model\Category $category 
+*/
         $category = $this->categoryFactory->create();
         if (!($parentCategory = $this->getCategoryById($parentId))) {
             $parentCategory = $this->categoryFactory->create()->load($parentId);
@@ -129,12 +133,14 @@ class CategoryProcessor
     /**
      * Returns ID of category by string path creating nonexistent ones.
      *
-     * @param string $categoryPath
+     * @param  string $categoryPath
      * @return int
      */
     protected function upsertCategory($categoryPath)
     {
-        /** @var string $index */
+        /**
+ * @var string $index 
+*/
         $index = $this->standardizeString($categoryPath);
 
         if (!isset($this->categories[$index])) {
@@ -158,8 +164,8 @@ class CategoryProcessor
     /**
      * Returns IDs of categories by string path creating nonexistent ones.
      *
-     * @param string $categoriesString
-     * @param string $categoriesSeparator
+     * @param  string $categoriesString
+     * @param  string $categoriesSeparator
      * @return array
      */
     public function upsertCategories($categoriesString, $categoriesSeparator)
@@ -181,7 +187,7 @@ class CategoryProcessor
     /**
      * Add failed category
      *
-     * @param string $category
+     * @param string                                              $category
      * @param \Magento\Framework\Exception\AlreadyExistsException $exception
      *
      * @return $this
@@ -200,7 +206,7 @@ class CategoryProcessor
      * Return failed categories
      *
      * @return array
-     * @since 100.1.0
+     * @since  100.1.0
      */
     public function getFailedCategories()
     {
@@ -211,7 +217,7 @@ class CategoryProcessor
      * Resets failed categories' array
      *
      * @return $this
-     * @since 100.2.0
+     * @since  100.2.0
      */
     public function clearFailedCategories()
     {
@@ -236,7 +242,7 @@ class CategoryProcessor
      * For now it performs only a lowercase action, this method is here to include more complex checks in the future
      * if needed.
      *
-     * @param string $string
+     * @param  string $string
      * @return string
      */
     private function standardizeString($string)
@@ -247,7 +253,7 @@ class CategoryProcessor
     /**
      * Quoting delimiter character in string.
      *
-     * @param string $string
+     * @param  string $string
      * @return string
      */
     private function quoteDelimiter($string)
@@ -258,7 +264,7 @@ class CategoryProcessor
     /**
      * Remove quoting delimiter in string.
      *
-     * @param string $string
+     * @param  string $string
      * @return string
      */
     private function unquoteDelimiter($string)

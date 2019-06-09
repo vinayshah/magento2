@@ -21,8 +21,8 @@ class Virtual extends \Magento\CatalogImportExport\Model\Import\Product\Type\Sim
     /**
      * Prepare attributes with default value for save.
      *
-     * @param array $rowData
-     * @param bool $withDefaultValue
+     * @param  array $rowData
+     * @param  bool  $withDefaultValue
      * @return array
      */
     public function prepareAttributesWithDefaultValueForSave(array $rowData, $withDefaultValue = true)
@@ -35,7 +35,7 @@ class Virtual extends \Magento\CatalogImportExport\Model\Import\Product\Type\Sim
     /**
      * Set weight is null if product is virtual
      *
-     * @param array $rowData
+     * @param  array $rowData
      * @return array
      */
     protected function setWeightVirtualProduct(array $rowData)

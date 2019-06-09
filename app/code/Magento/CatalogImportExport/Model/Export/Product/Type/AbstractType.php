@@ -69,7 +69,7 @@ abstract class AbstractType
     /**
      * Add additional data to attribute.
      *
-     * @param Attribute $attribute
+     * @param  Attribute $attribute
      * @return bool
      */
     public function overrideAttribute(Attribute $attribute)

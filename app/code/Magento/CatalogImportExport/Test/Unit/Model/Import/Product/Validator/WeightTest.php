@@ -37,8 +37,8 @@ class WeightTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param bool $expectedResult
-     * @param array $value
+     * @param        bool  $expectedResult
+     * @param        array $value
      * @dataProvider isValidDataProvider
      */
     public function testIsValid($expectedResult, $value)

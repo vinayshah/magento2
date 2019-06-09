@@ -36,10 +36,10 @@ class SuperProductsSkuTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param array $value
-     * @param array $oldSkus
-     * @param bool $hasNewSku
-     * @param bool $expectedResult
+     * @param        array $value
+     * @param        array $oldSkus
+     * @param        bool  $hasNewSku
+     * @param        bool  $expectedResult
      * @dataProvider isValidDataProvider
      */
     public function testIsValid(array $value, array $oldSkus, $hasNewSku = false, $expectedResult = true)

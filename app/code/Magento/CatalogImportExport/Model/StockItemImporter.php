@@ -29,7 +29,7 @@ class StockItemImporter implements StockItemImporterInterface
     /**
      * StockItemImporter constructor
      *
-     * @param ItemFactory $stockResourceItemFactory
+     * @param ItemFactory     $stockResourceItemFactory
      * @param LoggerInterface $logger
      */
     public function __construct(
@@ -45,7 +45,9 @@ class StockItemImporter implements StockItemImporterInterface
      */
     public function import(array $stockData)
     {
-        /** @var $stockItemResource Item */
+        /**
+ * @var $stockItemResource Item 
+*/
         $stockItemResource = $this->stockResourceItemFactory->create();
         $entityTable = $stockItemResource->getMainTable();
         try {

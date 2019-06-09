@@ -77,7 +77,7 @@ class SkuProcessorTest extends \PHPUnit\Framework\TestCase
      *
      * @param object $object
      * @param string $property
-     * @param mixed $value
+     * @param mixed  $value
      */
     protected function setPropertyValue(&$object, $property, $value)
     {

@@ -27,7 +27,7 @@ class Factory
     }
 
     /**
-     * @param string $className
+     * @param  string $className
      * @return \Magento\CatalogImportExport\Model\Export\Product\Type\AbstractType
      * @throws \InvalidArgumentException
      */

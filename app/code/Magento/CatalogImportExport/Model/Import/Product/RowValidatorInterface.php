@@ -95,7 +95,7 @@ interface RowValidatorInterface extends \Magento\Framework\Validator\ValidatorIn
     /**
      * Initialize validator
      *
-     * @param \Magento\CatalogImportExport\Model\Import\Product $context
+     * @param  \Magento\CatalogImportExport\Model\Import\Product $context
      * @return $this
      */
     public function init($context);

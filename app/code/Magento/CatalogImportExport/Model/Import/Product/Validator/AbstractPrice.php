@@ -28,7 +28,7 @@ abstract class AbstractPrice extends AbstractImportValidator implements RowValid
 
     /**
      * @param \Magento\Customer\Api\GroupRepositoryInterface $groupRepository
-     * @param \Magento\Framework\Api\SearchCriteriaBuilder $searchCriteriaBuilder
+     * @param \Magento\Framework\Api\SearchCriteriaBuilder   $searchCriteriaBuilder
      */
     public function __construct(
         \Magento\Customer\Api\GroupRepositoryInterface $groupRepository,

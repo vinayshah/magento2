@@ -43,14 +43,14 @@ class Validator extends AbstractValidator implements RowValidatorInterface
     protected $_rowData;
 
     /**
-     * @var string|null
+     * @var   string|null
      * @since 100.1.0
      */
     protected $invalidAttribute;
 
     /**
      * @param \Magento\Framework\Stdlib\StringUtils $string
-     * @param RowValidatorInterface[] $validators
+     * @param RowValidatorInterface[]               $validators
      */
     public function __construct(
         \Magento\Framework\Stdlib\StringUtils $string,
@@ -63,8 +63,8 @@ class Validator extends AbstractValidator implements RowValidatorInterface
     /**
      * Text validation
      *
-     * @param mixed $attrCode
-     * @param string $type
+     * @param  mixed  $attrCode
+     * @param  string $type
      * @return bool
      */
     protected function textValidation($attrCode, $type)
@@ -86,9 +86,9 @@ class Validator extends AbstractValidator implements RowValidatorInterface
     /**
      * Check if value is valid attribute option
      *
-     * @param string $attrCode
-     * @param array $possibleOptions
-     * @param string $value
+     * @param  string $attrCode
+     * @param  array  $possibleOptions
+     * @param  string $value
      * @return bool
      */
     private function validateOption($attrCode, $possibleOptions, $value)
@@ -112,8 +112,8 @@ class Validator extends AbstractValidator implements RowValidatorInterface
     /**
      * Numeric validation
      *
-     * @param mixed $attrCode
-     * @param string $type
+     * @param  mixed  $attrCode
+     * @param  string $type
      * @return bool
      */
     protected function numericValidation($attrCode, $type)
@@ -141,9 +141,9 @@ class Validator extends AbstractValidator implements RowValidatorInterface
     /**
      * Is required attribute valid
      *
-     * @param string $attrCode
-     * @param array $attributeParams
-     * @param array $rowData
+     * @param  string $attrCode
+     * @param  array  $attributeParams
+     * @param  array  $rowData
      * @return bool
      */
     public function isRequiredAttributeValid($attrCode, array $attributeParams, array $rowData)
@@ -170,10 +170,10 @@ class Validator extends AbstractValidator implements RowValidatorInterface
     /**
      * Is attribute valid
      *
-     * @param string $attrCode
-     * @param array $attrParams
-     * @param array $rowData
-     * @return bool
+     * @param                                        string $attrCode
+     * @param                                        array  $attrParams
+     * @param                                        array  $rowData
+     * @return                                       bool
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
@@ -210,51 +210,52 @@ class Validator extends AbstractValidator implements RowValidatorInterface
         }
 
         switch ($attrParams['type']) {
-            case 'varchar':
-            case 'text':
-                $valid = $this->textValidation($attrCode, $attrParams['type']);
-                break;
-            case 'decimal':
-            case 'int':
-                $valid = $this->numericValidation($attrCode, $attrParams['type']);
-                break;
-            case 'select':
-            case 'boolean':
-                $valid = $this->validateOption($attrCode, $attrParams['options'], $rowData[$attrCode]);
-                break;
-            case 'multiselect':
-                $values = $this->context->parseMultiselectValues(
-                    $rowData[$attrCode],
-                    $this->context->getMultipleLineSeparator()
-                );
-                foreach ($values as $value) {
-                    $valid = $this->validateOption($attrCode, $attrParams['options'], $value);
-                    if (!$valid) {
-                        break;
-                    }
-                }
-
-                $uniqueValues = array_unique($values);
-                if (count($uniqueValues) != count($values)) {
-                    $valid = false;
-                    $this->_addMessages([RowValidatorInterface::ERROR_DUPLICATE_MULTISELECT_VALUES]);
-                }
-                break;
-            case 'datetime':
-                $val = trim($rowData[$attrCode]);
-                $valid = strtotime($val) !== false;
+        case 'varchar':
+        case 'text':
+            $valid = $this->textValidation($attrCode, $attrParams['type']);
+            break;
+        case 'decimal':
+        case 'int':
+            $valid = $this->numericValidation($attrCode, $attrParams['type']);
+            break;
+        case 'select':
+        case 'boolean':
+            $valid = $this->validateOption($attrCode, $attrParams['options'], $rowData[$attrCode]);
+            break;
+        case 'multiselect':
+            $values = $this->context->parseMultiselectValues(
+                $rowData[$attrCode],
+                $this->context->getMultipleLineSeparator()
+            );
+            foreach ($values as $value) {
+                $valid = $this->validateOption($attrCode, $attrParams['options'], $value);
                 if (!$valid) {
-                    $this->_addMessages([RowValidatorInterface::ERROR_INVALID_ATTRIBUTE_TYPE]);
+                    break;
                 }
-                break;
-            default:
-                $valid = true;
-                break;
+            }
+
+            $uniqueValues = array_unique($values);
+            if (count($uniqueValues) != count($values)) {
+                $valid = false;
+                $this->_addMessages([RowValidatorInterface::ERROR_DUPLICATE_MULTISELECT_VALUES]);
+            }
+            break;
+        case 'datetime':
+            $val = trim($rowData[$attrCode]);
+            $valid = strtotime($val) !== false;
+            if (!$valid) {
+                $this->_addMessages([RowValidatorInterface::ERROR_INVALID_ATTRIBUTE_TYPE]);
+            }
+            break;
+        default:
+            $valid = true;
+            break;
         }
 
         if ($valid && !empty($attrParams['is_unique'])) {
             if (isset($this->_uniqueAttributes[$attrCode][$rowData[$attrCode]])
-                && ($this->_uniqueAttributes[$attrCode][$rowData[$attrCode]] != $rowData[Product::COL_SKU])) {
+                && ($this->_uniqueAttributes[$attrCode][$rowData[$attrCode]] != $rowData[Product::COL_SKU])
+            ) {
                 $this->_addMessages([RowValidatorInterface::ERROR_DUPLICATE_UNIQUE_ATTRIBUTE]);
                 return false;
             }
@@ -271,9 +272,9 @@ class Validator extends AbstractValidator implements RowValidatorInterface
     /**
      * Set invalid attribute
      *
-     * @param string|null $attribute
+     * @param  string|null $attribute
      * @return void
-     * @since 100.1.0
+     * @since  100.1.0
      */
     protected function setInvalidAttribute($attribute)
     {
@@ -284,7 +285,7 @@ class Validator extends AbstractValidator implements RowValidatorInterface
      * Get invalid attribute
      *
      * @return string
-     * @since 100.1.0
+     * @since  100.1.0
      */
     public function getInvalidAttribute()
     {
@@ -294,7 +295,7 @@ class Validator extends AbstractValidator implements RowValidatorInterface
     /**
      * Is valid attributes
      *
-     * @return bool
+     * @return                                      bool
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     protected function isValidAttributes()
@@ -339,7 +340,7 @@ class Validator extends AbstractValidator implements RowValidatorInterface
     /**
      * Obtain scope of the row from row data.
      *
-     * @param array $rowData
+     * @param  array $rowData
      * @return int
      */
     public function getRowScope(array $rowData)
@@ -353,7 +354,7 @@ class Validator extends AbstractValidator implements RowValidatorInterface
     /**
      * Init
      *
-     * @param \Magento\CatalogImportExport\Model\Import\Product $context
+     * @param  \Magento\CatalogImportExport\Model\Import\Product $context
      * @return $this
      */
     public function init($context)

@@ -28,7 +28,7 @@ class Composite implements RowCustomizerInterface
 
     /**
      * @param ObjectManagerInterface $objectManager
-     * @param array $customizers
+     * @param array                  $customizers
      */
     public function __construct(ObjectManagerInterface $objectManager, $customizers = [])
     {
@@ -39,8 +39,8 @@ class Composite implements RowCustomizerInterface
     /**
      * Prepare data for export
      *
-     * @param mixed $collection
-     * @param int[] $productIds
+     * @param  mixed $collection
+     * @param  int[] $productIds
      * @return mixed|void
      */
     public function prepareData($collection, $productIds)
@@ -53,7 +53,7 @@ class Composite implements RowCustomizerInterface
     /**
      * Set headers columns
      *
-     * @param array $columns
+     * @param  array $columns
      * @return array
      */
     public function addHeaderColumns($columns)
@@ -67,8 +67,8 @@ class Composite implements RowCustomizerInterface
     /**
      * Add data for export
      *
-     * @param array $dataRow
-     * @param int $productId
+     * @param  array $dataRow
+     * @param  int   $productId
      * @return array
      */
     public function addData($dataRow, $productId)
@@ -82,8 +82,8 @@ class Composite implements RowCustomizerInterface
     /**
      * Calculate the largest links block
      *
-     * @param array $additionalRowsCount
-     * @param int $productId
+     * @param  array $additionalRowsCount
+     * @param  int   $productId
      * @return array|mixed
      */
     public function getAdditionalRowsCount($additionalRowsCount, $productId)

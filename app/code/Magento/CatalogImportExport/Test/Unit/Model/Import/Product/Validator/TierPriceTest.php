@@ -10,19 +10,29 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager as ObjectManagerHe
 
 class TierPriceTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var \Magento\CatalogImportExport\Model\Import\Product\Validator\TierPrice */
+    /**
+     * @var \Magento\CatalogImportExport\Model\Import\Product\Validator\TierPrice 
+     */
     protected $tierPrice;
 
-    /** @var ObjectManagerHelper */
+    /**
+     * @var ObjectManagerHelper 
+     */
     protected $objectManagerHelper;
 
-    /** @var \Magento\Customer\Api\GroupRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject */
+    /**
+     * @var \Magento\Customer\Api\GroupRepositoryInterface|\PHPUnit_Framework_MockObject_MockObject 
+     */
     protected $groupRepositoryInterface;
 
-    /** @var \Magento\Framework\Api\SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject */
+    /**
+     * @var \Magento\Framework\Api\SearchCriteriaBuilder|\PHPUnit_Framework_MockObject_MockObject 
+     */
     protected $searchCriteriaBuilder;
 
-    /** @var \Magento\CatalogImportExport\Model\Import\Product\StoreResolver|\PHPUnit_Framework_MockObject_MockObject */
+    /**
+     * @var \Magento\CatalogImportExport\Model\Import\Product\StoreResolver|\PHPUnit_Framework_MockObject_MockObject 
+     */
     protected $storeResolver;
 
     protected function setUp()
@@ -49,7 +59,7 @@ class TierPriceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param $groupId
+     * @param  $groupId
      * @return \Magento\CatalogImportExport\Model\Import\Product\Validator\TierPrice
      */
     protected function processInit($groupId)
@@ -69,10 +79,10 @@ class TierPriceTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param array $data
-     * @param int $groupId
-     * @param array|null $website
-     * @param array $expected
+     * @param        array      $data
+     * @param        int        $groupId
+     * @param        array|null $website
+     * @param        array      $expected
      * @dataProvider tierPriceDataProvider
      */
     public function testIsValid($data, $groupId, $website, $expected)

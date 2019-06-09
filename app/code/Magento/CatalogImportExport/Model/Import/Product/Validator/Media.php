@@ -13,7 +13,7 @@ class Media extends AbstractImportValidator implements RowValidatorInterface
 {
     /**
      * @deprecated As this regexp doesn't give guarantee of correct url validation
-     * @see \Magento\Framework\Url\Validator::isValid()
+     * @see        \Magento\Framework\Url\Validator::isValid()
      */
     const URL_REGEXP = '|^http(s)?://[a-z0-9-]+(.[a-z0-9-]+)*(:[0-9]+)?(/.*)?$|i';
 
@@ -38,7 +38,7 @@ class Media extends AbstractImportValidator implements RowValidatorInterface
 
     /**
      * @deprecated
-     * @see \Magento\CatalogImportExport\Model\Import\Product::getMultipleValueSeparator()
+     * @see        \Magento\CatalogImportExport\Model\Import\Product::getMultipleValueSeparator()
      */
     const ADDITIONAL_IMAGES_DELIMITER = ',';
 
@@ -48,10 +48,10 @@ class Media extends AbstractImportValidator implements RowValidatorInterface
     protected $mediaAttributes = ['image', 'small_image', 'thumbnail'];
 
     /**
-     * @param string $string
-     * @return bool
+     * @param      string $string
+     * @return     bool
      * @deprecated 100.2.0 As this method doesn't give guarantee of correct url validation.
-     * @see \Magento\Framework\Url\Validator::isValid() It provides better url validation.
+     * @see        \Magento\Framework\Url\Validator::isValid() It provides better url validation.
      */
     protected function checkValidUrl($string)
     {
@@ -59,7 +59,7 @@ class Media extends AbstractImportValidator implements RowValidatorInterface
     }
 
     /**
-     * @param string $string
+     * @param  string $string
      * @return bool
      */
     protected function checkPath($string)
@@ -68,7 +68,7 @@ class Media extends AbstractImportValidator implements RowValidatorInterface
     }
 
     /**
-     * @param string $path
+     * @param  string $path
      * @return bool
      */
     protected function checkFileExists($path)
@@ -79,8 +79,8 @@ class Media extends AbstractImportValidator implements RowValidatorInterface
     /**
      * Validate value
      *
-     * @param array $value
-     * @return bool
+     * @param                                        array $value
+     * @return                                       bool
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function isValid($value)

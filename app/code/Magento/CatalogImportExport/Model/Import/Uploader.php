@@ -20,6 +20,7 @@ class Uploader extends \Magento\MediaStorage\Model\File\Uploader
     /**
      * HTTP scheme
      * used to compare against the filename and select the proper DriverPool adapter
+     *
      * @var string
      */
     private $httpScheme = 'http://';
@@ -95,13 +96,13 @@ class Uploader extends \Magento\MediaStorage\Model\File\Uploader
     protected $_coreFileStorage;
 
     /**
-     * @param \Magento\MediaStorage\Helper\File\Storage\Database $coreFileStorageDb
-     * @param \Magento\MediaStorage\Helper\File\Storage $coreFileStorage
-     * @param \Magento\Framework\Image\AdapterFactory $imageFactory
-     * @param \Magento\MediaStorage\Model\File\Validator\NotProtectedExtension $validator
-     * @param \Magento\Framework\Filesystem $filesystem
-     * @param \Magento\Framework\Filesystem\File\ReadFactory $readFactory
-     * @param string|null $filePath
+     * @param  \Magento\MediaStorage\Helper\File\Storage\Database               $coreFileStorageDb
+     * @param  \Magento\MediaStorage\Helper\File\Storage                        $coreFileStorage
+     * @param  \Magento\Framework\Image\AdapterFactory                          $imageFactory
+     * @param  \Magento\MediaStorage\Model\File\Validator\NotProtectedExtension $validator
+     * @param  \Magento\Framework\Filesystem                                    $filesystem
+     * @param  \Magento\Framework\Filesystem\File\ReadFactory                   $readFactory
+     * @param  string|null                                                      $filePath
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function __construct(
@@ -143,8 +144,8 @@ class Uploader extends \Magento\MediaStorage\Model\File\Uploader
     /**
      * Proceed moving a file from TMP to destination folder
      *
-     * @param string $fileName
-     * @param bool $renameFileOff
+     * @param  string $fileName
+     * @param  bool   $renameFileOff
      * @return array
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -199,7 +200,7 @@ class Uploader extends \Magento\MediaStorage\Model\File\Uploader
     /**
      * Prepare information about the file for moving
      *
-     * @param string $filePath
+     * @param  string $filePath
      * @return void
      * @throws \Magento\Framework\Exception\LocalizedException
      */
@@ -218,7 +219,7 @@ class Uploader extends \Magento\MediaStorage\Model\File\Uploader
     /**
      * Reads file info
      *
-     * @param string $filePath
+     * @param  string $filePath
      * @return array
      */
     protected function _readFileInfo($filePath)
@@ -268,7 +269,7 @@ class Uploader extends \Magento\MediaStorage\Model\File\Uploader
     /**
      * Returns file MIME type by extension
      *
-     * @param string $ext
+     * @param  string $ext
      * @return string
      */
     protected function _getMimeTypeByExt($ext)
@@ -292,7 +293,7 @@ class Uploader extends \Magento\MediaStorage\Model\File\Uploader
     /**
      * Set TMP file path prefix
      *
-     * @param string $path
+     * @param  string $path
      * @return bool
      */
     public function setTmpDir($path)
@@ -317,7 +318,7 @@ class Uploader extends \Magento\MediaStorage\Model\File\Uploader
     /**
      * Set destination file path prefix
      *
-     * @param string $path
+     * @param  string $path
      * @return bool
      */
     public function setDestDir($path)
@@ -332,8 +333,8 @@ class Uploader extends \Magento\MediaStorage\Model\File\Uploader
     /**
      * Move files from TMP folder into destination folder
      *
-     * @param string $tmpPath
-     * @param string $destPath
+     * @param  string $tmpPath
+     * @param  string $destPath
      * @return bool
      */
     protected function _moveFile($tmpPath, $destPath)

@@ -73,7 +73,7 @@ class SkuProcessor
     }
 
     /**
-     * @param array $typeModels
+     * @param  array $typeModels
      * @return $this
      */
     public function setTypeModels($typeModels)
@@ -108,8 +108,8 @@ class SkuProcessor
     }
 
     /**
-     * @param string $sku
-     * @param array $data
+     * @param  string $sku
+     * @param  array  $data
      * @return $this
      */
     public function addNewSku($sku, $data)
@@ -120,9 +120,9 @@ class SkuProcessor
     }
 
     /**
-     * @param string $sku
-     * @param string $key
-     * @param mixed $data
+     * @param  string $sku
+     * @param  string $key
+     * @param  mixed  $data
      * @return $this
      */
     public function setNewSkuData($sku, $key, $data)
@@ -135,7 +135,7 @@ class SkuProcessor
     }
 
     /**
-     * @param null|string $sku
+     * @param  null|string $sku
      * @return array|null
      */
     public function getNewSku($sku = null)

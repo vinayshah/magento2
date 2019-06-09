@@ -26,9 +26,9 @@ class Import
      * After import handler
      *
      * @param \Magento\ImportExport\Model\Import $subject
-     * @param boolean $import
+     * @param boolean                            $import
      *
-     * @return mixed
+     * @return                                        mixed
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterImportSource(\Magento\ImportExport\Model\Import $subject, $import)

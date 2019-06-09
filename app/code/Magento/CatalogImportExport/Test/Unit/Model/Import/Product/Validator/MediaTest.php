@@ -15,10 +15,14 @@ use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 class MediaTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Media */
+    /**
+     * @var Media 
+     */
     protected $media;
 
-    /** @var ObjectManagerHelper */
+    /**
+     * @var ObjectManagerHelper 
+     */
     protected $objectManagerHelper;
 
     /**
@@ -59,8 +63,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param array $data
-     * @param array $expected
+     * @param        array $data
+     * @param        array $expected
      * @dataProvider isMediaValidDataProvider
      */
     public function testIsValid($data, $expected)
@@ -83,8 +87,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param array $data
-     * @param array $expected
+     * @param        array $data
+     * @param        array $expected
      * @dataProvider isValidAdditionalImagesPathDataProvider
      */
     public function testIsValidAdditionalImagesPath($data, $expected)
@@ -106,8 +110,8 @@ class MediaTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param array $data
-     * @param array $expected
+     * @param        array $data
+     * @param        array $expected
      * @dataProvider isValidAdditionalImagesUrlDataProvider
      */
     public function testIsValidAdditionalImagesUrl($data, $expected)

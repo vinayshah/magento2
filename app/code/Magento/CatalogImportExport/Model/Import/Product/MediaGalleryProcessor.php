@@ -16,6 +16,7 @@ use Magento\Store\Model\Store;
 
 /**
  * Process and saves images during import.
+ *
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class MediaGalleryProcessor
@@ -80,10 +81,10 @@ class MediaGalleryProcessor
     /**
      * MediaProcessor constructor.
      *
-     * @param SkuProcessor $skuProcessor
-     * @param MetadataPool $metadataPool
-     * @param ResourceConnection $resourceConnection
-     * @param ResourceModelFactory $resourceModelFactory
+     * @param SkuProcessor                       $skuProcessor
+     * @param MetadataPool                       $metadataPool
+     * @param ResourceConnection                 $resourceConnection
+     * @param ResourceModelFactory               $resourceModelFactory
      * @param ProcessingErrorAggregatorInterface $errorAggregator
      */
     public function __construct(
@@ -103,7 +104,7 @@ class MediaGalleryProcessor
     /**
      * Save product media gallery.
      *
-     * @param array $mediaGalleryData
+     * @param  array $mediaGalleryData
      * @return void
      */
     public function saveMediaGallery(array $mediaGalleryData)
@@ -148,7 +149,7 @@ class MediaGalleryProcessor
     /**
      * Update media gallery labels.
      *
-     * @param array $labels
+     * @param  array $labels
      * @return void
      */
     public function updateMediaGalleryLabels(array $labels)
@@ -159,7 +160,7 @@ class MediaGalleryProcessor
     /**
      * Update 'disabled' field for media gallery entity
      *
-     * @param array $images
+     * @param  array $images
      * @return void
      */
     public function updateMediaGalleryVisibility(array $images)
@@ -170,8 +171,8 @@ class MediaGalleryProcessor
     /**
      * Update value for requested field in media gallery entities
      *
-     * @param array $data
-     * @param string $field
+     * @param  array  $data
+     * @param  string $field
      * @return void
      */
     private function updateMediaGalleryField(array $data, $field)
@@ -213,7 +214,7 @@ class MediaGalleryProcessor
     /**
      * Get existing images for current bunch.
      *
-     * @param array $bunch
+     * @param  array $bunch
      * @return array
      */
     public function getExistingImages(array $bunch)
@@ -287,10 +288,10 @@ class MediaGalleryProcessor
     /**
      * Save media gallery data per store.
      *
-     * @param int $storeId
-     * @param array $mediaGalleryData
-     * @param array $newMediaValues
-     * @param array $valueToProductId
+     * @param  int   $storeId
+     * @param  array $mediaGalleryData
+     * @param  array $newMediaValues
+     * @param  array $valueToProductId
      * @return void
      */
     private function processMediaPerStore(

@@ -17,7 +17,7 @@ use Magento\Framework\EntityManager\MetadataPool;
  *
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @since 100.0.2
+ * @since                                          100.0.2
  */
 abstract class AbstractType
 {
@@ -141,7 +141,7 @@ abstract class AbstractType
     /**
      * Product metadata pool
      *
-     * @var \Magento\Framework\EntityManager\MetadataPool
+     * @var   \Magento\Framework\EntityManager\MetadataPool
      * @since 100.1.0
      */
     protected $metadataPool;
@@ -156,11 +156,11 @@ abstract class AbstractType
     /**
      * AbstractType constructor
      *
-     * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attrSetColFac
-     * @param \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $prodAttrColFac
-     * @param ResourceConnection $resource
-     * @param array $params
-     * @param MetadataPool|null $metadataPool
+     * @param  \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory  $attrSetColFac
+     * @param  \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $prodAttrColFac
+     * @param  ResourceConnection                                                       $resource
+     * @param  array                                                                    $params
+     * @param  MetadataPool|null                                                        $metadataPool
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function __construct(
@@ -197,7 +197,7 @@ abstract class AbstractType
     /**
      * Initialize template for error message.
      *
-     * @param array $templateCollection
+     * @param  array $templateCollection
      * @return $this
      */
     protected function initMessageTemplates(array $templateCollection)
@@ -212,10 +212,10 @@ abstract class AbstractType
     /**
      * Add attribute parameters to appropriate attribute set.
      *
-     * @param string $attrSetName Name of attribute set.
-     * @param array $attrParams Refined attribute parameters.
-     * @param mixed $attribute
-     * @return \Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType
+     * @param                                         string $attrSetName Name of attribute set.
+     * @param                                         array  $attrParams  Refined attribute parameters.
+     * @param                                         mixed  $attribute
+     * @return                                        \Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _addAttributeParams($attrSetName, array $attrParams, $attribute)
@@ -229,8 +229,8 @@ abstract class AbstractType
     /**
      * Retrieve product Attribute
      *
-     * @param string $attributeCode
-     * @param string $attributeSet
+     * @param  string $attributeCode
+     * @param  string $attributeSet
      * @return array
      */
     public function retrieveAttribute($attributeCode, $attributeSet)
@@ -244,7 +244,7 @@ abstract class AbstractType
     /**
      * Return product attributes for its attribute set specified in row data.
      *
-     * @param array|string $attrSetData Product row data or simply attribute set name.
+     * @param  array|string $attrSetData Product row data or simply attribute set name.
      * @return array
      */
     protected function _getProductAttributes($attrSetData)
@@ -312,8 +312,8 @@ abstract class AbstractType
     /**
      * Attach Attributes By Id
      *
-     * @param string $attributeSetName
-     * @param array $attributeIds
+     * @param  string $attributeSetName
+     * @param  array  $attributeIds
      * @return void
      */
     protected function attachAttributesById($attributeSetName, $attributeIds)
@@ -365,7 +365,7 @@ abstract class AbstractType
     /**
      * Retrieve attribute from cache
      *
-     * @param string $attributeCode
+     * @param  string $attributeCode
      * @return mixed
      */
     public function retrieveAttributeFromCache($attributeCode)
@@ -403,8 +403,8 @@ abstract class AbstractType
     /**
      * Have we check attribute for is_required? Used as last chance to disable this type of check.
      *
-     * @param string $attrCode
-     * @return bool
+     * @param                                         string $attrCode
+     * @return                                        bool
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _isAttributeRequiredCheckNeeded($attrCode)
@@ -415,9 +415,9 @@ abstract class AbstractType
     /**
      * Validate particular attributes columns.
      *
-     * @param array $rowData
-     * @param int $rowNum
-     * @return bool
+     * @param                                         array $rowData
+     * @param                                         int   $rowNum
+     * @return                                        bool
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     protected function _isParticularAttributesValid(array $rowData, $rowNum)
@@ -428,7 +428,7 @@ abstract class AbstractType
     /**
      * Check price correction value validity (signed integer or float with or without percentage sign).
      *
-     * @param string $value
+     * @param  string $value
      * @return int
      */
     protected function _isPriceCorr($value)
@@ -459,10 +459,10 @@ abstract class AbstractType
     /**
      * Validate row attributes. Pass VALID row data ONLY as argument.
      *
-     * @param array $rowData
-     * @param int $rowNum
-     * @param bool $isNewProduct Optional
-     * @return bool
+     * @param                                        array $rowData
+     * @param                                        int   $rowNum
+     * @param                                        bool  $isNewProduct Optional
+     * @return                                       bool
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function isRowValid(array $rowData, $rowNum, $isNewProduct = true)
@@ -479,9 +479,9 @@ abstract class AbstractType
                 } elseif ($this->_isAttributeRequiredCheckNeeded($attrCode) && $attrParams['is_required']) {
                     // For the default scope - if this is a new product or
                     // for an old product, if the imported doc has the column present for the attrCode
-                    if (\Magento\CatalogImportExport\Model\Import\Product::SCOPE_DEFAULT == $rowScope &&
-                        ($isNewProduct ||
-                        array_key_exists(
+                    if (\Magento\CatalogImportExport\Model\Import\Product::SCOPE_DEFAULT == $rowScope 
+                        && ($isNewProduct 
+                        || array_key_exists(
                             $attrCode,
                             $rowData
                         ))
@@ -518,9 +518,9 @@ abstract class AbstractType
      * set default values if needed.
      *
      * @param array $rowData
-     * @param bool $withDefaultValue
+     * @param bool  $withDefaultValue
      *
-     * @return array
+     * @return                                       array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function prepareAttributesWithDefaultValueForSave(array $rowData, $withDefaultValue = true)
@@ -556,7 +556,7 @@ abstract class AbstractType
     /**
      * Clear empty columns in the Row Data
      *
-     * @param array $rowData
+     * @param  array $rowData
      * @return array
      */
     public function clearEmptyData(array $rowData)
@@ -589,7 +589,7 @@ abstract class AbstractType
      * Get product metadata pool
      *
      * @return \Magento\Framework\EntityManager\MetadataPool
-     * @since 100.1.0
+     * @since  100.1.0
      */
     protected function getMetadataPool()
     {
@@ -604,7 +604,7 @@ abstract class AbstractType
      * Get product entity link field
      *
      * @return string
-     * @since 100.1.0
+     * @since  100.1.0
      */
     protected function getProductEntityLinkField()
     {

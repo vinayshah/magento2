@@ -21,7 +21,9 @@ class CategoryProcessorTest extends \PHPUnit\Framework\TestCase
      */
     protected $objectManager;
 
-    /** @var ObjectManagerHelper */
+    /**
+     * @var ObjectManagerHelper 
+     */
     protected $objectManagerHelper;
 
     /**
@@ -54,10 +56,12 @@ class CategoryProcessorTest extends \PHPUnit\Framework\TestCase
             ->getMock();
         $this->childCategory->method('getId')->will($this->returnValue(self::CHILD_CATEGORY_ID));
         $this->childCategory->method('getName')->will($this->returnValue(self::CHILD_CATEGORY_NAME));
-        $this->childCategory->method('getPath')->will($this->returnValue(
-            self::PARENT_CATEGORY_ID . CategoryProcessor::DELIMITER_CATEGORY
-            . self::CHILD_CATEGORY_ID
-        ));
+        $this->childCategory->method('getPath')->will(
+            $this->returnValue(
+                self::PARENT_CATEGORY_ID . CategoryProcessor::DELIMITER_CATEGORY
+                . self::CHILD_CATEGORY_ID
+            )
+        );
 
         $this->parentCategory = $this->getMockBuilder(\Magento\Catalog\Model\Category::class)
             ->disableOriginalConstructor()
@@ -182,7 +186,7 @@ class CategoryProcessorTest extends \PHPUnit\Framework\TestCase
      *
      * @param object $object
      * @param string $property
-     * @param mixed $value
+     * @param mixed  $value
      */
     protected function setPropertyValue(&$object, $property, $value)
     {

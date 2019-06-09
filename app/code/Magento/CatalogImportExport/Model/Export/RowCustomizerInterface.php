@@ -16,8 +16,8 @@ interface RowCustomizerInterface
     /**
      * Prepare data for export
      *
-     * @param mixed $collection
-     * @param int[] $productIds
+     * @param  mixed $collection
+     * @param  int[] $productIds
      * @return mixed
      */
     public function prepareData($collection, $productIds);
@@ -25,7 +25,7 @@ interface RowCustomizerInterface
     /**
      * Set headers columns
      *
-     * @param array $columns
+     * @param  array $columns
      * @return mixed
      */
     public function addHeaderColumns($columns);
@@ -33,8 +33,8 @@ interface RowCustomizerInterface
     /**
      * Add data for export
      *
-     * @param array $dataRow
-     * @param int $productId
+     * @param  array $dataRow
+     * @param  int   $productId
      * @return mixed
      */
     public function addData($dataRow, $productId);
@@ -42,8 +42,8 @@ interface RowCustomizerInterface
     /**
      * Calculate the largest links block
      *
-     * @param array $additionalRowsCount
-     * @param int $productId
+     * @param  array $additionalRowsCount
+     * @param  int   $productId
      * @return mixed
      */
     public function getAdditionalRowsCount($additionalRowsCount, $productId);

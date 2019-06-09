@@ -57,7 +57,9 @@ class StoreResolver
      */
     protected function _initWebsites()
     {
-        /** @var $website \Magento\Store\Model\Website */
+        /**
+ * @var $website \Magento\Store\Model\Website 
+*/
         foreach ($this->storeManager->getWebsites() as $website) {
             $this->websiteCodeToId[$website->getCode()] = $website->getId();
             $this->websiteCodeToStoreIds[$website->getCode()] = array_flip($website->getStoreCodes());
@@ -66,7 +68,7 @@ class StoreResolver
     }
 
     /**
-     * @param null|string $code
+     * @param  null|string $code
      * @return array|string|null
      */
     public function getWebsiteCodeToId($code = null)
@@ -81,7 +83,7 @@ class StoreResolver
     }
 
     /**
-     * @param null|string $code
+     * @param  null|string $code
      * @return array|string|null
      */
     public function getWebsiteCodeToStoreIds($code = null)
@@ -110,7 +112,7 @@ class StoreResolver
     }
 
     /**
-     * @param null|string $code
+     * @param  null|string $code
      * @return array|string|null
      */
     public function getStoreCodeToId($code = null)
@@ -125,7 +127,7 @@ class StoreResolver
     }
 
     /**
-     * @param null|string $code
+     * @param  null|string $code
      * @return array|string|null
      */
     public function getStoreIdToWebsiteStoreIds($code = null)

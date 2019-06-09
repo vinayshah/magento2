@@ -17,9 +17,9 @@ class StubProduct extends \Magento\CatalogImportExport\Model\Export\Product
     /**
      * Update data row with information about categories. Return true, if data row was updated
      *
-     * @param array $dataRow
-     * @param array $rowCategories
-     * @param int $productId
+     * @param  array $dataRow
+     * @param  array $rowCategories
+     * @param  int   $productId
      * @return bool
      */
     public function updateDataWithCategoryColumns(&$dataRow, &$rowCategories, $productId)

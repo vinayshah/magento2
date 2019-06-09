@@ -21,7 +21,7 @@ class Import
 
     /**
      * @param \Magento\Catalog\Model\Indexer\Product\Flat\Processor $productFlatIndexerProcessor
-     * @param \Magento\Catalog\Model\Indexer\Product\Flat\State $flatState
+     * @param \Magento\Catalog\Model\Indexer\Product\Flat\State     $flatState
      */
     public function __construct(
         \Magento\Catalog\Model\Indexer\Product\Flat\Processor $productFlatIndexerProcessor,
@@ -35,9 +35,9 @@ class Import
      * After import handler
      *
      * @param \Magento\ImportExport\Model\Import $subject
-     * @param Object $import
+     * @param Object                             $import
      *
-     * @return mixed
+     * @return                                        mixed
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function afterImportSource(\Magento\ImportExport\Model\Import $subject, $import)

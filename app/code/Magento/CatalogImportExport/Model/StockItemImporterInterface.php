@@ -17,7 +17,7 @@ interface StockItemImporterInterface
     /**
      * Handle Import of Stock Item Data
      *
-     * @param array $stockData
+     * @param  array $stockData
      * @return void
      * @throws \Magento\Framework\Exception\CouldNotSaveException
      * @throws \Magento\Framework\Exception\InputException

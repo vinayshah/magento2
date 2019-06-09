@@ -16,7 +16,7 @@ abstract class AbstractImportValidator extends AbstractValidator implements RowV
     protected $context;
 
     /**
-     * @param \Magento\CatalogImportExport\Model\Import\Product $context
+     * @param  \Magento\CatalogImportExport\Model\Import\Product $context
      * @return $this
      */
     public function init($context)

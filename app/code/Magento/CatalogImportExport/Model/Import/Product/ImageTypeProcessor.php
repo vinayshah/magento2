@@ -29,7 +29,9 @@ class ImageTypeProcessor
     public function getImageTypes()
     {
         $imageKeys = [];
-        /** @var ResourceModel $resource */
+        /**
+ * @var ResourceModel $resource 
+*/
         $resource = $this->resourceFactory->create();
         $connection = $resource->getConnection();
         $select = $connection->select();

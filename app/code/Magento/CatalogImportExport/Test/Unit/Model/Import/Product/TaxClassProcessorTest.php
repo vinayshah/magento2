@@ -20,7 +20,9 @@ class TaxClassProcessorTest extends \PHPUnit\Framework\TestCase
      */
     protected $objectManager;
 
-    /** @var ObjectManagerHelper */
+    /**
+     * @var ObjectManagerHelper 
+     */
     protected $objectManagerHelper;
 
     /**

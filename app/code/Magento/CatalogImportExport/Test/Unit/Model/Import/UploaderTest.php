@@ -81,18 +81,20 @@ class UploaderTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['getDirectoryWrite'])
             ->getMock();
         $this->filesystem->expects($this->any())
-                        ->method('getDirectoryWrite')
-                        ->will($this->returnValue($this->directoryMock));
+            ->method('getDirectoryWrite')
+            ->will($this->returnValue($this->directoryMock));
 
         $this->uploader = $this->getMockBuilder(\Magento\CatalogImportExport\Model\Import\Uploader::class)
-            ->setConstructorArgs([
+            ->setConstructorArgs(
+                [
                 $this->coreFileStorageDb,
                 $this->coreFileStorage,
                 $this->imageFactory,
                 $this->validator,
                 $this->filesystem,
                 $this->readFactory,
-            ])
+                ]
+            )
             ->setMethods(['_setUploadFile', 'save', 'getTmpDir', 'checkAllowedExtension'])
             ->getMock();
     }
@@ -121,8 +123,8 @@ class UploaderTest extends \PHPUnit\Framework\TestCase
 
         // Check create() method invoking with expected argument.
         $this->readFactory->expects($this->once())
-                        ->method('create')
-                        ->will($this->returnValue($readMock))->with($expectedHost);
+            ->method('create')
+            ->will($this->returnValue($readMock))->with($expectedHost);
         //Check invoking of getTmpDir(), _setUploadFile(), save() methods.
         $this->uploader->expects($this->any())->method('getTmpDir')->will($this->returnValue(''));
         $this->uploader->expects($this->once())->method('_setUploadFile')->will($this->returnSelf());
@@ -182,14 +184,16 @@ class UploaderTest extends \PHPUnit\Framework\TestCase
             ->willReturn($driverMock);
 
         $uploaderMock = $this->getMockBuilder(\Magento\CatalogImportExport\Model\Import\Uploader::class)
-            ->setConstructorArgs([
+            ->setConstructorArgs(
+                [
                 $this->coreFileStorageDb,
                 $this->coreFileStorage,
                 $this->imageFactory,
                 $this->validator,
                 $this->filesystem,
                 $readFactory,
-            ])
+                ]
+            )
             ->getMock();
 
         $result = $uploaderMock->move($fileUrl);

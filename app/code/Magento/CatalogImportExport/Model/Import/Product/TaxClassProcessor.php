@@ -38,7 +38,7 @@ class TaxClassProcessor
 
     /**
      * @param \Magento\Tax\Model\ResourceModel\TaxClass\CollectionFactory $collectionFactory
-     * @param \Magento\Tax\Model\ClassModelFactory $classModelFactory
+     * @param \Magento\Tax\Model\ClassModelFactory                        $classModelFactory
      */
     public function __construct(
         \Magento\Tax\Model\ResourceModel\TaxClass\CollectionFactory $collectionFactory,
@@ -70,13 +70,15 @@ class TaxClassProcessor
     /**
      * Creates new tax class.
      *
-     * @param string $taxClassName
-     * @param AbstractType $productTypeModel
+     * @param  string       $taxClassName
+     * @param  AbstractType $productTypeModel
      * @return integer
      */
     protected function createTaxClass($taxClassName, AbstractType $productTypeModel)
     {
-        /** @var \Magento\Tax\Model\ClassModelFactory $taxClass */
+        /**
+ * @var \Magento\Tax\Model\ClassModelFactory $taxClass 
+*/
         $taxClass = $this->classModelFactory->create();
         $taxClass->setClassType(ClassModel::TAX_CLASS_TYPE_PRODUCT);
         $taxClass->setClassName($taxClassName);
@@ -92,8 +94,8 @@ class TaxClassProcessor
     /**
      * Instantiate instance of tax class.
      *
-     * @param string $taxClassName
-     * @param AbstractType $productTypeModel
+     * @param  string       $taxClassName
+     * @param  AbstractType $productTypeModel
      * @return object
      */
     public function upsertTaxClass($taxClassName, AbstractType $productTypeModel)

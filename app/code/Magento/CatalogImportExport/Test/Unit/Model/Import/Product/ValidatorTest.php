@@ -12,22 +12,34 @@ use Magento\ImportExport\Model\Import;
 
 class ValidatorTest extends \PHPUnit\Framework\TestCase
 {
-    /** @var Validator */
+    /**
+     * @var Validator 
+     */
     protected $validator;
 
-    /** @var ObjectManagerHelper */
+    /**
+     * @var ObjectManagerHelper 
+     */
     protected $objectManagerHelper;
 
-    /** @var array */
+    /**
+     * @var array 
+     */
     protected $validators = [];
 
-    /** @var \Magento\CatalogImportExport\Model\Import\Product|\PHPUnit_Framework_MockObject_MockObject */
+    /**
+     * @var \Magento\CatalogImportExport\Model\Import\Product|\PHPUnit_Framework_MockObject_MockObject 
+     */
     protected $context;
 
-    /** @var Validator\Media|\PHPUnit_Framework_MockObject_MockObject */
+    /**
+     * @var Validator\Media|\PHPUnit_Framework_MockObject_MockObject 
+     */
     protected $validatorOne;
 
-    /** @var Validator\Website|\PHPUnit_Framework_MockObject_MockObject */
+    /**
+     * @var Validator\Website|\PHPUnit_Framework_MockObject_MockObject 
+     */
     protected $validatorTwo;
 
     protected function setUp()
@@ -63,11 +75,11 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @param string $behavior
-     * @param array $attrParams
-     * @param array $rowData
-     * @param bool $isValid
-     * @param string $attrCode
+     * @param        string $behavior
+     * @param        array  $attrParams
+     * @param        array  $rowData
+     * @param        bool   $isValid
+     * @param        string $attrCode
      * @dataProvider attributeValidationProvider
      */
     public function testAttributeValidation($behavior, $attrParams, $rowData, $isValid, $attrCode = 'attribute_code')
@@ -85,7 +97,7 @@ class ValidatorTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
-     * @return array
+     * @return                                        array
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function attributeValidationProvider()

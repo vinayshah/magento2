@@ -7,6 +7,7 @@ namespace Magento\CatalogImportExport\Test\Unit\Model\Import\Product\Type;
 
 /**
  * Test class for import product options module
+ *
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
@@ -305,9 +306,9 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
     /**
      * Create mocks for all $this->model dependencies
      *
-     * @param bool $addExpectations
-     * @param bool $deleteBehavior
-     * @param bool $doubleOptions
+     * @param  bool $addExpectations
+     * @param  bool $deleteBehavior
+     * @param  bool $doubleOptions
      * @return array
      */
     protected function _getModelDependencies($addExpectations = false, $deleteBehavior = false, $doubleOptions = false)
@@ -371,9 +372,9 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
     /**
      * Get source data mocks
      *
-     * @param bool $addExpectations
-     * @param bool $doubleOptions
-     * @return array
+     * @param                                         bool $addExpectations
+     * @param                                         bool $doubleOptions
+     * @return                                        array
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function _getSourceDataMocks($addExpectations, $doubleOptions)
@@ -491,8 +492,8 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      *
      * @param \Magento\Framework\Data\Collection\AbstractDb $collection
-     * @param int $pageSize
-     * @param array $callbacks
+     * @param int                                           $pageSize
+     * @param array                                         $callbacks
      */
     public function iterate(\Magento\Framework\Data\Collection\AbstractDb $collection, $pageSize, array $callbacks)
     {
@@ -516,8 +517,8 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
     /**
      * Stub method to emulate adapter quoteInfo() method and get data in needed for test format
      *
-     * @param string $text
-     * @param array|int|float|string $value
+     * @param  string                 $text
+     * @param  array|int|float|string $value
      * @return mixed
      */
     public function stubQuoteInto($text, $value)
@@ -549,19 +550,19 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
      * Verify data, sent to $this->_connection->insertMultiple() method
      *
      * @param string $table
-     * @param array $data
+     * @param array  $data
      */
     public function verifyInsertMultiple($table, array $data)
     {
         switch ($table) {
-            case $this->_tables['catalog_product_option']:
-                $this->assertEquals($this->_expectedOptions, $data);
-                break;
-            case $this->_tables['catalog_product_option_type_value']:
-                $this->assertEquals($this->_expectedTypeValues, $data);
-                break;
-            default:
-                break;
+        case $this->_tables['catalog_product_option']:
+            $this->assertEquals($this->_expectedOptions, $data);
+            break;
+        case $this->_tables['catalog_product_option_type_value']:
+            $this->assertEquals($this->_expectedTypeValues, $data);
+            break;
+        default:
+            break;
         }
     }
 
@@ -569,39 +570,39 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
      * Verify data, sent to $this->_connection->insertOnDuplicate() method
      *
      * @param string $table
-     * @param array $data
-     * @param array $fields
+     * @param array  $data
+     * @param array  $fields
      */
     public function verifyInsertOnDuplicate($table, array $data, array $fields = [])
     {
         switch ($table) {
-            case $this->_tables['catalog_product_option_title']:
-                $this->assertEquals($this->_expectedTitles, $data);
-                $this->assertEquals(['title'], $fields);
-                break;
-            case $this->_tables['catalog_product_option_price']:
-                $this->assertEquals($this->_expectedPrices, $data);
-                $this->assertEquals(['price', 'price_type'], $fields);
-                break;
-            case $this->_tables['catalog_product_option_type_price']:
-                $this->assertEquals($this->_expectedTypePrices, $data);
-                $this->assertEquals(['price', 'price_type'], $fields);
-                break;
-            case $this->_tables['catalog_product_option_type_title']:
-                $this->assertEquals($this->_expectedTypeTitles, $data);
-                $this->assertEquals(['title'], $fields);
-                break;
-            case $this->_tables['catalog_product_entity']:
-                // there is no point in updated_at data verification which is just current time
-                foreach ($data as &$row) {
-                    $this->assertArrayHasKey('updated_at', $row);
-                    unset($row['updated_at']);
-                }
-                $this->assertEquals($this->_expectedUpdate, $data);
-                $this->assertEquals(['has_options', 'required_options', 'updated_at'], $fields);
-                break;
-            default:
-                break;
+        case $this->_tables['catalog_product_option_title']:
+            $this->assertEquals($this->_expectedTitles, $data);
+            $this->assertEquals(['title'], $fields);
+            break;
+        case $this->_tables['catalog_product_option_price']:
+            $this->assertEquals($this->_expectedPrices, $data);
+            $this->assertEquals(['price', 'price_type'], $fields);
+            break;
+        case $this->_tables['catalog_product_option_type_price']:
+            $this->assertEquals($this->_expectedTypePrices, $data);
+            $this->assertEquals(['price', 'price_type'], $fields);
+            break;
+        case $this->_tables['catalog_product_option_type_title']:
+            $this->assertEquals($this->_expectedTypeTitles, $data);
+            $this->assertEquals(['title'], $fields);
+            break;
+        case $this->_tables['catalog_product_entity']:
+            // there is no point in updated_at data verification which is just current time
+            foreach ($data as &$row) {
+                $this->assertArrayHasKey('updated_at', $row);
+                unset($row['updated_at']);
+            }
+            $this->assertEquals($this->_expectedUpdate, $data);
+            $this->assertEquals(['has_options', 'required_options', 'updated_at'], $fields);
+            break;
+        default:
+            break;
         }
     }
 
@@ -653,8 +654,8 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
     /**
      * Export CSV string to array
      *
-     * @param string $content
-     * @param mixed $entityId
+     * @param  string $content
+     * @param  mixed  $entityId
      * @return array
      */
     protected function _csvToArray($content, $entityId = null)
@@ -680,17 +681,18 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
     /**
      * Set method _getMultiRowFormat for model mock
      * Make model bypass format converting, used to pass tests' with old data.
+     *
      * @todo should be refactored/removed when all old options are converted into the new format.
      *
-     * @param array $rowData
+     * @param  array $rowData
      *  old format data
      * @return void
      */
     private function _bypassModelMethodGetMultiRowFormat($rowData)
     {
         $this->modelMock->expects($this->any())
-                        ->method('_getMultiRowFormat')
-                        ->will($this->returnValue([$rowData]));
+            ->method('_getMultiRowFormat')
+            ->will($this->returnValue([$rowData]));
     }
 
     /**
@@ -711,15 +713,15 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
      * @param array $rowData
      * @param array $errors
      *
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::validateRow
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_isRowWithCustomOption
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_isMainOptionRow
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_isSecondaryOptionRow
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_validateMainRow
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_validateMainRowAdditionalData
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_validateSecondaryRow
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_validateSpecificTypeParameters
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_validateSpecificParameterData
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::validateRow
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_isRowWithCustomOption
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_isMainOptionRow
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_isSecondaryOptionRow
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_validateMainRow
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_validateMainRowAdditionalData
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_validateSecondaryRow
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_validateSpecificTypeParameters
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_validateSpecificParameterData
      * @dataProvider validateRowDataProvider
      */
     public function testValidateRow(array $rowData, array $errors)
@@ -737,16 +739,16 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
     /**
      * Test for validation of ambiguous data
      *
-     * @param array $rowData
-     * @param array $errors
+     * @param array       $rowData
+     * @param array       $errors
      * @param string|null $behavior
-     * @param int $numberOfValidations
+     * @param int         $numberOfValidations
      *
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::validateAmbiguousData
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_findNewOptionsWithTheSameTitles
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_findOldOptionsWithTheSameTitles
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_findNewOldOptionsTypeMismatch
-     * @covers \Magento\CatalogImportExport\Model\Import\Product\Option::_saveNewOptionData
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::validateAmbiguousData
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_findNewOptionsWithTheSameTitles
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_findOldOptionsWithTheSameTitles
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_findNewOldOptionsTypeMismatch
+     * @covers       \Magento\CatalogImportExport\Model\Import\Product\Option::_saveNewOptionData
      * @dataProvider validateAmbiguousDataDataProvider
      */
     public function testValidateAmbiguousData(
@@ -779,7 +781,7 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
     /**
      * Data provider of row data and errors
      *
-     * @return array
+     * @return                                        array
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     public function validateRowDataProvider()
@@ -924,14 +926,18 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
         $productModel = $this->createPartialMock(\stdClass::class, ['getProductEntitiesInfo']);
         $productModel->expects($this->any())->method('getProductEntitiesInfo')->will($this->returnValue([]));
 
-        /** @var \Magento\CatalogImportExport\Model\Import\Product $productEntityMock */
+        /**
+ * @var \Magento\CatalogImportExport\Model\Import\Product $productEntityMock 
+*/
         $productEntityMock = $this->createMock(\Magento\CatalogImportExport\Model\Import\Product::class);
         $reflection = new \ReflectionClass(\Magento\CatalogImportExport\Model\Import\Product::class);
         $reflectionProperty = $reflection->getProperty('metadataPool');
         $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($productEntityMock, $this->metadataPoolMock);
 
-        /** @var \Magento\CatalogImportExport\Model\Import\Product\Option $model */
+        /**
+ * @var \Magento\CatalogImportExport\Model\Import\Product\Option $model 
+*/
         $model = $this->objectManagerHelper->getObject(
             \Magento\CatalogImportExport\Model\Import\Product\Option::class,
             [
@@ -969,9 +975,9 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
     /**
      * Set object property.
      *
-     * @param object $object
-     * @param string $property
-     * @param mixed $value
+     * @param  object $object
+     * @param  string $property
+     * @param  mixed  $value
      * @return object
      */
     protected function setPropertyValue(&$object, $property, $value)
@@ -987,8 +993,8 @@ class OptionTest extends \Magento\ImportExport\Test\Unit\Model\Import\AbstractIm
     /**
      * Get object property.
      *
-     * @param object $object
-     * @param string $property
+     * @param  object $object
+     * @param  string $property
      * @return mixed
      */
     protected function getPropertyValue(&$object, $property)

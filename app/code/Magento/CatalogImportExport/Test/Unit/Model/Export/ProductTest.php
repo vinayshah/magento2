@@ -148,10 +148,12 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         );
         $this->exportConfig = $this->createMock(\Magento\ImportExport\Model\Export\Config::class);
 
-        $this->productFactory = $this->createPartialMock(\Magento\Catalog\Model\ResourceModel\ProductFactory::class, [
+        $this->productFactory = $this->createPartialMock(
+            \Magento\Catalog\Model\ResourceModel\ProductFactory::class, [
                 'create',
                 'getTypeId',
-            ]);
+            ]
+        );
 
         $this->attrSetColFactory = $this->createPartialMock(
             \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory::class,
@@ -185,11 +187,13 @@ class ProductTest extends \PHPUnit\Framework\TestCase
         );
         $this->metadataPool = $this->createMock(\Magento\Framework\EntityManager\MetadataPool::class);
 
-        $this->writer = $this->createPartialMock(\Magento\ImportExport\Model\Export\Adapter\AbstractAdapter::class, [
+        $this->writer = $this->createPartialMock(
+            \Magento\ImportExport\Model\Export\Adapter\AbstractAdapter::class, [
                 'setHeaderCols',
                 'writeRow',
                 'getContents',
-            ]);
+            ]
+        );
 
         $constructorMethods = [
             'initTypeModels',
@@ -200,7 +204,8 @@ class ProductTest extends \PHPUnit\Framework\TestCase
             'initCategories'
         ];
 
-        $mockMethods = array_merge($constructorMethods, [
+        $mockMethods = array_merge(
+            $constructorMethods, [
             '_customHeadersMapping',
             '_prepareEntityCollection',
             '_getEntityCollection',
@@ -211,7 +216,8 @@ class ProductTest extends \PHPUnit\Framework\TestCase
             'getItemsPerPage',
             'paginateCollection',
             '_getHeaderColumns',
-        ]);
+            ]
+        );
         $this->product = $this->createPartialMock(
             \Magento\CatalogImportExport\Model\Export\Product::class,
             $mockMethods
@@ -363,8 +369,8 @@ class ProductTest extends \PHPUnit\Framework\TestCase
     /**
      * Get any object property value.
      *
-     * @param $object
-     * @param $property
+     * @param  $object
+     * @param  $property
      * @return mixed
      */
     protected function getPropertyValue($object, $property)
