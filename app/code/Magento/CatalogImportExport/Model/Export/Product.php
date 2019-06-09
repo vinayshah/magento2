@@ -47,7 +47,7 @@ use Zend_Db_Statement_Exception;
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
- * @since                                            100.0.2
+ * @since 100.0.2
  */
 class Product extends AbstractEntity
 {
@@ -304,7 +304,7 @@ class Product extends AbstractEntity
         'news_from_date',
         'news_to_date',
         'custom_design_from',
-        'custom_design_to'
+        'custom_design_to',
     ];
 
     /**
@@ -560,7 +560,7 @@ class Product extends AbstractEntity
             ['mgvte' => $this->_resourceModel->getTableName('catalog_product_entity_media_gallery_value_to_entity')],
             [
                 "mgvte.$productEntityJoinField",
-                'mgvte.value_id'
+                'mgvte.value_id',
             ]
         )->joinLeft(
             ['mg' => $this->_resourceModel->getTableName('catalog_product_entity_media_gallery')],
@@ -655,6 +655,7 @@ class Product extends AbstractEntity
      *
      * @param int[] $productIds
      * @return array
+     * @throws Zend_Db_Statement_Exception
      */
     protected function prepareLinks(array $productIds)
     {
@@ -668,7 +669,7 @@ class Product extends AbstractEntity
                 'cpe.sku',
                 'cpl.link_type_id',
                 'position' => 'cplai.value',
-                'default_qty' => 'cplad.value'
+                'default_qty' => 'cplad.value',
             ]
         )->joinLeft(
             ['cpe' => $this->_resourceModel->getTableName('catalog_product_entity')],
@@ -759,7 +760,7 @@ class Product extends AbstractEntity
      *
      * @param array $customOptionsData
      * @param array $stockItemRows
-     * @return     void
+     * @return void
      * @deprecated 100.2.0 Logic will be moved to _getHeaderColumns in future release
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -789,7 +790,7 @@ class Product extends AbstractEntity
                     'additional_images',
                     'additional_image_labels',
                     'hide_from_product_page',
-                    'custom_options'
+                    'custom_options',
                 ]
             );
         }
@@ -944,7 +945,7 @@ class Product extends AbstractEntity
     /**
      * Get export data for collection
      *
-     * @return                                        array
+     * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
@@ -1011,10 +1012,12 @@ class Product extends AbstractEntity
     /**
      * Collect export data for all products
      *
-     * @return                                       array
-     * @throws                                       Exception
+     * @return array
+     * @throws Exception
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+     * @SuppressWarnings(PHPMD.UnusedLocalVariable)
      */
     protected function collectRawData()
     {
@@ -1133,6 +1136,7 @@ class Product extends AbstractEntity
      * Collect multi raw data from
      *
      * @return array
+     * @throws Zend_Db_Statement_Exception
      */
     protected function collectMultirawData()
     {
@@ -1179,7 +1183,8 @@ class Product extends AbstractEntity
      *
      * @param ProductEntity $item
      * @param int           $storeId
-     * @return     bool
+     * @return bool
+     * @throws Exception
      * @deprecated
      */
     protected function hasMultiselectData($item, $storeId)
@@ -1195,6 +1200,7 @@ class Product extends AbstractEntity
      * @param string        $attrCode
      * @param int           $storeId
      * @return $this
+     * @throws Exception
      */
     protected function collectMultiselectValues($item, $attrCode, $storeId)
     {
@@ -1244,7 +1250,7 @@ class Product extends AbstractEntity
      *
      * @param array $dataRow
      * @param array $multiRawData
-     * @return                                        array
+     * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
@@ -1387,7 +1393,7 @@ class Product extends AbstractEntity
      *
      * @param array $dataRow
      * @param array $multiRawData
-     * @return     array
+     * @return array
      * @deprecated 100.1.0
      */
     protected function addMultirowData($dataRow, $multiRawData)
@@ -1456,7 +1462,7 @@ class Product extends AbstractEntity
      * Store view specified data will be saved to the additional store view row.
      *
      * @param int[] $productIds
-     * @return                                       array
+     * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
@@ -1641,6 +1647,7 @@ class Product extends AbstractEntity
      * Get product entity link field
      *
      * @return string
+     * @throws Exception
      * @since  100.1.0
      */
     protected function getProductEntityLinkField()

@@ -1560,12 +1560,13 @@ class Product extends AbstractEntity
     /**
      * Gather and save information about product entities.
      *
-     * @return                                        $this
+     * @return $this
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      * @SuppressWarnings(PHPMD.UnusedLocalVariable)
-     * @throws                                        LocalizedException
+     * @throws  LocalizedException
+     * @throws Zend_Validate_Exception
      */
     protected function _saveProducts()
     {
