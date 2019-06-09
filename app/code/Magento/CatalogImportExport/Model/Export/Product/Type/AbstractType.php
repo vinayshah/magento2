@@ -3,6 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\CatalogImportExport\Model\Export\Product\Type;
 
 use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
@@ -10,7 +11,6 @@ use Magento\Catalog\Model\ResourceModel\Eav\Attribute;
 /**
  * Export entity product type abstract model
  *
- * @api
  * @since 100.0.2
  */
 abstract class AbstractType
@@ -69,7 +69,7 @@ abstract class AbstractType
     /**
      * Add additional data to attribute.
      *
-     * @param  Attribute $attribute
+     * @param Attribute $attribute
      * @return bool
      */
     public function overrideAttribute(Attribute $attribute)
