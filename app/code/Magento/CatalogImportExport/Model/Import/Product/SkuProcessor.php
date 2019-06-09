@@ -3,7 +3,14 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\CatalogImportExport\Model\Import\Product;
+
+use Exception;
+use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Model\ProductFactory;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\EntityManager\MetadataPool;
 
 /**
  * Class SkuProcessor
@@ -14,7 +21,7 @@ namespace Magento\CatalogImportExport\Model\Import\Product;
 class SkuProcessor
 {
     /**
-     * @var \Magento\Catalog\Model\ProductFactory
+     * @var ProductFactory
      */
     protected $productFactory;
 
@@ -45,7 +52,7 @@ class SkuProcessor
     /**
      * Product metadata pool
      *
-     * @var \Magento\Framework\EntityManager\MetadataPool
+     * @var MetadataPool
      */
     private $metadataPool;
 
@@ -64,16 +71,16 @@ class SkuProcessor
     private $productEntityIdentifierField;
 
     /**
-     * @param \Magento\Catalog\Model\ProductFactory $productFactory
+     * @param ProductFactory $productFactory
      */
     public function __construct(
-        \Magento\Catalog\Model\ProductFactory $productFactory
+        ProductFactory $productFactory
     ) {
         $this->productFactory = $productFactory;
     }
 
     /**
-     * @param  array $typeModels
+     * @param array $typeModels
      * @return $this
      */
     public function setTypeModels($typeModels)
@@ -86,6 +93,7 @@ class SkuProcessor
      * Get old skus array.
      *
      * @return array
+     * @throws Exception
      */
     public function getOldSkus()
     {
@@ -99,6 +107,7 @@ class SkuProcessor
      * Reload old skus.
      *
      * @return $this
+     * @throws Exception
      */
     public function reloadOldSkus()
     {
@@ -108,8 +117,8 @@ class SkuProcessor
     }
 
     /**
-     * @param  string $sku
-     * @param  array  $data
+     * @param string $sku
+     * @param array $data
      * @return $this
      */
     public function addNewSku($sku, $data)
@@ -120,9 +129,9 @@ class SkuProcessor
     }
 
     /**
-     * @param  string $sku
-     * @param  string $key
-     * @param  mixed  $data
+     * @param string $sku
+     * @param string $key
+     * @param mixed $data
      * @return $this
      */
     public function setNewSkuData($sku, $key, $data)
@@ -135,7 +144,7 @@ class SkuProcessor
     }
 
     /**
-     * @param  null|string $sku
+     * @param null|string $sku
      * @return array|null
      */
     public function getNewSku($sku = null)
@@ -151,6 +160,7 @@ class SkuProcessor
      * Get skus data.
      *
      * @return array
+     * @throws Exception
      */
     protected function _getSkus()
     {
@@ -176,13 +186,13 @@ class SkuProcessor
     /**
      * Get product metadata pool
      *
-     * @return \Magento\Framework\EntityManager\MetadataPool
+     * @return MetadataPool
      */
     private function getMetadataPool()
     {
         if (!$this->metadataPool) {
-            $this->metadataPool = \Magento\Framework\App\ObjectManager::getInstance()
-                ->get(\Magento\Framework\EntityManager\MetadataPool::class);
+            $this->metadataPool = ObjectManager::getInstance()
+                ->get(MetadataPool::class);
         }
         return $this->metadataPool;
     }
@@ -191,12 +201,13 @@ class SkuProcessor
      * Get product entity link field
      *
      * @return string
+     * @throws Exception
      */
     private function getProductEntityLinkField()
     {
         if (!$this->productEntityLinkField) {
             $this->productEntityLinkField = $this->getMetadataPool()
-                ->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)
+                ->getMetadata(ProductInterface::class)
                 ->getLinkField();
         }
         return $this->productEntityLinkField;
@@ -206,12 +217,13 @@ class SkuProcessor
      * Get product entity identifier field
      *
      * @return string
+     * @throws Exception
      */
     private function getProductIdentifierField()
     {
         if (!$this->productEntityIdentifierField) {
             $this->productEntityIdentifierField = $this->getMetadataPool()
-                ->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)
+                ->getMetadata(ProductInterface::class)
                 ->getIdentifierField();
         }
         return $this->productEntityIdentifierField;
