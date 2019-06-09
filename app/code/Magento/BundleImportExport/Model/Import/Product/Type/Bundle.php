@@ -259,9 +259,9 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
      * Populate the option template.
      *
      * @param array $option
-     * @param int $entityId
-     * @param int $index
-     * @return                                  array
+     * @param int   $entityId
+     * @param int   $index
+     * @return array
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     protected function populateOptionTemplate($option, $entityId, $index = null)
@@ -314,10 +314,10 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
      * Populate the option value template.
      *
      * @param array $selection
-     * @param int $optionId
-     * @param int $parentId
-     * @param int $index
-     * @return                                       array|bool
+     * @param int   $optionId
+     * @param int   $parentId
+     * @param int   $index
+     * @return array|bool
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
