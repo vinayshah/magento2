@@ -6,29 +6,66 @@
 
 namespace Magento\CatalogImportExport\Model\Import;
 
+use DateTimeZone;
+use Exception;
+use InvalidArgumentException;
+use Magento\Catalog\Api\Data\ProductInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
+use Magento\Catalog\Helper\Data;
 use Magento\Catalog\Model\Config as CatalogConfig;
+use Magento\Catalog\Model\Product\Attribute\Source\Status;
+use Magento\Catalog\Model\Product\Url;
 use Magento\Catalog\Model\Product\Visibility;
 use Magento\Catalog\Model\ResourceModel\Product\Link;
+use Magento\Catalog\Model\ResourceModel\Product\LinkFactory;
+use Magento\CatalogImportExport\Model\Import\Product\CategoryProcessor;
 use Magento\CatalogImportExport\Model\Import\Product\ImageTypeProcessor;
 use Magento\CatalogImportExport\Model\Import\Product\MediaGalleryProcessor;
+use Magento\CatalogImportExport\Model\Import\Product\Option;
+use Magento\CatalogImportExport\Model\Import\Product\OptionFactory;
 use Magento\CatalogImportExport\Model\Import\Product\RowValidatorInterface as ValidatorInterface;
+use Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType;
+use Magento\CatalogImportExport\Model\Import\Product\Type\Factory;
+use Magento\CatalogImportExport\Model\Import\Proxy\Product\ResourceModel;
+use Magento\CatalogImportExport\Model\Import\Proxy\Product\ResourceModelFactory;
+use Magento\CatalogImportExport\Model\Import\Proxy\ProductFactory;
 use Magento\CatalogImportExport\Model\StockItemImporterInterface;
 use Magento\CatalogInventory\Api\Data\StockItemInterface;
+use Magento\CatalogInventory\Api\StockConfigurationInterface;
+use Magento\CatalogInventory\Api\StockRegistryInterface;
+use Magento\CatalogInventory\Model\ResourceModel\Stock\ItemFactory;
+use Magento\CatalogInventory\Model\Spi\StockStateProviderInterface;
+use Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator;
+use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\Exception\FileSystemException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Filesystem;
+use Magento\Framework\Filesystem\Directory\ReadInterface;
+use Magento\Framework\Filesystem\Directory\WriteInterface;
+use Magento\Framework\Indexer\IndexerRegistry;
 use Magento\Framework\Intl\DateTimeFactory;
 use Magento\Framework\Model\ResourceModel\Db\ObjectRelationProcessor;
 use Magento\Framework\Model\ResourceModel\Db\TransactionManagerInterface;
 use Magento\Framework\Stdlib\DateTime;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Magento\Framework\Stdlib\StringUtils;
 use Magento\ImportExport\Model\Import;
+use Magento\ImportExport\Model\Import\Config;
 use Magento\ImportExport\Model\Import\Entity\AbstractEntity;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingError;
 use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorInterface;
+use Magento\ImportExport\Model\ResourceModel\Helper;
+use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\Store;
+use Psr\Log\LoggerInterface;
+use Zend_Validate_Exception;
 
 /**
  * Import entity product model
@@ -40,7 +77,7 @@ use Magento\Store\Model\Store;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @since                                            100.0.2
  */
-class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
+class Product extends AbstractEntity
 {
     const CONFIG_KEY_PRODUCT_TYPES = 'global/importexport/import_product_types';
 
@@ -450,106 +487,106 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Array of supported product types as keys with appropriate model object as value.
      *
-     * @var \Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType[]
+     * @var AbstractType[]
      */
     protected $_productTypeModels = [];
 
     /**
      * Media files uploader
      *
-     * @var \Magento\CatalogImportExport\Model\Import\Uploader
+     * @var Uploader
      */
     protected $_fileUploader;
 
     /**
      * Import entity which provide import of product custom options
      *
-     * @var \Magento\CatalogImportExport\Model\Import\Product\Option
+     * @var Option
      */
     protected $_optionEntity;
 
     /**
      * Catalog data
      *
-     * @var \Magento\Catalog\Helper\Data
+     * @var Data
      */
     protected $_catalogData = null;
 
     /**
-     * @var \Magento\CatalogInventory\Api\StockRegistryInterface
+     * @var StockRegistryInterface
      */
     protected $stockRegistry;
 
     /**
-     * @var \Magento\CatalogInventory\Api\StockConfigurationInterface
+     * @var StockConfigurationInterface
      */
     protected $stockConfiguration;
 
     /**
-     * @var \Magento\CatalogInventory\Model\Spi\StockStateProviderInterface
+     * @var StockStateProviderInterface
      */
     protected $stockStateProvider;
 
     /**
      * Core event manager proxy
      *
-     * @var \Magento\Framework\Event\ManagerInterface
+     * @var ManagerInterface
      */
     protected $_eventManager = null;
 
     /**
-     * @var \Magento\ImportExport\Model\Import\Config
+     * @var Config
      */
     protected $_importConfig;
 
     /**
-     * @var \Magento\CatalogImportExport\Model\Import\Proxy\Product\ResourceModelFactory
+     * @var ResourceModelFactory
      */
     protected $_resourceFactory;
 
     /**
-     * @var \Magento\CatalogImportExport\Model\Import\Proxy\Product\ResourceModel
+     * @var ResourceModel
      */
     protected $_resource;
 
     /**
-     * @var \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory
+     * @var CollectionFactory
      */
     protected $_setColFactory;
 
     /**
-     * @var \Magento\CatalogImportExport\Model\Import\Product\Type\Factory
+     * @var Factory
      */
     protected $_productTypeFactory;
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\LinkFactory
+     * @var LinkFactory
      */
     protected $_linkFactory;
 
     /**
-     * @var \Magento\CatalogImportExport\Model\Import\Proxy\ProductFactory
+     * @var ProductFactory
      */
     protected $_proxyProdFactory;
 
     /**
-     * @var \Magento\CatalogImportExport\Model\Import\UploaderFactory
+     * @var UploaderFactory
      */
     protected $_uploaderFactory;
 
     /**
-     * @var \Magento\Framework\Filesystem\Directory\WriteInterface
+     * @var WriteInterface
      */
     protected $_mediaDirectory;
 
     /**
-     * @var        \Magento\CatalogInventory\Model\ResourceModel\Stock\ItemFactory
+     * @var        ItemFactory
      * @deprecated this variable isn't used anymore.
      */
     protected $_stockResItemFac;
 
     /**
-     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
+     * @var TimezoneInterface
      */
     protected $_localeDate;
 
@@ -559,7 +596,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     protected $dateTime;
 
     /**
-     * @var \Magento\Framework\Indexer\IndexerRegistry
+     * @var IndexerRegistry
      */
     protected $indexerRegistry;
 
@@ -579,13 +616,13 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     protected $categoryProcessor;
 
     /**
-     * @var   \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var   ScopeConfigInterface
      * @since 100.0.3
      */
     protected $scopeConfig;
 
     /**
-     * @var   \Magento\Catalog\Model\Product\Url
+     * @var   Url
      * @since 100.0.3
      */
     protected $productUrl;
@@ -633,7 +670,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     protected $validatedRows;
 
     /**
-     * @var \Psr\Log\LoggerInterface
+     * @var LoggerInterface
      */
     private $_logger;
 
@@ -744,52 +781,52 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     private $productRepository;
 
     /**
-     * @param                                          \Magento\Framework\Json\Helper\Data                                     $jsonHelper
-     * @param                                          \Magento\ImportExport\Helper\Data                                       $importExportData
-     * @param                                          \Magento\ImportExport\Model\ResourceModel\Import\Data                   $importData
-     * @param                                          \Magento\Eav\Model\Config                                               $config
-     * @param                                          \Magento\Framework\App\ResourceConnection                               $resource
-     * @param                                          \Magento\ImportExport\Model\ResourceModel\Helper                        $resourceHelper
-     * @param                                          \Magento\Framework\Stdlib\StringUtils                                   $string
-     * @param                                          ProcessingErrorAggregatorInterface                                      $errorAggregator
-     * @param                                          \Magento\Framework\Event\ManagerInterface                               $eventManager
-     * @param                                          \Magento\CatalogInventory\Api\StockRegistryInterface                    $stockRegistry
-     * @param                                          \Magento\CatalogInventory\Api\StockConfigurationInterface               $stockConfiguration
-     * @param                                          \Magento\CatalogInventory\Model\Spi\StockStateProviderInterface         $stockStateProvider
-     * @param                                          \Magento\Catalog\Helper\Data                                            $catalogData
-     * @param                                          \Magento\ImportExport\Model\Import\Config                               $importConfig
-     * @param                                          Proxy\Product\ResourceModelFactory                                      $resourceFactory
-     * @param                                          Product\OptionFactory                                                   $optionFactory
-     * @param                                          \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $setColFactory
-     * @param                                          Product\Type\Factory                                                    $productTypeFactory
-     * @param                                          \Magento\Catalog\Model\ResourceModel\Product\LinkFactory                $linkFactory
-     * @param                                          Proxy\ProductFactory                                                    $proxyProdFactory
-     * @param                                          UploaderFactory                                                         $uploaderFactory
-     * @param                                          \Magento\Framework\Filesystem                                           $filesystem
-     * @param                                          \Magento\CatalogInventory\Model\ResourceModel\Stock\ItemFactory         $stockResItemFac
-     * @param                                          DateTime\TimezoneInterface                                              $localeDate
-     * @param                                          DateTime                                                                $dateTime
-     * @param                                          \Psr\Log\LoggerInterface                                                $logger
-     * @param                                          \Magento\Framework\Indexer\IndexerRegistry                              $indexerRegistry
-     * @param                                          Product\StoreResolver                                                   $storeResolver
-     * @param                                          Product\SkuProcessor                                                    $skuProcessor
-     * @param                                          Product\CategoryProcessor                                               $categoryProcessor
-     * @param                                          Product\Validator                                                       $validator
-     * @param                                          ObjectRelationProcessor                                                 $objectRelationProcessor
-     * @param                                          TransactionManagerInterface                                             $transactionManager
-     * @param                                          Product\TaxClassProcessor                                               $taxClassProcessor
-     * @param                                          \Magento\Framework\App\Config\ScopeConfigInterface                      $scopeConfig
-     * @param                                          \Magento\Catalog\Model\Product\Url                                      $productUrl
-     * @param                                          array                                                                   $data
-     * @param                                          array                                                                   $dateAttrCodes
-     * @param                                          CatalogConfig                                                           $catalogConfig
-     * @param                                          ImageTypeProcessor                                                      $imageTypeProcessor
-     * @param                                          MediaGalleryProcessor                                                   $mediaProcessor
-     * @param                                          StockItemImporterInterface|null                                         $stockItemImporter
-     * @param                                          DateTimeFactory                                                         $dateTimeFactory
-     * @param                                          ProductRepositoryInterface|null                                         $productRepository
+     * @param \Magento\Framework\Json\Helper\Data $jsonHelper
+     * @param \Magento\ImportExport\Helper\Data $importExportData
+     * @param \Magento\ImportExport\Model\ResourceModel\Import\Data $importData
+     * @param \Magento\Eav\Model\Config $config
+     * @param ResourceConnection $resource
+     * @param Helper $resourceHelper
+     * @param StringUtils $string
+     * @param ProcessingErrorAggregatorInterface $errorAggregator
+     * @param ManagerInterface $eventManager
+     * @param StockRegistryInterface $stockRegistry
+     * @param StockConfigurationInterface $stockConfiguration
+     * @param StockStateProviderInterface $stockStateProvider
+     * @param Data $catalogData
+     * @param Config $importConfig
+     * @param Proxy\Product\ResourceModelFactory $resourceFactory
+     * @param Product\OptionFactory $optionFactory
+     * @param CollectionFactory $setColFactory
+     * @param Product\Type\Factory $productTypeFactory
+     * @param LinkFactory $linkFactory
+     * @param Proxy\ProductFactory $proxyProdFactory
+     * @param UploaderFactory $uploaderFactory
+     * @param Filesystem $filesystem
+     * @param ItemFactory $stockResItemFac
+     * @param TimezoneInterface $localeDate
+     * @param DateTime $dateTime
+     * @param LoggerInterface $logger
+     * @param IndexerRegistry $indexerRegistry
+     * @param Product\StoreResolver $storeResolver
+     * @param Product\SkuProcessor $skuProcessor
+     * @param Product\CategoryProcessor $categoryProcessor
+     * @param Product\Validator $validator
+     * @param ObjectRelationProcessor $objectRelationProcessor
+     * @param TransactionManagerInterface $transactionManager
+     * @param Product\TaxClassProcessor $taxClassProcessor
+     * @param ScopeConfigInterface $scopeConfig
+     * @param Url $productUrl
+     * @param array $data
+     * @param array $dateAttrCodes
+     * @param CatalogConfig $catalogConfig
+     * @param ImageTypeProcessor $imageTypeProcessor
+     * @param MediaGalleryProcessor $mediaProcessor
+     * @param StockItemImporterInterface|null $stockItemImporter
+     * @param DateTimeFactory $dateTimeFactory
+     * @param ProductRepositoryInterface|null $productRepository
      * @throws                                         LocalizedException
-     * @throws                                         \Magento\Framework\Exception\FileSystemException
+     * @throws                                         FileSystemException
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
@@ -798,29 +835,29 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         \Magento\ImportExport\Helper\Data $importExportData,
         \Magento\ImportExport\Model\ResourceModel\Import\Data $importData,
         \Magento\Eav\Model\Config $config,
-        \Magento\Framework\App\ResourceConnection $resource,
-        \Magento\ImportExport\Model\ResourceModel\Helper $resourceHelper,
-        \Magento\Framework\Stdlib\StringUtils $string,
+        ResourceConnection $resource,
+        Helper $resourceHelper,
+        StringUtils $string,
         ProcessingErrorAggregatorInterface $errorAggregator,
-        \Magento\Framework\Event\ManagerInterface $eventManager,
-        \Magento\CatalogInventory\Api\StockRegistryInterface $stockRegistry,
-        \Magento\CatalogInventory\Api\StockConfigurationInterface $stockConfiguration,
-        \Magento\CatalogInventory\Model\Spi\StockStateProviderInterface $stockStateProvider,
-        \Magento\Catalog\Helper\Data $catalogData,
-        \Magento\ImportExport\Model\Import\Config $importConfig,
-        \Magento\CatalogImportExport\Model\Import\Proxy\Product\ResourceModelFactory $resourceFactory,
-        \Magento\CatalogImportExport\Model\Import\Product\OptionFactory $optionFactory,
-        \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $setColFactory,
-        \Magento\CatalogImportExport\Model\Import\Product\Type\Factory $productTypeFactory,
-        \Magento\Catalog\Model\ResourceModel\Product\LinkFactory $linkFactory,
-        \Magento\CatalogImportExport\Model\Import\Proxy\ProductFactory $proxyProdFactory,
-        \Magento\CatalogImportExport\Model\Import\UploaderFactory $uploaderFactory,
-        \Magento\Framework\Filesystem $filesystem,
-        \Magento\CatalogInventory\Model\ResourceModel\Stock\ItemFactory $stockResItemFac,
-        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate,
+        ManagerInterface $eventManager,
+        StockRegistryInterface $stockRegistry,
+        StockConfigurationInterface $stockConfiguration,
+        StockStateProviderInterface $stockStateProvider,
+        Data $catalogData,
+        Config $importConfig,
+        ResourceModelFactory $resourceFactory,
+        OptionFactory $optionFactory,
+        CollectionFactory $setColFactory,
+        Factory $productTypeFactory,
+        LinkFactory $linkFactory,
+        ProductFactory $proxyProdFactory,
+        UploaderFactory $uploaderFactory,
+        Filesystem $filesystem,
+        ItemFactory $stockResItemFac,
+        TimezoneInterface $localeDate,
         DateTime $dateTime,
-        \Psr\Log\LoggerInterface $logger,
-        \Magento\Framework\Indexer\IndexerRegistry $indexerRegistry,
+        LoggerInterface $logger,
+        IndexerRegistry $indexerRegistry,
         Product\StoreResolver $storeResolver,
         Product\SkuProcessor $skuProcessor,
         Product\CategoryProcessor $categoryProcessor,
@@ -828,8 +865,8 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         ObjectRelationProcessor $objectRelationProcessor,
         TransactionManagerInterface $transactionManager,
         Product\TaxClassProcessor $taxClassProcessor,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Catalog\Model\Product\Url $productUrl,
+        ScopeConfigInterface $scopeConfig,
+        Url $productUrl,
         array $data = [],
         array $dateAttrCodes = [],
         CatalogConfig $catalogConfig = null,
@@ -892,16 +929,16 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         $this->validator->init($this);
         $this->dateTimeFactory = $dateTimeFactory ?? ObjectManager::getInstance()->get(DateTimeFactory::class);
         $this->productRepository = $productRepository ?? ObjectManager::getInstance()
-            ->get(ProductRepositoryInterface::class);
+                ->get(ProductRepositoryInterface::class);
     }
 
     /**
      * Check one attribute. Can be overridden in child.
      *
-     * @param  string $attrCode   Attribute code
-     * @param  array  $attrParams Attribute params
-     * @param  array  $rowData    Row data
-     * @param  int    $rowNum
+     * @param string $attrCode Attribute code
+     * @param array $attrParams Attribute params
+     * @param array $rowData Row data
+     * @param int $rowNum
      * @return bool
      */
     public function isAttributeValid($attrCode, array $attrParams, array $rowData, $rowNum)
@@ -957,7 +994,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve instance of product custom options import entity
      *
-     * @return \Magento\CatalogImportExport\Model\Import\Product\Option
+     * @return Option
      */
     public function getOptionEntity()
     {
@@ -973,8 +1010,8 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     {
         if (!$this->_mediaGalleryAttributeId) {
             /**
- * @var $resource \Magento\CatalogImportExport\Model\Import\Proxy\Product\ResourceModel 
-*/
+             * @var $resource ResourceModel
+             */
             $resource = $this->_resourceFactory->create();
             $this->_mediaGalleryAttributeId = $resource->getAttribute(self::MEDIA_GALLERY_ATTRIBUTE_CODE)->getId();
         }
@@ -984,7 +1021,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve product type by name.
      *
-     * @param  string $name
+     * @param string $name
      * @return Product\Type\AbstractType
      */
     public function retrieveProductTypeByName($name)
@@ -998,7 +1035,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Set import parameters
      *
-     * @param  array $params
+     * @param array $params
      * @return $this
      */
     public function setParameters(array $params)
@@ -1031,7 +1068,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * Delete products.
      *
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     protected function _deleteProducts()
     {
@@ -1065,7 +1102,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
                         ]
                     );
                     $this->transactionManager->commit();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $this->transactionManager->rollBack();
                     throw $e;
                 }
@@ -1081,9 +1118,9 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Create Product entity from raw data.
      *
-     * @throws                                       \Exception
      * @return                                       bool Result of operation.
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     * @throws                                       Exception
      */
     protected function _importData()
     {
@@ -1183,7 +1220,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * Initialize product type models.
      *
      * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     protected function _initTypeModels()
     {
@@ -1196,11 +1233,11 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
                     __('Entity type model \'%1\' is not found', $productTypeConfig['model'])
                 );
             }
-            if (!$model instanceof \Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType) {
+            if (!$model instanceof AbstractType) {
                 throw new LocalizedException(
                     __(
                         'Entity type model must be an instance of '
-                        . \Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType::class
+                        . AbstractType::class
                     )
                 );
             }
@@ -1233,7 +1270,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * Set valid attribute set and product type to rows with all
      * scopes to ensure that existing products doesn't changed.
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return array
      */
     protected function _prepareRowForDb(array $rowData)
@@ -1269,8 +1306,8 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     protected function _saveLinks()
     {
         /**
- * @var Link $resource 
-*/
+         * @var Link $resource
+         */
         $resource = $this->_linkFactory->create();
         $mainTable = $resource->getMainTable();
         $positionAttrId = [];
@@ -1296,7 +1333,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save product attributes.
      *
-     * @param  array $attributesData
+     * @param array $attributesData
      * @return $this
      */
     protected function _saveProductAttributes(array $attributesData)
@@ -1326,7 +1363,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save product categories.
      *
-     * @param  array $categoriesData
+     * @param array $categoriesData
      * @return $this
      */
     protected function _saveProductCategories(array $categoriesData)
@@ -1364,8 +1401,8 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Update and insert data in entity table.
      *
-     * @param  array $entityRowsIn Row for insert
-     * @param  array $entityRowsUp Row for update
+     * @param array $entityRowsIn Row for insert
+     * @param array $entityRowsUp Row for update
      * @return $this
      * @since  100.1.0
      */
@@ -1418,7 +1455,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Adds newly created products to _oldSku
      *
-     * @param  array $newProducts
+     * @param array $newProducts
      * @return void
      */
     private function updateOldSku(array $newProducts)
@@ -1477,7 +1514,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Get existing images for current bunch
      *
-     * @param  array $bunch
+     * @param array $bunch
      * @return array
      */
     protected function getExistingImages($bunch)
@@ -1488,7 +1525,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve image from row.
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return array
      */
     public function getImagesFromRow(array $rowData)
@@ -1742,7 +1779,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
                         if (isset($existingImages[$rowSku][$uploadedFile])) {
                             $currentFileData = $existingImages[$rowSku][$uploadedFile];
                             if (isset($rowLabels[$column][$columnImageKey])
-                                && $rowLabels[$column][$columnImageKey] !=$currentFileData['label']
+                                && $rowLabels[$column][$columnImageKey] != $currentFileData['label']
                             ) {
                                 $labelsForUpdate[] = [
                                     'label' => $rowLabels[$column][$columnImageKey],
@@ -1806,7 +1843,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
                         $this->taxClassProcessor->upsertTaxClass($rowData['tax_class_name'], $productTypeModel);
                 }
 
-                if ($this->getBehavior() == Import::BEHAVIOR_APPEND 
+                if ($this->getBehavior() == Import::BEHAVIOR_APPEND
                     || empty($rowData[self::COL_SKU])
                 ) {
                     $rowData = $productTypeModel->clearEmptyData($rowData);
@@ -1831,8 +1868,8 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
                     $storeIds = [0];
 
                     if ('datetime' == $attribute->getBackendType()
-                        && (                        in_array($attribute->getAttributeCode(), $this->dateAttrCodes)
-                        || $attribute->getIsUserDefined())
+                        && (in_array($attribute->getAttributeCode(), $this->dateAttrCodes)
+                            || $attribute->getIsUserDefined())
                     ) {
                         $attrValue = $this->dateTime->formatDate($attrValue, false);
                     } elseif ('datetime' == $attribute->getBackendType() && strtotime($attrValue)) {
@@ -1904,7 +1941,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Prepare array with image states (visible or hidden from product page)
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return array
      */
     private function getImagesHiddenStates($rowData)
@@ -1930,7 +1967,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Resolve valid category ids from provided row data.
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return array
      */
     protected function processRowCategories($rowData)
@@ -1964,7 +2001,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Get product websites.
      *
-     * @param  string $productSku
+     * @param string $productSku
      * @return array
      */
     public function getProductWebsites($productSku)
@@ -1975,7 +2012,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve product categories.
      *
-     * @param  string $productSku
+     * @param string $productSku
      * @return array
      */
     public function getProductCategories($productSku)
@@ -1986,7 +2023,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Get store id by code.
      *
-     * @param  string $storeCode
+     * @param string $storeCode
      * @return array|int|null|string
      */
     public function getStoreIdByCode($storeCode)
@@ -2000,7 +2037,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save product tier prices.
      *
-     * @param  array $tierPriceData
+     * @param array $tierPriceData
      * @return $this
      */
     protected function _saveProductTierPrices(array $tierPriceData)
@@ -2039,8 +2076,8 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Returns an object for upload a media files
      *
-     * @return \Magento\CatalogImportExport\Model\Import\Uploader
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return Uploader
+     * @throws LocalizedException
      */
     protected function _getUploader()
     {
@@ -2080,7 +2117,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * Retrieve uploader.
      *
      * @return Uploader
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     public function getUploader()
     {
@@ -2092,8 +2129,8 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      *
      * Return a new file name if the same file is already exists.
      *
-     * @param  string $fileName
-     * @param  bool   $renameFileOff [optional] boolean to pass.
+     * @param string $fileName
+     * @param bool $renameFileOff [optional] boolean to pass.
      *                               Default is false which will
      *                               set not to rename the file
      *                               after import.
@@ -2104,7 +2141,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         try {
             $res = $this->_getUploader()->move($fileName, $renameFileOff);
             return $res['file'];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->_logger->critical($e);
             return '';
         }
@@ -2113,15 +2150,15 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Try to find file by it's path.
      *
-     * @param  string $fileName
+     * @param string $fileName
      * @return string
      */
     private function getSystemFile($fileName)
     {
         $filePath = 'catalog' . DIRECTORY_SEPARATOR . 'product' . DIRECTORY_SEPARATOR . $fileName;
         /**
- * @var \Magento\Framework\Filesystem\Directory\ReadInterface $read 
-*/
+         * @var ReadInterface $read
+         */
         $read = $this->filesystem->getDirectoryRead(DirectoryList::MEDIA);
 
         return $read->isExist($filePath) && $read->isReadable($filePath) ? $fileName : '';
@@ -2130,7 +2167,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save product media gallery.
      *
-     * @param  array $mediaGalleryData
+     * @param array $mediaGalleryData
      * @return $this
      */
     protected function _saveMediaGallery(array $mediaGalleryData)
@@ -2146,7 +2183,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save product websites.
      *
-     * @param  array $websiteData
+     * @param array $websiteData
      * @return $this
      */
     protected function _saveProductWebsites(array $websiteData)
@@ -2222,7 +2259,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Initiate product reindex by product ids
      *
-     * @param  array $productIdsToReindex
+     * @param array $productIdsToReindex
      * @return void
      */
     private function reindexProducts($productIdsToReindex = [])
@@ -2236,14 +2273,14 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve attribute by code
      *
-     * @param  string $attrCode
+     * @param string $attrCode
      * @return mixed
      */
     public function retrieveAttributeByCode($attrCode)
     {
         /**
- * @var string $attrCode 
-*/
+         * @var string $attrCode
+         */
         $attrCode = mb_strtolower($attrCode);
 
         if (!isset($this->_attributeCache[$attrCode])) {
@@ -2266,7 +2303,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * DB connection getter.
      *
-     * @return \Magento\Framework\DB\Adapter\AdapterInterface
+     * @return AdapterInterface
      */
     public function getConnection()
     {
@@ -2290,7 +2327,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * Returns array of new products data with SKU as key. All SKU keys are in lowercase for avoiding creation of
      * new products with the same SKU in different letter cases.
      *
-     * @param  string $sku
+     * @param string $sku
      * @return array
      */
     public function getNewSku($sku = null)
@@ -2324,7 +2361,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve Category Processor
      *
-     * @return \Magento\CatalogImportExport\Model\Import\Product\CategoryProcessor
+     * @return CategoryProcessor
      */
     public function getCategoryProcessor()
     {
@@ -2334,7 +2371,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Obtain scope of the row from row data.
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return int
      */
     public function getRowScope(array $rowData)
@@ -2348,13 +2385,13 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Validate data row.
      *
-     * @param                                         array $rowData
-     * @param                                         int   $rowNum
+     * @param array $rowData
+     * @param int $rowNum
      * @return                                        boolean
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
-     * @throws                                        \Zend_Validate_Exception
+     * @throws                                        Zend_Validate_Exception
      */
     public function validateRow(array $rowData, $rowNum)
     {
@@ -2442,8 +2479,8 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
             $rowData[self::COL_ATTR_SET] = $newSku['attr_set_code'];
 
             /**
- * @var \Magento\CatalogImportExport\Model\Import\Product\Type\AbstractType $productTypeValidator 
-*/
+             * @var AbstractType $productTypeValidator
+             */
             // isRowValid can add error to general errors pull if row is invalid
             $productTypeValidator = $this->_productTypeModels[$newSku['type_id']];
             $productTypeValidator->isRowValid(
@@ -2508,7 +2545,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Check if need to validate url key.
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return bool
      */
     private function isNeedToValidateUrlKey($rowData)
@@ -2522,7 +2559,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Prepare new SKU data
      *
-     * @param  string $sku
+     * @param string $sku
      * @return array
      */
     private function prepareNewSkuData($sku)
@@ -2562,7 +2599,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      *      codeN => valueN
      * ]
      *
-     * @param  string $additionalAttributes Attributes data that will be parsed
+     * @param string $additionalAttributes Attributes data that will be parsed
      * @return array
      */
     private function getAdditionalAttributes($additionalAttributes)
@@ -2581,7 +2618,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      *      codeN => valueN
      * ]
      *
-     * @param  string $attributesData Attributes data that will be parsed. It keeps data in format:
+     * @param string $attributesData Attributes data that will be parsed. It keeps data in format:
      *                                code=value,code2=value2...,codeN=valueN
      * @return array
      */
@@ -2645,8 +2682,8 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Parse values of multiselect attributes depends on "Fields Enclosure" parameter
      *
-     * @param  string $values
-     * @param  string $delimiter
+     * @param string $values
+     * @param string $delimiter
      * @return array
      * @since  100.1.2
      */
@@ -2727,12 +2764,12 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
 
         $rowData = $this->_setStockUseConfigFieldsValues($rowData);
         if (array_key_exists('status', $rowData)
-            && $rowData['status'] != \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED
+            && $rowData['status'] != Status::STATUS_ENABLED
         ) {
             if ($rowData['status'] == 'yes') {
-                $rowData['status'] = \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_ENABLED;
+                $rowData['status'] = Status::STATUS_ENABLED;
             } elseif (!empty($rowData['status']) || $this->getRowScope($rowData) == self::SCOPE_DEFAULT) {
-                $rowData['status'] = \Magento\Catalog\Model\Product\Attribute\Source\Status::STATUS_DISABLED;
+                $rowData['status'] = Status::STATUS_DISABLED;
             }
         }
         return $rowData;
@@ -2751,7 +2788,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         while ($source->valid()) {
             try {
                 $rowData = $source->current();
-            } catch (\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 $this->addRowError($e->getMessage(), $this->_processedRowsCount);
                 $this->_processedRowsCount++;
                 $source->next();
@@ -2805,7 +2842,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve product rewrite suffix for store
      *
-     * @param  int $storeId
+     * @param int $storeId
      * @return string
      * @since  100.0.3
      */
@@ -2813,8 +2850,8 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     {
         if (!isset($this->productUrlSuffix[$storeId])) {
             $this->productUrlSuffix[$storeId] = $this->scopeConfig->getValue(
-                \Magento\CatalogUrlRewrite\Model\ProductUrlPathGenerator::XML_PATH_PRODUCT_URL_SUFFIX,
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+                ProductUrlPathGenerator::XML_PATH_PRODUCT_URL_SUFFIX,
+                ScopeInterface::SCOPE_STORE,
                 $storeId
             );
         }
@@ -2824,7 +2861,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve url key from provided row data.
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return string
      *
      * @since 100.0.3
@@ -2832,7 +2869,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     protected function getUrlKey($rowData)
     {
         if (!empty($rowData[self::URL_KEY])) {
-            $urlKey = (string) $rowData[self::URL_KEY];
+            $urlKey = (string)$rowData[self::URL_KEY];
             return trim(strtolower($urlKey));
         }
 
@@ -2861,7 +2898,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Whether a url key is needed to be change.
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return bool
      */
     private function isNeedToChangeUrlKey(array $rowData): bool
@@ -2887,7 +2924,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     {
         if (!$this->productEntityLinkField) {
             $this->productEntityLinkField = $this->getMetadataPool()
-                ->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)
+                ->getMetadata(ProductInterface::class)
                 ->getLinkField();
         }
         return $this->productEntityLinkField;
@@ -2902,7 +2939,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     {
         if (!$this->productEntityIdentifierField) {
             $this->productEntityIdentifierField = $this->getMetadataPool()
-                ->getMetadata(\Magento\Catalog\Api\Data\ProductInterface::class)
+                ->getMetadata(ProductInterface::class)
                 ->getIdentifierField();
         }
         return $this->productEntityIdentifierField;
@@ -2911,7 +2948,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Update media gallery labels
      *
-     * @param  array $labels
+     * @param array $labels
      * @return void
      */
     private function updateMediaGalleryLabels(array $labels)
@@ -2924,7 +2961,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Update 'disabled' field for media gallery entity
      *
-     * @param  array $images
+     * @param array $images
      * @return $this
      */
     private function updateMediaGalleryVisibility(array $images)
@@ -2939,7 +2976,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Check if product exists for specified SKU
      *
-     * @param  string $sku
+     * @param string $sku
      * @return bool
      */
     private function isSkuExist($sku)
@@ -2951,7 +2988,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Get existing product data for specified SKU
      *
-     * @param  string $sku
+     * @param string $sku
      * @return array
      */
     private function getExistingSku($sku)
@@ -2962,7 +2999,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Format row data to DB compatible values.
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return array
      */
     private function formatStockDataForRow(array $rowData): array
@@ -2986,7 +3023,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
             $stockItemDo->setData($row);
             $row['is_in_stock'] = $row['is_in_stock'] ?? $this->stockStateProvider->verifyStock($stockItemDo);
             if ($this->stockStateProvider->verifyNotification($stockItemDo)) {
-                $date = $this->dateTimeFactory->create('now', new \DateTimeZone('UTC'));
+                $date = $this->dateTimeFactory->create('now', new DateTimeZone('UTC'));
                 $row['low_stock_date'] = $date->format(DateTime::DATETIME_PHP_FORMAT);
             }
             $row['stock_status_changed_auto'] = (int)!$this->stockStateProvider->verifyStock($stockItemDo);
@@ -3000,8 +3037,8 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve product by sku.
      *
-     * @param  string $sku
-     * @return \Magento\Catalog\Api\Data\ProductInterface|null
+     * @param string $sku
+     * @return ProductInterface|null
      */
     private function retrieveProductBySku($sku)
     {
@@ -3016,10 +3053,10 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Add row as skipped
      *
-     * @param  int         $rowNum
-     * @param  string      $errorCode  Error code or simply column name
-     * @param  string      $errorLevel error level
-     * @param  string|null $colName    optional column name
+     * @param int $rowNum
+     * @param string $errorCode Error code or simply column name
+     * @param string $errorLevel error level
+     * @param string|null $colName optional column name
      * @return $this
      */
     private function skipRow(
@@ -3037,7 +3074,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Returns errorLevel for validation
      *
-     * @param  string $sku
+     * @param string $sku
      * @return string
      */
     private function getValidationErrorLevel($sku): string
@@ -3050,10 +3087,10 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Processes link bunches
      *
-     * @param  array $bunch
-     * @param  Link  $resource
-     * @param  int   $nextLinkId
-     * @param  array $positionAttrId
+     * @param array $bunch
+     * @param Link $resource
+     * @param int $nextLinkId
+     * @param array $positionAttrId
      * @return void
      */
     private function processLinkBunches(
@@ -3099,7 +3136,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
                         // Import file links to a SKU which is skipped for some reason, which leads to a "NULL"
                         // link causing fatal errors.
                         $formatStr = 'WARNING: Orphaned link skipped: From SKU %s (ID %d) to SKU %s, Link type id: %d';
-                        $exception = new \Exception(sprintf($formatStr, $sku, $productId, $linkedSku, $linkId));
+                        $exception = new Exception(sprintf($formatStr, $sku, $productId, $linkedSku, $linkId));
                         $this->_logger->critical($exception);
                         continue;
                     }
@@ -3130,11 +3167,11 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Fetches Product Links
      *
-     * @param  Link $resource
-     * @param  int  $productId
+     * @param Link $resource
+     * @param int $productId
      * @return array
      */
-    private function fetchProductLinks(Link $resource, int $productId) : array
+    private function fetchProductLinks(Link $resource, int $productId): array
     {
         $productLinkKeys = [];
         $select = $this->_connection->select()->from(
@@ -3155,10 +3192,10 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Gets the Id of the Sku
      *
-     * @param  string $linkedSku
+     * @param string $linkedSku
      * @return int|null
      */
-    private function getProductLinkedId(string $linkedSku) : ?int
+    private function getProductLinkedId(string $linkedSku): ?int
     {
         $linkedSku = trim($linkedSku);
         $newSku = $this->skuProcessor->getNewSku($linkedSku);
@@ -3169,10 +3206,10 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Saves information about product links
      *
-     * @param  Link  $resource
-     * @param  array $productIds
-     * @param  array $linkRows
-     * @param  array $positionRows
+     * @param Link $resource
+     * @param array $productIds
+     * @param array $linkRows
+     * @param array $positionRows
      * @throws LocalizedException
      */
     private function saveLinksData(Link $resource, array $productIds, array $linkRows, array $positionRows)
@@ -3200,12 +3237,12 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Composes the link key
      *
-     * @param  int $productId
-     * @param  int $linkedId
-     * @param  int $linkTypeId
+     * @param int $productId
+     * @param int $linkedId
+     * @param int $linkTypeId
      * @return string
      */
-    private function composeLinkKey(int $productId, int $linkedId, int $linkTypeId) : string
+    private function composeLinkKey(int $productId, int $linkedId, int $linkTypeId): string
     {
         return "{$productId}-{$linkedId}-{$linkTypeId}";
     }

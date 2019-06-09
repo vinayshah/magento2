@@ -6,14 +6,30 @@
 
 namespace Magento\CatalogImportExport\Model\Import\Product;
 
-use Magento\CatalogImportExport\Model\Import\Product;
-use Magento\Framework\App\ResourceConnection;
-use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorInterface;
 use Magento\Catalog\Api\Data\ProductInterface;
+use Magento\Catalog\Helper\Data;
+use Magento\Catalog\Model\Product\Option\Value;
+use Magento\Catalog\Model\ProductFactory;
+use Magento\Catalog\Model\ResourceModel\Product\Option\Collection;
+use Magento\Catalog\Model\ResourceModel\Product\Option\CollectionFactory;
 use Magento\Catalog\Model\ResourceModel\Product\Option\Value\Collection as ProductOptionValueCollection;
 use Magento\Catalog\Model\ResourceModel\Product\Option\Value\CollectionFactory as ProductOptionValueCollectionFactory;
-use Magento\Store\Model\Store;
+use Magento\CatalogImportExport\Model\Import\Product;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\ObjectManager;
+use Magento\Framework\App\ResourceConnection;
+use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
 use Magento\ImportExport\Model\Import;
+use Magento\ImportExport\Model\Import\Entity\AbstractEntity;
+use Magento\ImportExport\Model\Import\ErrorProcessing\ProcessingErrorAggregatorInterface;
+use Magento\ImportExport\Model\ImportFactory;
+use Magento\ImportExport\Model\ResourceModel\CollectionByPagesIteratorFactory;
+use Magento\ImportExport\Model\ResourceModel\Helper;
+use Magento\Store\Model\ScopeInterface;
+use Magento\Store\Model\Store;
+use Magento\Store\Model\StoreManagerInterface;
 
 /**
  * Entity class which provide possibility to import product custom options
@@ -25,10 +41,10 @@ use Magento\ImportExport\Model\Import;
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @since                                            100.0.2
  */
-class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
+class Option extends AbstractEntity
 {
     /**
-* #@+
+     * #@+
      * Custom option column names
      */
     const COLUMN_SKU = 'sku';
@@ -54,8 +70,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     const COLUMN_ROW_SORT = '_custom_option_row_sort';
 
     /**
-* #@-
-*/
+     * #@-
+     */
 
     /**
      * XML path to page size parameter
@@ -84,7 +100,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Instance of import/export resource helper
      *
-     * @var \Magento\ImportExport\Model\ResourceModel\Helper
+     * @var Helper
      */
     protected $_resourceHelper;
 
@@ -165,7 +181,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * DB connection
      *
-     * @var \Magento\Framework\DB\Adapter\AdapterInterface
+     * @var AdapterInterface
      */
     protected $_connection;
 
@@ -187,7 +203,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Parent import product entity
      *
-     * @var \Magento\CatalogImportExport\Model\Import\Product
+     * @var Product
      */
     protected $_productEntity;
 
@@ -222,12 +238,12 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Product options collection
      *
-     * @var \Magento\Catalog\Model\ResourceModel\Product\Option\Collection
+     * @var Collection
      */
     protected $_optionCollection;
 
     /**
-* #@+
+     * #@+
      * Error codes
      */
     const ERROR_INVALID_STORE = 'optionInvalidStore';
@@ -271,49 +287,49 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Catalog data
      *
-     * @var \Magento\Catalog\Helper\Data
+     * @var Data
      */
     protected $_catalogData = null;
 
     /**
      * Core store config
      *
-     * @var \Magento\Framework\App\Config\ScopeConfigInterface
+     * @var ScopeConfigInterface
      */
     protected $_scopeConfig;
 
     /**
-     * @var \Magento\ImportExport\Model\ImportFactory
+     * @var ImportFactory
      */
     protected $_importFactory;
 
     /**
-     * @var \Magento\Framework\App\ResourceConnection
+     * @var ResourceConnection
      */
     protected $_resource;
 
     /**
-     * @var \Magento\Store\Model\StoreManagerInterface
+     * @var StoreManagerInterface
      */
     protected $_storeManager;
 
     /**
-     * @var \Magento\Catalog\Model\ProductFactory
+     * @var ProductFactory
      */
     protected $_productFactory;
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Product\Option\CollectionFactory
+     * @var CollectionFactory
      */
     protected $_optionColFactory;
 
     /**
-     * @var \Magento\ImportExport\Model\ResourceModel\CollectionByPagesIteratorFactory
+     * @var CollectionByPagesIteratorFactory
      */
     protected $_colIteratorFactory;
 
     /**
-     * @var \Magento\Framework\Stdlib\DateTime\TimezoneInterface
+     * @var TimezoneInterface
      */
     protected $dateTime;
 
@@ -347,34 +363,34 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     private $lastOptionTitle;
 
     /**
-     * @param  \Magento\ImportExport\Model\ResourceModel\Import\Data                      $importData
-     * @param  ResourceConnection                                                         $resource
-     * @param  \Magento\ImportExport\Model\ResourceModel\Helper                           $resourceHelper
-     * @param  \Magento\Store\Model\StoreManagerInterface                                 $_storeManager
-     * @param  \Magento\Catalog\Model\ProductFactory                                      $productFactory
-     * @param  \Magento\Catalog\Model\ResourceModel\Product\Option\CollectionFactory      $optionColFactory
-     * @param  \Magento\ImportExport\Model\ResourceModel\CollectionByPagesIteratorFactory $colIteratorFactory
-     * @param  \Magento\Catalog\Helper\Data                                               $catalogData
-     * @param  \Magento\Framework\App\Config\ScopeConfigInterface                         $scopeConfig
-     * @param  \Magento\Framework\Stdlib\DateTime\TimezoneInterface                       $dateTime
-     * @param  ProcessingErrorAggregatorInterface                                         $errorAggregator
-     * @param  array                                                                      $data
-     * @param  ProductOptionValueCollectionFactory                                        $productOptionValueCollectionFactory
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @param \Magento\ImportExport\Model\ResourceModel\Import\Data $importData
+     * @param ResourceConnection $resource
+     * @param Helper $resourceHelper
+     * @param StoreManagerInterface $_storeManager
+     * @param ProductFactory $productFactory
+     * @param CollectionFactory $optionColFactory
+     * @param CollectionByPagesIteratorFactory $colIteratorFactory
+     * @param Data $catalogData
+     * @param ScopeConfigInterface $scopeConfig
+     * @param TimezoneInterface $dateTime
+     * @param ProcessingErrorAggregatorInterface $errorAggregator
+     * @param array $data
+     * @param ProductOptionValueCollectionFactory $productOptionValueCollectionFactory
+     * @throws LocalizedException
      *
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Magento\ImportExport\Model\ResourceModel\Import\Data $importData,
-        \Magento\Framework\App\ResourceConnection $resource,
-        \Magento\ImportExport\Model\ResourceModel\Helper $resourceHelper,
-        \Magento\Store\Model\StoreManagerInterface $_storeManager,
-        \Magento\Catalog\Model\ProductFactory $productFactory,
-        \Magento\Catalog\Model\ResourceModel\Product\Option\CollectionFactory $optionColFactory,
-        \Magento\ImportExport\Model\ResourceModel\CollectionByPagesIteratorFactory $colIteratorFactory,
-        \Magento\Catalog\Helper\Data $catalogData,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\Stdlib\DateTime\TimezoneInterface $dateTime,
+        ResourceConnection $resource,
+        Helper $resourceHelper,
+        StoreManagerInterface $_storeManager,
+        ProductFactory $productFactory,
+        CollectionFactory $optionColFactory,
+        CollectionByPagesIteratorFactory $colIteratorFactory,
+        Data $catalogData,
+        ScopeConfigInterface $scopeConfig,
+        TimezoneInterface $dateTime,
         ProcessingErrorAggregatorInterface $errorAggregator,
         array $data = [],
         ProductOptionValueCollectionFactory $productOptionValueCollectionFactory = null
@@ -389,7 +405,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         $this->_scopeConfig = $scopeConfig;
         $this->dateTime = $dateTime;
         $this->productOptionValueCollectionFactory = $productOptionValueCollectionFactory
-            ?: \Magento\Framework\App\ObjectManager::getInstance()->get(ProductOptionValueCollectionFactory::class);
+            ?: ObjectManager::getInstance()->get(ProductOptionValueCollectionFactory::class);
 
         if (isset($data['connection'])) {
             $this->_connection = $data['connection'];
@@ -441,7 +457,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
             self::ERROR_INVALID_TYPE,
             __(
                 'Value for \'type\' sub attribute in \'custom_options\' attribute contains incorrect value, acceptable values are: %1',
-                '\''.implode('\', \'', array_keys($this->_specificTypes)).'\''
+                '\'' . implode('\', \'', array_keys($this->_specificTypes)) . '\''
             )
         );
         $this->_productEntity->addMessageTemplate(self::ERROR_EMPTY_TITLE, __('Please enter a value for title.'));
@@ -484,7 +500,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Initialize table names
      *
-     * @param  array $data
+     * @param array $data
      * @return $this
      */
     protected function _initTables(array $data)
@@ -505,7 +521,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Initialize stores data
      *
-     * @param  array $data
+     * @param array $data
      * @return $this
      */
     protected function _initStores(array $data)
@@ -514,8 +530,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
             $this->_storeCodeToId = $data['stores'];
         } else {
             /**
- * @var $store Store 
-*/
+             * @var $store Store
+             */
             foreach ($this->_storeManager->getStores(true) as $store) {
                 $this->_storeCodeToId[$store->getCode()] = $store->getId();
             }
@@ -526,9 +542,9 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Initialize source entities and collections
      *
-     * @param  array $data
+     * @param array $data
      * @return $this
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @throws LocalizedException
      */
     protected function _initSourceEntities(array $data)
     {
@@ -548,7 +564,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         if (isset($data['product_entity'])) {
             $this->_productEntity = $data['product_entity'];
         } else {
-            throw new \Magento\Framework\Exception\LocalizedException(
+            throw new LocalizedException(
                 __('Every option entity must have a parent product entity.')
             );
         }
@@ -562,7 +578,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         } else {
             $this->_pageSize = self::XML_PATH_PAGE_SIZE ? (int)$this->_scopeConfig->getValue(
                 self::XML_PATH_PAGE_SIZE,
-                \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+                ScopeInterface::SCOPE_STORE
             ) : 0;
         }
         return $this;
@@ -600,8 +616,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
                     }
                 };
                 /**
- * @var $collection \Magento\Catalog\Model\ResourceModel\Product\Option\Collection 
-*/
+                 * @var $collection Collection
+                 */
                 $this->_optionCollection->reset();
                 $this->_optionCollection->getSelect()->join(
                     ['option_title' => $optionTitleTable],
@@ -679,7 +695,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Get error rows numbers for required product data
      *
-     * @param  array $sourceProductData
+     * @param array $sourceProductData
      * @return array
      */
     protected function _getNewOptionsWithTheSameTitlesErrorRows(array $sourceProductData)
@@ -770,8 +786,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Checks that option exists in DB
      *
-     * @param  array $newOptionData
-     * @param  array $newOptionTitles
+     * @param array $newOptionData
+     * @param array $newOptionTitles
      * @return bool|int
      */
     protected function _findExistingOptionId(array $newOptionData, array $newOptionTitles)
@@ -795,8 +811,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Add errors for all required rows
      *
-     * @param  string $errorCode
-     * @param  array  $errorNumbers
+     * @param string $errorCode
+     * @param array $errorNumbers
      * @return void
      */
     protected function _addRowsErrors($errorCode, array $errorNumbers)
@@ -809,22 +825,22 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Validate main custom option row
      *
-     * @param  array $rowData
-     * @param  int   $rowNumber
+     * @param array $rowData
+     * @param int $rowNumber
      * @return bool
      */
     protected function _validateMainRow(array $rowData, $rowNumber)
     {
         if (!empty($rowData[self::COLUMN_STORE]) && !array_key_exists(
-            $rowData[self::COLUMN_STORE],
-            $this->_storeCodeToId
-        )
+                $rowData[self::COLUMN_STORE],
+                $this->_storeCodeToId
+            )
         ) {
             $this->_productEntity->addRowError(self::ERROR_INVALID_STORE, $rowNumber);
         } elseif (!empty($rowData[self::COLUMN_TYPE]) && !array_key_exists(
-            $rowData[self::COLUMN_TYPE],
-            $this->_specificTypes
-        )
+                $rowData[self::COLUMN_TYPE],
+                $this->_specificTypes
+            )
         ) {
             // type
             $this->_productEntity->addRowError(self::ERROR_INVALID_TYPE, $rowNumber);
@@ -844,8 +860,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Validation of additional data in main row
      *
-     * @param  array $rowData
-     * @param  int   $rowNumber
+     * @param array $rowData
+     * @param int $rowNumber
      * @return bool
      */
     protected function _validateMainRowAdditionalData(array $rowData, $rowNumber)
@@ -861,8 +877,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save validated option data
      *
-     * @param  array $rowData
-     * @param  int   $rowNumber
+     * @param array $rowData
+     * @param int $rowNumber
      * @return void
      */
     protected function _saveNewOptionData(array $rowData, $rowNumber)
@@ -922,16 +938,16 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Validate secondary custom option row
      *
-     * @param  array $rowData
-     * @param  int   $rowNumber
+     * @param array $rowData
+     * @param int $rowNumber
      * @return bool
      */
     protected function _validateSecondaryRow(array $rowData, $rowNumber)
     {
         if (!empty($rowData[self::COLUMN_STORE]) && !array_key_exists(
-            $rowData[self::COLUMN_STORE],
-            $this->_storeCodeToId
-        )
+                $rowData[self::COLUMN_STORE],
+                $this->_storeCodeToId
+            )
         ) {
             $this->_productEntity->addRowError(self::ERROR_INVALID_STORE, $rowNumber);
         } elseif (!empty($rowData[self::COLUMN_ROW_PRICE]) && !is_numeric(rtrim($rowData[self::COLUMN_ROW_PRICE], '%'))
@@ -955,8 +971,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Validate data row
      *
-     * @param  array $rowData
-     * @param  int   $rowNumber
+     * @param array $rowData
+     * @param int $rowNumber
      * @return bool
      */
     public function validateRow(array $rowData, $rowNumber)
@@ -991,8 +1007,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Validation of specific type parameters
      *
-     * @param  array $rowData
-     * @param  int   $rowNumber
+     * @param array $rowData
+     * @param int $rowNumber
      * @return bool
      */
     protected function _validateSpecificTypeParameters(array $rowData, $rowNumber)
@@ -1017,9 +1033,9 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Validate one specific parameter
      *
-     * @param  string $typeParameter
-     * @param  array  $rowData
-     * @param  int    $rowNumber
+     * @param string $typeParameter
+     * @param array $rowData
+     * @param int $rowNumber
      * @return bool
      */
     protected function _validateSpecificParameterData($typeParameter, array $rowData, $rowNumber)
@@ -1042,7 +1058,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Checks that current row contains custom option information
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return bool
      */
     protected function _isRowWithCustomOption(array $rowData)
@@ -1055,7 +1071,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Checks that current row a main option row (i.e. contains option data)
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return bool
      */
     protected function _isMainOptionRow(array $rowData)
@@ -1066,7 +1082,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Checks that current row a secondary option row (i.e. contains option value data)
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return bool
      */
     protected function _isSecondaryOptionRow(array $rowData)
@@ -1077,9 +1093,9 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Checks that complex options contain values
      *
-     * @param  array &$options
-     * @param  array &$titles
-     * @param  array $typeValues
+     * @param array &$options
+     * @param array &$titles
+     * @param array $typeValues
      * @return bool
      */
     protected function _isReadyForSaving(array &$options, array &$titles, array $typeValues)
@@ -1102,7 +1118,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Get multiRow format from one line data.
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return array
      */
     protected function _getMultiRowFormat($rowData)
@@ -1138,8 +1154,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Process option row.
      *
-     * @param  string $name
-     * @param  array  $optionRow
+     * @param string $name
+     * @param array $optionRow
      * @return array
      */
     private function processOptionRow($name, $optionRow)
@@ -1178,8 +1194,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Adds price data.
      *
-     * @param  array $result
-     * @param  array $optionRow
+     * @param array $result
+     * @param array $optionRow
      * @return array
      */
     private function addPriceData(array $result, array $optionRow): array
@@ -1200,8 +1216,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Add file options
      *
-     * @param  array $result
-     * @param  array $optionRow
+     * @param array $result
+     * @param array $optionRow
      * @return array
      */
     private function addFileOptions($result, $optionRow)
@@ -1222,7 +1238,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      *
      * Additional store view data (option titles) will be sought in store view specified import file rows
      *
-     * @return                                       boolean
+     * @return  boolean
+     * @throws  LocalizedException
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function _importData()
@@ -1257,8 +1274,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
                 if (!empty($rowData[self::COLUMN_SKU]) && isset($this->_productsSkuToId[$rowData[self::COLUMN_SKU]])) {
                     $this->_rowProductId = $this->_productsSkuToId[$rowData[self::COLUMN_SKU]];
                     if (array_key_exists('custom_options', $rowData)
-                        && (                        trim($rowData['custom_options']) === '' 
-                        || trim($rowData['custom_options']) === $this->_productEntity->getEmptyAttributeValueConstant())
+                        && (trim($rowData['custom_options']) === ''
+                            || trim($rowData['custom_options']) === $this->_productEntity->getEmptyAttributeValueConstant())
                     ) {
                         $optionsToRemove[] = $this->_rowProductId;
                     }
@@ -1329,14 +1346,15 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * If products were split up between bunches,
      * this function will add needed option for option titles
      *
-     * @param  array $options
-     * @param  array $titles
-     * @param  array $combinedData
-     * @param  int   $prevOptionId
-     * @param  int   $optionId
-     * @param  array $products
-     * @param  array $prices
+     * @param array $options
+     * @param array $titles
+     * @param array $combinedData
+     * @param int $prevOptionId
+     * @param int $optionId
+     * @param array $products
+     * @param array $prices
      * @return void
+     * @throws \Exception
      */
     private function checkOptionTitles(
         array &$options,
@@ -1346,7 +1364,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         int &$optionId,
         array $products,
         array $prices
-    ) : void {
+    ): void {
         $titlesCount = count($titles);
         if ($titlesCount > 0 && count($options) !== $titlesCount) {
             $combinedData[Product::COL_STORE_VIEW_CODE] = '';
@@ -1371,7 +1389,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      *
      * @param array $titles
      */
-    private function setLastOptionTitle(array &$titles) : void
+    private function setLastOptionTitle(array &$titles): void
     {
         if (count($titles) > 0) {
             end($titles);
@@ -1405,6 +1423,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * Load data of existed products
      *
      * @return $this
+     * @throws \Exception
      */
     protected function _initProductsSku()
     {
@@ -1424,12 +1443,13 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Collect custom option main data to import
      *
-     * @param  array $rowData
-     * @param  int   &$prevOptionId
-     * @param  int   &$nextOptionId
-     * @param  array &$products
-     * @param  array &$prices
+     * @param array $rowData
+     * @param int   &$prevOptionId
+     * @param int   &$nextOptionId
+     * @param array &$products
+     * @param array &$prices
      * @return array|null
+     * @throws \Exception
      */
     protected function _collectOptionMainData(
         array $rowData,
@@ -1464,14 +1484,14 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Collect custom option type data to import
      *
-     * @param                                         array $rowData
-     * @param                                         int   &$prevOptionId
-     * @param                                         int   &$nextValueId
-     * @param                                         array &$typeValues
-     * @param                                         array &$typePrices
-     * @param                                         array &$typeTitles
-     * @param                                         array &$parentCount
-     * @param                                         array &$childCount
+     * @param array $rowData
+     * @param int   &$prevOptionId
+     * @param int   &$nextValueId
+     * @param array &$typeValues
+     * @param array &$typePrices
+     * @param array &$typeTitles
+     * @param array &$parentCount
+     * @param array &$childCount
      * @return                                        void
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -1522,9 +1542,9 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Collect custom option title to import
      *
-     * @param  array $rowData
-     * @param  int   $prevOptionId
-     * @param  array &$titles
+     * @param array $rowData
+     * @param int $prevOptionId
+     * @param array &$titles
      * @return void
      */
     protected function _collectOptionTitle(array $rowData, $prevOptionId, array &$titles)
@@ -1533,8 +1553,8 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
         if (!empty($rowData[self::COLUMN_TITLE])) {
             if (!isset($titles[$prevOptionId][$defaultStoreId])) {
                 if (isset($this->lastOptionTitle[$prevOptionId])) {
-                     $titles[$prevOptionId] = $this->lastOptionTitle[$prevOptionId];
-                     unset($this->lastOptionTitle);
+                    $titles[$prevOptionId] = $this->lastOptionTitle[$prevOptionId];
+                    unset($this->lastOptionTitle);
                 } else {
                     $titles[$prevOptionId][$defaultStoreId] = $rowData[self::COLUMN_TITLE];
                 }
@@ -1546,10 +1566,10 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Find duplicated custom options and update existing options data
      *
-     * @param  array &$options
-     * @param  array &$titles
-     * @param  array &$prices
-     * @param  array &$typeValues
+     * @param array &$options
+     * @param array &$titles
+     * @param array &$prices
+     * @param array &$typeValues
      * @return $this
      */
     protected function _compareOptionsWithExisting(array &$options, array &$titles, array &$prices, array &$typeValues)
@@ -1578,9 +1598,9 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      *
      * Warning: arguments are modified by reference
      *
-     * @param  array $typeValues
-     * @param  array $typePrices
-     * @param  array $typeTitles
+     * @param array $typeValues
+     * @param array $typePrices
+     * @param array $typeTitles
      * @return void
      */
     private function restoreOriginalOptionTypeIds(array &$typeValues, array &$typePrices, array &$typeTitles)
@@ -1607,22 +1627,22 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Identify ID of the provided option type by its title in the specified store.
      *
-     * @param  int    $optionId
-     * @param  int    $storeId
-     * @param  string $optionTypeTitle
+     * @param int $optionId
+     * @param int $storeId
+     * @param string $optionTypeTitle
      * @return int|null
      */
     private function getExistingOptionTypeId($optionId, $storeId, $optionTypeTitle)
     {
         if (!isset($this->optionTypeTitles[$storeId])) {
             /**
- * @var ProductOptionValueCollection $optionTypeCollection 
-*/
+             * @var ProductOptionValueCollection $optionTypeCollection
+             */
             $optionTypeCollection = $this->productOptionValueCollectionFactory->create();
             $optionTypeCollection->addTitleToResult($storeId);
             /**
- * @var \Magento\Catalog\Model\Product\Option\Value $type 
-*/
+             * @var Value $type
+             */
             foreach ($optionTypeCollection as $type) {
                 $this->optionTypeTitles[$storeId][$type->getOptionId()][$type->getId()] = $type->getTitle();
             }
@@ -1640,13 +1660,13 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     }
 
     /**
-     * Rarse required data.
+     * Parse required data.
      *
      * Parse required data from current row and store to class internal variables some data
      * for underlying dependent rows
      *
-     * @param  array $rowData
-     * @return bool
+     * @param array $rowData
+     * @return array|bool
      */
     protected function _parseRequiredData(array $rowData)
     {
@@ -1685,7 +1705,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Checks that current row has specific type
      *
-     * @param  string $type
+     * @param string $type
      * @return bool
      */
     protected function _isRowHasSpecificType($type)
@@ -1700,9 +1720,10 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve product data for future update
      *
-     * @param  array $rowData
-     * @param  int   $productId
+     * @param array $rowData
+     * @param int $productId
      * @return array
+     * @throws \Exception
      */
     protected function _getProductData(array $rowData, $productId)
     {
@@ -1723,10 +1744,10 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve option data
      *
-     * @param  array  $rowData
-     * @param  int    $productId
-     * @param  int    $optionId
-     * @param  string $type
+     * @param array $rowData
+     * @param int $productId
+     * @param int $optionId
+     * @param string $type
      * @return array
      */
     protected function _getOptionData(array $rowData, $productId, $optionId, $type)
@@ -1762,9 +1783,9 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve price data or false in case when price is empty
      *
-     * @param  array  $rowData
-     * @param  int    $optionId
-     * @param  string $type
+     * @param array $rowData
+     * @param int $optionId
+     * @param string $type
      * @return array|bool
      */
     protected function _getPriceData(array $rowData, $optionId, $type)
@@ -1794,9 +1815,9 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Retrieve specific type data
      *
-     * @param                                        array $rowData
-     * @param                                        int   $optionTypeId
-     * @param                                        bool  $defaultStore
+     * @param array $rowData
+     * @param int $optionTypeId
+     * @param bool $defaultStore
      * @return                                       array|false
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
@@ -1830,7 +1851,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Delete custom options for products
      *
-     * @param  array $productIds
+     * @param array $productIds
      * @return $this
      */
     protected function _deleteEntities(array $productIds)
@@ -1846,7 +1867,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Delete custom option type values
      *
-     * @param  array $optionIds
+     * @param array $optionIds
      * @return $this
      */
     protected function _deleteSpecificTypeValues(array $optionIds)
@@ -1862,7 +1883,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save custom options main info
      *
-     * @param  array $options Options data
+     * @param array $options Options data
      * @return $this
      */
     protected function _saveOptions(array $options)
@@ -1875,7 +1896,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save custom option titles
      *
-     * @param  array $titles Option titles data
+     * @param array $titles Option titles data
      * @return $this
      */
     protected function _saveTitles(array $titles)
@@ -1900,7 +1921,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save custom option prices
      *
-     * @param  array $prices Option prices data
+     * @param array $prices Option prices data
      * @return $this
      */
     protected function _savePrices(array $prices)
@@ -1919,7 +1940,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save custom option type values
      *
-     * @param  array $typeValues Option type values
+     * @param array $typeValues Option type values
      * @return $this
      */
     protected function _saveSpecificTypeValues(array $typeValues)
@@ -1943,7 +1964,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save custom option type prices
      *
-     * @param  array $typePrices option type prices
+     * @param array $typePrices option type prices
      * @return $this
      */
     protected function _saveSpecificTypePrices(array $typePrices)
@@ -1970,7 +1991,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Save custom option type titles
      *
-     * @param  array $typeTitles Option type titles
+     * @param array $typeTitles Option type titles
      * @return $this
      */
     protected function _saveSpecificTypeTitles(array $typeTitles)
@@ -1999,7 +2020,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Update product data which related to custom options information
      *
-     * @param  array $data Product data which will be updated
+     * @param array $data Product data which will be updated
      * @return $this
      */
     protected function _updateProducts(array $data)
@@ -2018,7 +2039,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     /**
      * Parse custom options string to inner format.
      *
-     * @param                                        array $rowData
+     * @param array $rowData
      * @return                                       array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
@@ -2080,6 +2101,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * Get product entity link field
      *
      * @return string
+     * @throws \Exception
      */
     private function getProductEntityLinkField()
     {
@@ -2095,6 +2117,7 @@ class Option extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * Get product entity identifier field
      *
      * @return string
+     * @throws \Exception
      */
     private function getProductIdentifierField()
     {

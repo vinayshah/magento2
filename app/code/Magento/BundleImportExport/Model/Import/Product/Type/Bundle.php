@@ -6,16 +6,19 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\BundleImportExport\Model\Import\Product\Type;
 
-use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as AttributeCollectionFactory;
-use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory as AttributeSetCollectionFactory;
-use Magento\Framework\App\ObjectManager;
 use Magento\Bundle\Model\Product\Price as BundlePrice;
 use Magento\Catalog\Model\Product\Type\AbstractType;
+use Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory as AttributeCollectionFactory;
 use Magento\CatalogImportExport\Model\Import\Product;
+use Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory as AttributeSetCollectionFactory;
+use Magento\Framework\App\ObjectManager;
 use Magento\Framework\App\ResourceConnection;
 use Magento\Framework\EntityManager\MetadataPool;
+use Magento\ImportExport\Model\Import;
+use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
@@ -133,7 +136,7 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
     protected $_optionTypeMapping = [
         'dropdown' => 'select',
         'radiobutton' => 'radio',
-        'checkbox'  => 'checkbox',
+        'checkbox' => 'checkbox',
         'multiselect' => 'multi',
     ];
 
@@ -153,13 +156,13 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
     private $storeCodeToId = [];
 
     /**
-     * @param AttributeSetCollectionFactory  $attrSetColFac
-     * @param AttributeCollectionFactory     $prodAttrColFac
-     * @param ResourceConnection             $resource
-     * @param array                          $params
-     * @param MetadataPool|null              $metadataPool
+     * @param AttributeSetCollectionFactory $attrSetColFac
+     * @param AttributeCollectionFactory $prodAttrColFac
+     * @param ResourceConnection $resource
+     * @param array $params
+     * @param MetadataPool|null $metadataPool
      * @param Bundle\RelationsDataSaver|null $relationsDataSaver
-     * @param StoreManagerInterface|null     $storeManager
+     * @param StoreManagerInterface|null $storeManager
      */
     public function __construct(
         AttributeSetCollectionFactory $attrSetColFac,
@@ -182,7 +185,7 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
      * Parse selections.
      *
      * @param array $rowData
-     * @param int   $entityId
+     * @param int $entityId
      *
      * @return array
      */
@@ -255,9 +258,9 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
     /**
      * Populate the option template.
      *
-     * @param                                   array $option
-     * @param                                   int   $entityId
-     * @param                                   int   $index
+     * @param array $option
+     * @param int $entityId
+     * @param int $index
      * @return                                  array
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
@@ -279,9 +282,9 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
     /**
      * Populate the option value template.
      *
-     * @param  array $option
-     * @param  int   $optionId
-     * @param  int   $storeId
+     * @param array $option
+     * @param int $optionId
+     * @param int $storeId
      * @return array
      */
     protected function populateOptionValueTemplate(array $option, int $optionId, int $storeId = 0): array
@@ -310,10 +313,10 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
     /**
      * Populate the option value template.
      *
-     * @param                                        array $selection
-     * @param                                        int   $optionId
-     * @param                                        int   $parentId
-     * @param                                        int   $index
+     * @param array $selection
+     * @param int $optionId
+     * @param int $parentId
+     * @param int $index
      * @return                                       array|bool
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
@@ -386,7 +389,7 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
      */
     public function saveData()
     {
-        if ($this->_entityModel->getBehavior() == \Magento\ImportExport\Model\Import::BEHAVIOR_DELETE) {
+        if ($this->_entityModel->getBehavior() == Import::BEHAVIOR_DELETE) {
             $productIds = [];
             $newSku = $this->_entityModel->getNewSku();
             while ($bunch = $this->_entityModel->getNextBunch()) {
@@ -425,9 +428,9 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
     /**
      * Check whether the row is valid.
      *
-     * @param  array $rowData
-     * @param  int   $rowNum
-     * @param  bool  $isNewProduct
+     * @param array $rowData
+     * @param int $rowNum
+     * @param bool $isNewProduct
      * @return bool
      */
     public function isRowValid(array $rowData, $rowNum, $isNewProduct = true)
@@ -442,8 +445,8 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
     /**
      * Prepare attributes with default value for save.
      *
-     * @param  array $rowData
-     * @param  bool  $withDefaultValue
+     * @param array $rowData
+     * @param bool $withDefaultValue
      * @return array
      */
     public function prepareAttributesWithDefaultValueForSave(array $rowData, $withDefaultValue = true)
@@ -456,7 +459,7 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
     /**
      * Transform dynamic/fixed values to integer.
      *
-     * @param  array $rowData
+     * @param array $rowData
      * @return array
      */
     protected function transformBundleCustomAttributes($rowData)
@@ -465,17 +468,17 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
         foreach ($this->_customFieldsMapping as $oldKey => $newKey) {
             if (isset($rowData[$oldKey])) {
                 switch ($newKey) {
-                case $this->_customFieldsMapping['price_view']:
-                    break;
-                case $this->_customFieldsMapping['shipment_type']:
-                    $resultAttrs[$oldKey] = (($rowData[$oldKey] == 'separately') ?
-                        AbstractType::SHIPMENT_SEPARATELY :
-                        AbstractType::SHIPMENT_TOGETHER);
-                    break;
-                default:
-                    $resultAttrs[$oldKey] = (($rowData[$oldKey] == self::VALUE_FIXED) ?
-                        BundlePrice::PRICE_TYPE_FIXED :
-                        BundlePrice::PRICE_TYPE_DYNAMIC);
+                    case $this->_customFieldsMapping['price_view']:
+                        break;
+                    case $this->_customFieldsMapping['shipment_type']:
+                        $resultAttrs[$oldKey] = (($rowData[$oldKey] == 'separately') ?
+                            AbstractType::SHIPMENT_SEPARATELY :
+                            AbstractType::SHIPMENT_TOGETHER);
+                        break;
+                    default:
+                        $resultAttrs[$oldKey] = (($rowData[$oldKey] == self::VALUE_FIXED) ?
+                            BundlePrice::PRICE_TYPE_FIXED :
+                            BundlePrice::PRICE_TYPE_DYNAMIC);
                 }
             }
         }
@@ -543,7 +546,7 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
                             ? $this->_bundleFieldMapping[$origKey]
                             : $origKey;
                         if (
-                            !isset($this->_cachedOptions[$existingSelection['parent_product_id']][$optionTitle]['selections'][$selectIndex][$key])
+                        !isset($this->_cachedOptions[$existingSelection['parent_product_id']][$optionTitle]['selections'][$selectIndex][$key])
                         ) {
                             $this->_cachedOptions[$existingSelection['parent_product_id']][$optionTitle]['selections'][$selectIndex][$key] =
                                 $existingSelection[$origKey];
@@ -604,7 +607,7 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
     /**
      * Populate array for insert option values
      *
-     * @param  array $optionIds
+     * @param array $optionIds
      * @return array
      */
     protected function populateInsertOptionValues(array $optionIds): array
@@ -736,7 +739,7 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
         $optionTable = $this->_resource->getTableName('catalog_product_bundle_option');
         $optionValueTable = $this->_resource->getTableName('catalog_product_bundle_option_value');
         $selectionTable = $this->_resource->getTableName('catalog_product_bundle_selection');
-        $valuesIds =  $this->connection->fetchAssoc(
+        $valuesIds = $this->connection->fetchAssoc(
             $this->connection->select()->from(
                 ['bov' => $optionValueTable],
                 ['value_id']
@@ -781,15 +784,15 @@ class Bundle extends \Magento\CatalogImportExport\Model\Import\Product\Type\Abst
     /**
      * Get store id by store code.
      *
-     * @param  string $storeCode
+     * @param string $storeCode
      * @return int
      */
     private function getStoreIdByCode(string $storeCode): int
     {
         if (!isset($this->storeCodeToId[$storeCode])) {
             /**
- * @var $store \Magento\Store\Model\Store 
-*/
+             * @var $store Store
+             */
             foreach ($this->storeManager->getStores() as $store) {
                 $this->storeCodeToId[$store->getCode()] = $store->getId();
             }

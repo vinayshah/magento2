@@ -5,9 +5,9 @@
  */
 namespace Magento\CatalogImportExport\Model\Import\Product;
 
+use Magento\Catalog\Model\Product\Attribute\Backend\Sku;
 use Magento\CatalogImportExport\Model\Import\Product;
 use Magento\Framework\Validator\AbstractValidator;
-use Magento\Catalog\Model\Product\Attribute\Backend\Sku;
 
 /**
  * Class Validator

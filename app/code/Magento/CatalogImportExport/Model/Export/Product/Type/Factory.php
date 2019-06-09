@@ -4,37 +4,41 @@
  * See COPYING.txt for license details.
  */
 
-/**
- * Export product type factory
- */
 namespace Magento\CatalogImportExport\Model\Export\Product\Type;
 
+use InvalidArgumentException;
+use Magento\Framework\ObjectManagerInterface;
+
+/**
+ * Export product type factory
+ * @package Magento\CatalogImportExport\Model\Export\Product\Type
+ */
 class Factory
 {
     /**
      * Object Manager
      *
-     * @var \Magento\Framework\ObjectManagerInterface
+     * @var ObjectManagerInterface
      */
     protected $_objectManager;
 
     /**
-     * @param \Magento\Framework\ObjectManagerInterface $objectManager
+     * @param ObjectManagerInterface $objectManager
      */
-    public function __construct(\Magento\Framework\ObjectManagerInterface $objectManager)
+    public function __construct(ObjectManagerInterface $objectManager)
     {
         $this->_objectManager = $objectManager;
     }
 
     /**
-     * @param  string $className
-     * @return \Magento\CatalogImportExport\Model\Export\Product\Type\AbstractType
-     * @throws \InvalidArgumentException
+     * @param string $className
+     * @return AbstractType
+     * @throws InvalidArgumentException
      */
     public function create($className)
     {
         if (!$className) {
-            throw new \InvalidArgumentException('Incorrect class name');
+            throw new InvalidArgumentException('Incorrect class name');
         }
 
         return $this->_objectManager->create($className);

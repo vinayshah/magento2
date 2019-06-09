@@ -3,7 +3,15 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Magento\CatalogImportExport\Model\Import\Product;
+
+use Magento\Catalog\Model\Category;
+use Magento\Catalog\Model\CategoryFactory;
+use Magento\Catalog\Model\ResourceModel\Category\Collection;
+use Magento\Catalog\Model\ResourceModel\Category\CollectionFactory;
+use Magento\Framework\Exception\AlreadyExistsException;
+use Magento\Store\Model\Store;
 
 /**
  * Class CategoryProcessor
@@ -19,7 +27,7 @@ class CategoryProcessor
     const DELIMITER_CATEGORY = '/';
 
     /**
-     * @var \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory
+     * @var CollectionFactory
      */
     protected $categoryColFactory;
 
@@ -40,7 +48,7 @@ class CategoryProcessor
     /**
      * Instance of catalog category factory.
      *
-     * @var \Magento\Catalog\Model\CategoryFactory
+     * @var CategoryFactory
      */
     protected $categoryFactory;
 
@@ -53,12 +61,12 @@ class CategoryProcessor
     protected $failedCategories = [];
 
     /**
-     * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryColFactory
-     * @param \Magento\Catalog\Model\CategoryFactory                          $categoryFactory
+     * @param CollectionFactory $categoryColFactory
+     * @param CategoryFactory $categoryFactory
      */
     public function __construct(
-        \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryColFactory,
-        \Magento\Catalog\Model\CategoryFactory $categoryFactory
+        CollectionFactory $categoryColFactory,
+        CategoryFactory $categoryFactory
     ) {
         $this->categoryColFactory = $categoryColFactory;
         $this->categoryFactory = $categoryFactory;
@@ -77,8 +85,8 @@ class CategoryProcessor
             $collection->addAttributeToSelect('name')
                 ->addAttributeToSelect('url_key')
                 ->addAttributeToSelect('url_path');
-            $collection->setStoreId(\Magento\Store\Model\Store::DEFAULT_STORE_ID);
-            /* @var $collection \Magento\Catalog\Model\ResourceModel\Category\Collection */
+            $collection->setStoreId(Store::DEFAULT_STORE_ID);
+            /* @var $collection Collection */
             foreach ($collection as $category) {
                 $structure = explode(self::DELIMITER_CATEGORY, $category->getPath());
                 $pathSize = count($structure);
@@ -91,8 +99,8 @@ class CategoryProcessor
                         $path[] = $this->quoteDelimiter($name);
                     }
                     /**
- * @var string $index 
-*/
+                     * @var string $index
+                     */
                     $index = $this->standardizeString(
                         implode(self::DELIMITER_CATEGORY, $path)
                     );
@@ -106,15 +114,16 @@ class CategoryProcessor
     /**
      * Creates a category.
      *
-     * @param  string $name
-     * @param  int    $parentId
+     * @param string $name
+     * @param int $parentId
      * @return int
+     * @throws \Exception
      */
     protected function createCategory($name, $parentId)
     {
         /**
- * @var \Magento\Catalog\Model\Category $category 
-*/
+         * @var Category $category
+         */
         $category = $this->categoryFactory->create();
         if (!($parentCategory = $this->getCategoryById($parentId))) {
             $parentCategory = $this->categoryFactory->create()->load($parentId);
@@ -133,19 +142,20 @@ class CategoryProcessor
     /**
      * Returns ID of category by string path creating nonexistent ones.
      *
-     * @param  string $categoryPath
+     * @param string $categoryPath
      * @return int
+     * @throws \Exception
      */
     protected function upsertCategory($categoryPath)
     {
         /**
- * @var string $index 
-*/
+         * @var string $index
+         */
         $index = $this->standardizeString($categoryPath);
 
         if (!isset($this->categories[$index])) {
             $pathParts = preg_split('~(?<!\\\)' . preg_quote(self::DELIMITER_CATEGORY, '~') . '~', $categoryPath);
-            $parentId = \Magento\Catalog\Model\Category::TREE_ROOT_ID;
+            $parentId = Category::TREE_ROOT_ID;
             $path = '';
 
             foreach ($pathParts as $pathPart) {
@@ -164,9 +174,10 @@ class CategoryProcessor
     /**
      * Returns IDs of categories by string path creating nonexistent ones.
      *
-     * @param  string $categoriesString
-     * @param  string $categoriesSeparator
+     * @param string $categoriesString
+     * @param string $categoriesSeparator
      * @return array
+     * @throws \Exception
      */
     public function upsertCategories($categoriesString, $categoriesSeparator)
     {
@@ -176,7 +187,7 @@ class CategoryProcessor
         foreach ($categories as $category) {
             try {
                 $categoriesIds[] = $this->upsertCategory($category);
-            } catch (\Magento\Framework\Exception\AlreadyExistsException $e) {
+            } catch (AlreadyExistsException $e) {
                 $this->addFailedCategory($category, $e);
             }
         }
@@ -187,8 +198,8 @@ class CategoryProcessor
     /**
      * Add failed category
      *
-     * @param string                                              $category
-     * @param \Magento\Framework\Exception\AlreadyExistsException $exception
+     * @param string $category
+     * @param AlreadyExistsException $exception
      *
      * @return $this
      */
@@ -230,7 +241,7 @@ class CategoryProcessor
      *
      * @param int $categoryId
      *
-     * @return \Magento\Catalog\Model\Category|null
+     * @return Category|null
      */
     public function getCategoryById($categoryId)
     {
@@ -242,7 +253,7 @@ class CategoryProcessor
      * For now it performs only a lowercase action, this method is here to include more complex checks in the future
      * if needed.
      *
-     * @param  string $string
+     * @param string $string
      * @return string
      */
     private function standardizeString($string)
@@ -253,7 +264,7 @@ class CategoryProcessor
     /**
      * Quoting delimiter character in string.
      *
-     * @param  string $string
+     * @param string $string
      * @return string
      */
     private function quoteDelimiter($string)
@@ -264,7 +275,7 @@ class CategoryProcessor
     /**
      * Remove quoting delimiter in string.
      *
-     * @param  string $string
+     * @param string $string
      * @return string
      */
     private function unquoteDelimiter($string)
