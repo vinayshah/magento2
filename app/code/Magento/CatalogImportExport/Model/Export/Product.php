@@ -378,23 +378,23 @@ class Product extends AbstractEntity
     /**
      * Product constructor.
      *
-     * @param TimezoneInterface $localeDate
-     * @param Config $config
-     * @param ResourceConnection $resource
-     * @param StoreManagerInterface $storeManager
-     * @param LoggerInterface $logger
-     * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $collectionFactory
-     * @param ConfigInterface $exportConfig
-     * @param ProductFactory $productFactory
+     * @param TimezoneInterface                                                       $localeDate
+     * @param Config                                                                  $config
+     * @param ResourceConnection                                                      $resource
+     * @param StoreManagerInterface                                                   $storeManager
+     * @param LoggerInterface                                                         $logger
+     * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory          $collectionFactory
+     * @param ConfigInterface                                                         $exportConfig
+     * @param ProductFactory                                                          $productFactory
      * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attrSetColFactory
-     * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryColFactory
-     * @param ItemFactory $itemFactory
-     * @param \Magento\Catalog\Model\ResourceModel\Product\Option\CollectionFactory $optionColFactory
-     * @param CollectionFactory $attributeColFactory
-     * @param Product\Type\Factory $_typeFactory
-     * @param LinkTypeProvider $linkTypeProvider
-     * @param RowCustomizerInterface $rowCustomizer
-     * @param array $dateAttrCodes
+     * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory         $categoryColFactory
+     * @param ItemFactory                                                             $itemFactory
+     * @param \Magento\Catalog\Model\ResourceModel\Product\Option\CollectionFactory   $optionColFactory
+     * @param CollectionFactory                                                       $attributeColFactory
+     * @param Product\Type\Factory                                                    $_typeFactory
+     * @param LinkTypeProvider                                                        $linkTypeProvider
+     * @param RowCustomizerInterface                                                  $rowCustomizer
+     * @param array                                                                   $dateAttrCodes
      * @throws LocalizedException
      */
     public function __construct(
@@ -722,7 +722,7 @@ class Product extends AbstractEntity
      *
      * @param array &$dataRow
      * @param array &$rowCategories
-     * @param int $productId
+     * @param int    $productId
      * @return bool
      */
     protected function updateDataWithCategoryColumns(&$dataRow, &$rowCategories, $productId)
@@ -890,8 +890,9 @@ class Product extends AbstractEntity
     public function export()
     {
         //Execution time may be very long
+        //@codingStandardsIgnoreStart
         set_time_limit(0);
-
+        //@codingStandardsIgnoreEnd
         $writer = $this->getWriter();
         $page = 0;
         while (true) {
@@ -1021,7 +1022,7 @@ class Product extends AbstractEntity
         $items = $this->loadCollection();
 
         /**
-         * @var int $itemId
+         * @var int             $itemId
          * @var ProductEntity[] $itemByStore
          */
         foreach ($items as $itemId => $itemByStore) {
@@ -1177,7 +1178,7 @@ class Product extends AbstractEntity
      * Check the current data has multiselect value
      *
      * @param ProductEntity $item
-     * @param int $storeId
+     * @param int           $storeId
      * @return     bool
      * @deprecated
      */
@@ -1191,8 +1192,8 @@ class Product extends AbstractEntity
      * Collect multiselect values based on value
      *
      * @param ProductEntity $item
-     * @param string $attrCode
-     * @param int $storeId
+     * @param string        $attrCode
+     * @param int           $storeId
      * @return $this
      */
     protected function collectMultiselectValues($item, $attrCode, $storeId)
@@ -1217,7 +1218,7 @@ class Product extends AbstractEntity
      * Check attribute is valid.
      *
      * @param string $code
-     * @param mixed $value
+     * @param mixed  $value
      * @return bool
      */
     protected function isValidAttributeValue($code, $value)
@@ -1528,8 +1529,8 @@ class Product extends AbstractEntity
      * Get value for custom option according to store or default value
      *
      * @param string $optionName
-     * @param array $defaultOptionsData
-     * @param array $optionData
+     * @param array  $defaultOptionsData
+     * @param array  $optionData
      * @return mixed
      */
     private function getOptionValue($optionName, $defaultOptionsData, $optionData)
