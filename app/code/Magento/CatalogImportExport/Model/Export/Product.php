@@ -21,7 +21,7 @@ use Magento\Store\Model\Store;
  * @SuppressWarnings(PHPMD.ExcessiveClassComplexity)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.ExcessiveParameterList)
- * @since 100.0.2
+ * @since                                            100.0.2
  */
 class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
 {
@@ -164,7 +164,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Header columns for export file
      *
-     * @var array
+     * @var        array
      * @deprecated 100.2.0
      */
     protected $_headerColumns = [];
@@ -269,7 +269,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Attributes codes which shows as date
      *
-     * @var array
+     * @var   array
      * @since 100.1.2
      */
     protected $dateAttrCodes = [
@@ -337,7 +337,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     ];
 
     /**
-     * @var \Magento\Framework\EntityManager\MetadataPool
+     * @var   \Magento\Framework\EntityManager\MetadataPool
      * @since 100.1.0
      */
     protected $metadataPool;
@@ -352,23 +352,23 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Product constructor.
      *
-     * @param \Magento\Framework\Stdlib\DateTime\TimezoneInterface $localeDate
-     * @param \Magento\Eav\Model\Config $config
-     * @param \Magento\Framework\App\ResourceConnection $resource
-     * @param \Magento\Store\Model\StoreManagerInterface $storeManager
-     * @param \Psr\Log\LoggerInterface $logger
-     * @param \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory $collectionFactory
-     * @param \Magento\ImportExport\Model\Export\ConfigInterface $exportConfig
-     * @param \Magento\Catalog\Model\ResourceModel\ProductFactory $productFactory
-     * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory $attrSetColFactory
-     * @param \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory $categoryColFactory
-     * @param \Magento\CatalogInventory\Model\ResourceModel\Stock\ItemFactory $itemFactory
-     * @param \Magento\Catalog\Model\ResourceModel\Product\Option\CollectionFactory $optionColFactory
-     * @param \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $attributeColFactory
-     * @param Product\Type\Factory $_typeFactory
-     * @param ProductEntity\LinkTypeProvider $linkTypeProvider
-     * @param RowCustomizerInterface $rowCustomizer
-     * @param array $dateAttrCodes
+     * @param  \Magento\Framework\Stdlib\DateTime\TimezoneInterface                     $localeDate
+     * @param  \Magento\Eav\Model\Config                                                $config
+     * @param  \Magento\Framework\App\ResourceConnection                                $resource
+     * @param  \Magento\Store\Model\StoreManagerInterface                               $storeManager
+     * @param  \Psr\Log\LoggerInterface                                                 $logger
+     * @param  \Magento\Catalog\Model\ResourceModel\Product\CollectionFactory           $collectionFactory
+     * @param  \Magento\ImportExport\Model\Export\ConfigInterface                       $exportConfig
+     * @param  \Magento\Catalog\Model\ResourceModel\ProductFactory                      $productFactory
+     * @param  \Magento\Eav\Model\ResourceModel\Entity\Attribute\Set\CollectionFactory  $attrSetColFactory
+     * @param  \Magento\Catalog\Model\ResourceModel\Category\CollectionFactory          $categoryColFactory
+     * @param  \Magento\CatalogInventory\Model\ResourceModel\Stock\ItemFactory          $itemFactory
+     * @param  \Magento\Catalog\Model\ResourceModel\Product\Option\CollectionFactory    $optionColFactory
+     * @param  \Magento\Catalog\Model\ResourceModel\Product\Attribute\CollectionFactory $attributeColFactory
+     * @param  Product\Type\Factory                                                     $_typeFactory
+     * @param  ProductEntity\LinkTypeProvider                                           $linkTypeProvider
+     * @param  RowCustomizerInterface                                                   $rowCustomizer
+     * @param  array                                                                    $dateAttrCodes
      * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function __construct(
@@ -505,7 +505,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
      */
     protected function initWebsites()
     {
-        /** @var $website \Magento\Store\Model\Website */
+        /**
+ * @var $website \Magento\Store\Model\Website 
+*/
         foreach ($this->_storeManager->getWebsites() as $website) {
             $this->_websiteIdToCode[$website->getId()] = $website->getCode();
         }
@@ -692,9 +694,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Update data row with information about categories. Return true, if data row was updated
      *
-     * @param array &$dataRow
-     * @param array &$rowCategories
-     * @param int $productId
+     * @param  array &$dataRow
+     * @param  array &$rowCategories
+     * @param  int   $productId
      * @return bool
      */
     protected function updateDataWithCategoryColumns(&$dataRow, &$rowCategories, $productId)
@@ -729,9 +731,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Set headers columns
      *
-     * @param array $customOptionsData
-     * @param array $stockItemRows
-     * @return void
+     * @param      array $customOptionsData
+     * @param      array $stockItemRows
+     * @return     void
      * @deprecated 100.2.0 Logic will be moved to _getHeaderColumns in future release
      *
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
@@ -780,7 +782,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Get entity collection
      *
-     * @param bool $resetCollection
+     * @param  bool $resetCollection
      * @return \Magento\Framework\Data\Collection\AbstractDb
      */
     protected function _getEntityCollection($resetCollection = false)
@@ -803,18 +805,18 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
             $lastMemoryLimitLetter = strtolower($memoryLimitConfigValue[strlen($memoryLimitConfigValue) - 1]);
             $memoryLimit = (int) $memoryLimitConfigValue;
             switch ($lastMemoryLimitLetter) {
-                case 'g':
-                    $memoryLimit *= 1024;
+            case 'g':
+                $memoryLimit *= 1024;
                 // fall-through intentional
-                case 'm':
-                    $memoryLimit *= 1024;
+            case 'm':
+                $memoryLimit *= 1024;
                 // fall-through intentional
-                case 'k':
-                    $memoryLimit *= 1024;
-                    break;
-                default:
-                    // minimum memory required by Magento
-                    $memoryLimit = 250000000;
+            case 'k':
+                $memoryLimit *= 1024;
+                break;
+            default:
+                // minimum memory required by Magento
+                $memoryLimit = 250000000;
             }
 
             // Tested one product to have up to such size
@@ -842,8 +844,8 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Set page and page size to collection
      *
-     * @param int $page
-     * @param int $pageSize
+     * @param  int $page
+     * @param  int $pageSize
      * @return void
      */
     protected function paginateCollection($page, $pageSize)
@@ -855,6 +857,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
      * Export process
      *
      * @return string
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     public function export()
     {
@@ -890,9 +893,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Apply filter to collection and add not skipped attributes to select.
      *
-     * @param \Magento\Eav\Model\Entity\Collection\AbstractCollection $collection
+     * @param  \Magento\Eav\Model\Entity\Collection\AbstractCollection $collection
      * @return \Magento\Eav\Model\Entity\Collection\AbstractCollection
-     * @since 100.2.0
+     * @since  100.2.0
      */
     protected function _prepareEntityCollection(\Magento\Eav\Model\Entity\Collection\AbstractCollection $collection)
     {
@@ -912,7 +915,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Get export data for collection
      *
-     * @return array
+     * @return                                        array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
@@ -979,7 +982,8 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Collect export data for all products
      *
-     * @return array
+     * @return                                       array
+     * @throws                                       \Exception
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
@@ -1080,7 +1084,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Wrap values with double quotes if "Fields Enclosure" option is enabled
      *
-     * @param string|array $value
+     * @param  string|array $value
      * @return string|array
      */
     private function wrapValue($value)
@@ -1111,7 +1115,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
         $collection = $this->_getEntityCollection();
         $collection->setStoreId(Store::DEFAULT_STORE_ID);
         $collection->addCategoryIds()->addWebsiteNamesToResult();
-        /** @var \Magento\Catalog\Model\Product $item */
+        /**
+ * @var \Magento\Catalog\Model\Product $item 
+*/
         foreach ($collection as $item) {
             $productLinkIds[] = $item->getData($this->getProductEntityLinkField());
             $productIds[] = $item->getId();
@@ -1142,9 +1148,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Check the current data has multiselect value
      *
-     * @param \Magento\Catalog\Model\Product $item
-     * @param int $storeId
-     * @return bool
+     * @param      \Magento\Catalog\Model\Product $item
+     * @param      int                            $storeId
+     * @return     bool
      * @deprecated
      */
     protected function hasMultiselectData($item, $storeId)
@@ -1156,9 +1162,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Collect multiselect values based on value
      *
-     * @param \Magento\Catalog\Model\Product $item
-     * @param string $attrCode
-     * @param int $storeId
+     * @param  \Magento\Catalog\Model\Product $item
+     * @param  string                         $attrCode
+     * @param  int                            $storeId
      * @return $this
      */
     protected function collectMultiselectValues($item, $attrCode, $storeId)
@@ -1182,8 +1188,8 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Check attribute is valid.
      *
-     * @param string $code
-     * @param mixed $value
+     * @param  string $code
+     * @param  mixed  $value
      * @return bool
      */
     protected function isValidAttributeValue($code, $value)
@@ -1207,9 +1213,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Append multi row data
      *
-     * @param array $dataRow
-     * @param array $multiRawData
-     * @return array
+     * @param                                         array $dataRow
+     * @param                                         array $multiRawData
+     * @return                                        array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
@@ -1351,9 +1357,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
      * Add multi row data to export
      *
      * @deprecated 100.1.0
-     * @param array $dataRow
-     * @param array $multiRawData
-     * @return array
+     * @param      array $dataRow
+     * @param      array $multiRawData
+     * @return     array
      */
     protected function addMultirowData($dataRow, $multiRawData)
     {
@@ -1399,7 +1405,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Convert option row to cell string
      *
-     * @param array $option
+     * @param  array $option
      * @return string
      */
     protected function optionRowToCellString($option)
@@ -1420,8 +1426,8 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
      * level will be collected for DEFAULT_STORE_ID only.
      * Store view specified data will be saved to the additional store view row.
      *
-     * @param int[] $productIds
-     * @return array
+     * @param                                        int[] $productIds
+     * @return                                       array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.NPathComplexity)
      */
@@ -1493,9 +1499,9 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Get value for custom option according to store or default value
      *
-     * @param string $optionName
-     * @param array $defaultOptionsData
-     * @param array $optionData
+     * @param  string $optionName
+     * @param  array  $defaultOptionsData
+     * @param  array  $optionData
      * @return mixed
      */
     private function getOptionValue($optionName, $defaultOptionsData, $optionData)
@@ -1518,7 +1524,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Clean up already loaded attribute collection.
      *
-     * @param \Magento\Eav\Model\ResourceModel\Entity\Attribute\Collection $collection
+     * @param  \Magento\Eav\Model\ResourceModel\Entity\Attribute\Collection $collection
      * @return \Magento\Eav\Model\ResourceModel\Entity\Attribute\Collection
      */
     public function filterAttributeCollection(\Magento\Eav\Model\ResourceModel\Entity\Attribute\Collection $collection)
@@ -1606,7 +1612,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
      * Get product entity link field
      *
      * @return string
-     * @since 100.1.0
+     * @since  100.1.0
      */
     protected function getProductEntityLinkField()
     {
@@ -1621,7 +1627,7 @@ class Product extends \Magento\ImportExport\Model\Export\Entity\AbstractEntity
     /**
      * Quoting category delimiter character in string.
      *
-     * @param string $string
+     * @param  string $string
      * @return string
      */
     private function quoteCategoryDelimiter($string)
