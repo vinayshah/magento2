@@ -187,6 +187,19 @@ class Form extends \Magento\Backend\Block\Widget\Form\Generic
                 ]
             );
             $fieldset->addField(
+                $behaviorCode . Import::FIELD_FIELD_MULTIPLE_LINE_SEPARATOR,
+                'text',
+                [
+                    'name' => Import::FIELD_FIELD_MULTIPLE_LINE_SEPARATOR,
+                    'label' => __('Multiple Line separator'),
+                    'title' => __('Multiple Line separator'),
+                    'required' => true,
+                    'disabled' => true,
+                    'class' => $behaviorCode,
+                    'value' => Import::DEFAULT_GLOBAL_MULTI_LINE_SEPARATOR,
+                ]
+            );
+            $fieldset->addField(
                 $behaviorCode . Import::FIELD_EMPTY_ATTRIBUTE_VALUE_CONSTANT,
                 'text',
                 [
