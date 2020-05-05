@@ -93,6 +93,11 @@ class Import extends AbstractModel
     const FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR = '_import_multiple_value_separator';
 
     /**
+     * Import multiple field separator.
+     */
+    const FIELD_FIELD_MULTIPLE_LINE_SEPARATOR = '_import_multiple_line_separator';
+
+    /**
      * Import empty attribute value constant.
      */
     const FIELD_EMPTY_ATTRIBUTE_VALUE_CONSTANT = '_import_empty_attribute_value_constant';
@@ -106,6 +111,11 @@ class Import extends AbstractModel
      * default delimiter for several values in one cell as default for FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR
      */
     const DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR = ',';
+
+    /**
+     * default delimiter for several values in one cell as default for FIELD_FIELD_MULTIPLE_LINE_SEPARATOR
+     */
+    const DEFAULT_GLOBAL_MULTI_LINE_SEPARATOR = '|';
 
     /**
      * Import empty attribute default value
