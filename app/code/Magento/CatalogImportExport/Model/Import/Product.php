@@ -59,13 +59,6 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     const ATTRIBUTE_DELETE_BUNCH = 1000;
 
     /**
-     * Pseudo multi line separator in one cell.
-     *
-     * Can be used as custom option value delimiter or in configurable fields cells.
-     */
-    const PSEUDO_MULTI_LINE_SEPARATOR = '|';
-
-    /**
      * Symbol between Name and Value between Pairs.
      */
     const PAIR_NAME_VALUE_SEPARATOR = '=';
@@ -704,7 +697,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
 
     /**
      * Escaped separator value for regular expression.
-     * The value is based on PSEUDO_MULTI_LINE_SEPARATOR constant.
+     * The value is based on $this->getMultipleLineSeparator() function.
      * @var string
      */
     private $multiLineSeparatorForRegexp;
@@ -963,6 +956,19 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
             return $this->_parameters[Import::FIELD_FIELD_MULTIPLE_VALUE_SEPARATOR];
         }
         return Import::DEFAULT_GLOBAL_MULTI_VALUE_SEPARATOR;
+    }
+
+    /**
+     * Multiple line separator getter.
+     *
+     * @return string
+     */
+    public function getMultipleLineSeparator()
+    {
+        if (!empty($this->_parameters[Import::FIELD_FIELD_MULTIPLE_LINE_SEPARATOR])) {
+            return $this->_parameters[Import::FIELD_FIELD_MULTIPLE_LINE_SEPARATOR];
+        }
+        return Import::DEFAULT_GLOBAL_MULTI_LINE_SEPARATOR;
     }
 
     /**
@@ -2727,7 +2733,7 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
      * @return array
      * @since 100.1.2
      */
-    public function parseMultiselectValues($values, $delimiter = self::PSEUDO_MULTI_LINE_SEPARATOR)
+    public function parseMultiselectValues($values, $delimiter = Import::DEFAULT_GLOBAL_MULTI_LINE_SEPARATOR)
     {
         if (empty($this->_parameters[Import::FIELDS_ENCLOSURE])) {
             return explode($delimiter, $values);
@@ -2744,16 +2750,16 @@ class Product extends \Magento\ImportExport\Model\Import\Entity\AbstractEntity
     }
 
     /**
-     * Retrieves escaped PSEUDO_MULTI_LINE_SEPARATOR if it is metacharacter for regular expression
+     * Retrieves escaped $this->getMultipleLineSeparator() if it is metacharacter for regular expression
      *
      * @return string
      */
     private function getMultiLineSeparatorForRegexp()
     {
         if (!$this->multiLineSeparatorForRegexp) {
-            $this->multiLineSeparatorForRegexp = in_array(self::PSEUDO_MULTI_LINE_SEPARATOR, str_split('[\^$.|?*+(){}'))
-                ? '\\' . self::PSEUDO_MULTI_LINE_SEPARATOR
-                : self::PSEUDO_MULTI_LINE_SEPARATOR;
+            $this->multiLineSeparatorForRegexp = in_array($this->getMultipleLineSeparator(), str_split('[\^$.|?*+(){}'))
+                ? '\\' . $this->getMultipleLineSeparator()
+                : $this->getMultipleLineSeparator()
         }
         return $this->multiLineSeparatorForRegexp;
     }
