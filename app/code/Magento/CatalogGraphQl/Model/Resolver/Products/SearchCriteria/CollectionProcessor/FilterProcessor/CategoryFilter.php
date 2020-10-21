@@ -61,9 +61,10 @@ class CategoryFilter implements CustomFilterInterface
             $category = $this->categoryFactory->create();
             $this->categoryResourceModel->load($category, $categoryId);
             $categoryProducts[$categoryId] = $category->getProductCollection()->getAllIds();
+            $collection->addCategoryFilter($category);
         }
 
-        $categoryProductIds = array_unique(array_merge(...$categoryProducts));
+        $categoryProductIds = array_unique(array_merge([], ...$categoryProducts));
         $collection->addIdFilter($categoryProductIds);
         return true;
     }
