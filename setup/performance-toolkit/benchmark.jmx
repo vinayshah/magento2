@@ -279,11 +279,6 @@
             <stringProp name="Argument.value">${__P(apiSinglePercentage,0)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="bamboo_build_number" elementType="Argument">
-            <stringProp name="Argument.name">bamboo_build_number</stringProp>
-            <stringProp name="Argument.value">${__P(bamboo_build_number,)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
           <elementProp name="browseCatalogByCustomerPercentage" elementType="Argument">
             <stringProp name="Argument.name">browseCatalogByCustomerPercentage</stringProp>
             <stringProp name="Argument.value">${__P(browseCatalogByCustomerPercentage,0)}</stringProp>
@@ -419,6 +414,11 @@
             <stringProp name="Argument.value">${__P(categories_count,100)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
+          <elementProp name="checkoutALargeBulkOfProductsByGuestPercentage" elementType="Argument">
+            <stringProp name="Argument.name">checkoutALargeBulkOfProductsByGuestPercentage</stringProp>
+            <stringProp name="Argument.value">${__P(checkoutALargeBulkOfProductsByGuestPercentage,0)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
           <elementProp name="checkoutByCustomerPercentage" elementType="Argument">
             <stringProp name="Argument.name">checkoutByCustomerPercentage</stringProp>
             <stringProp name="Argument.value">${__P(checkoutByCustomerPercentage,0)}</stringProp>
@@ -492,6 +492,11 @@
           <elementProp name="graphqlCatalogBrowsingByGuestPercentage" elementType="Argument">
             <stringProp name="Argument.name">graphqlCatalogBrowsingByGuestPercentage</stringProp>
             <stringProp name="Argument.value">${__P(graphqlCatalogBrowsingByGuestPercentage,0)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+          <elementProp name="graphqlCheckoutALargeBulkOfProductsByGuestPercentage" elementType="Argument">
+            <stringProp name="Argument.name">graphqlCheckoutALargeBulkOfProductsByGuestPercentage</stringProp>
+            <stringProp name="Argument.value">${__P(graphqlCheckoutALargeBulkOfProductsByGuestPercentage,0)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="graphqlCheckoutByGuestPercentage" elementType="Argument">
@@ -624,9 +629,9 @@
             <stringProp name="Argument.value">${__P(importProductsPercentage,0)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
-          <elementProp name="lineItemsAmount" elementType="Argument">
-            <stringProp name="Argument.name">lineItemsAmount</stringProp>
-            <stringProp name="Argument.value">${__P(lineItemsAmount,10)}</stringProp>
+          <elementProp name="numberOfRelatedSimpleProductsInTheCart" elementType="Argument">
+            <stringProp name="Argument.name">numberOfRelatedSimpleProductsInTheCart</stringProp>
+            <stringProp name="Argument.value">${__P(numberOfRelatedSimpleProductsInTheCart,100)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="orders_page_size" elementType="Argument">
@@ -701,17 +706,12 @@
           </elementProp>
           <elementProp name="simple_products_count" elementType="Argument">
             <stringProp name="Argument.name">simple_products_count</stringProp>
-            <stringProp name="Argument.value">${__P(simple_products_count,30)}</stringProp>
+            <stringProp name="Argument.value">${__P(simple_products_count,125)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="siteSearchPercentage" elementType="Argument">
             <stringProp name="Argument.name">siteSearchPercentage</stringProp>
             <stringProp name="Argument.value">${__P(siteSearchPercentage,0)}</stringProp>
-            <stringProp name="Argument.metadata">=</stringProp>
-          </elementProp>
-          <elementProp name="sprint_identifier" elementType="Argument">
-            <stringProp name="Argument.name">sprint_identifier</stringProp>
-            <stringProp name="Argument.value">${__P(sprint_identifier,)}</stringProp>
             <stringProp name="Argument.metadata">=</stringProp>
           </elementProp>
           <elementProp name="start_time" elementType="Argument">
@@ -7029,6 +7029,1129 @@ vars.put("totalProductsAdded", String.valueOf(productsAdded));
     <hashTree/>
   </hashTree>
   </hashTree>
+  
+    <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Checkout" enabled="true">
+  <stringProp name="TestPlan.comments">tool/fragments/ce/simple_controller.jmx</stringProp>
+</GenericController>
+    <hashTree>
+    <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Get region data" enabled="true">
+      <stringProp name="scriptLanguage">javascript</stringProp>
+      <stringProp name="parameters"/>
+      <stringProp name="filename"/>
+      <stringProp name="cacheKey"/>
+      <stringProp name="script">
+      vars.put("alabama_region_id", props.get("alabama_region_id"));
+      vars.put("california_region_id", props.get("california_region_id"));
+</stringProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/common/get_region_data.jmx</stringProp></JSR223PreProcessor>
+    <hashTree/>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Checkout start" enabled="true">
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port"/>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}checkout/</stringProp>
+      <stringProp name="HTTPSampler.method">GET</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/guest_checkout/checkout_start.jmx</stringProp></HTTPSamplerProxy>
+    <hashTree>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="-1403911775">&lt;title&gt;Checkout&lt;/title&gt;</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">2</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="-179817969">&lt;title&gt;Shopping Cart&lt;/title&gt;</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">6</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+      <RegexExtractor guiclass="RegexExtractorGui" testclass="RegexExtractor" testname="Extract Cart Id" enabled="true">
+        <stringProp name="RegexExtractor.useHeaders">false</stringProp>
+        <stringProp name="RegexExtractor.refname">cart_id</stringProp>
+        <stringProp name="RegexExtractor.regex">"quoteData":{"entity_id":"([^'"]+)",</stringProp>
+        <stringProp name="RegexExtractor.template">$1$</stringProp>
+        <stringProp name="RegexExtractor.default"/>
+        <stringProp name="RegexExtractor.match_number">1</stringProp>
+      </RegexExtractor>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert Cart Id extracted" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="2845929">^.+$</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">1</intProp>
+        <stringProp name="Assertion.scope">variable</stringProp>
+        <stringProp name="Scope.variable">cart_id</stringProp>
+      </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Checkout Email Available" enabled="true">
+      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+            <stringProp name="Argument.value">{"customerEmail":"test@example.com"}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port"/>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}rest/default/V1/customers/isEmailAvailable</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/guest_checkout/checkout_email_available.jmx</stringProp></HTTPSamplerProxy>
+    <hashTree>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Referer</stringProp>
+            <stringProp name="Header.value">${base_path}checkout/onepage/</stringProp>
+          </elementProp>
+          <elementProp name="Content-Type" elementType="Header">
+            <stringProp name="Header.name">Content-Type</stringProp>
+            <stringProp name="Header.value">application/json; charset=UTF-8</stringProp>
+          </elementProp>
+          <elementProp name="X-Requested-With" elementType="Header">
+            <stringProp name="Header.name">X-Requested-With</stringProp>
+            <stringProp name="Header.value">XMLHttpRequest</stringProp>
+          </elementProp>
+          <elementProp name="Accept" elementType="Header">
+            <stringProp name="Header.name">Accept</stringProp>
+            <stringProp name="Header.value">application/json</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="3569038">true</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">8</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Checkout Estimate Shipping Methods" enabled="true">
+      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+            <stringProp name="Argument.value">{"address":{"country_id":"US","postcode":"95630"}}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port"/>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}rest/default/V1/guest-carts/${cart_id}/estimate-shipping-methods</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/guest_checkout/checkout_estimate_shipping_methods_with_postal_code.jmx</stringProp></HTTPSamplerProxy>
+    <hashTree>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Referer</stringProp>
+            <stringProp name="Header.value">${base_path}checkout/onepage/</stringProp>
+          </elementProp>
+          <elementProp name="Content-Type" elementType="Header">
+            <stringProp name="Header.name">Content-Type</stringProp>
+            <stringProp name="Header.value">application/json; charset=UTF-8</stringProp>
+          </elementProp>
+          <elementProp name="X-Requested-With" elementType="Header">
+            <stringProp name="Header.name">X-Requested-With</stringProp>
+            <stringProp name="Header.value">XMLHttpRequest</stringProp>
+          </elementProp>
+          <elementProp name="Accept" elementType="Header">
+            <stringProp name="Header.name">Accept</stringProp>
+            <stringProp name="Header.value">application/json</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert success" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="-1224567411">"available":true</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">2</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Checkout Billing/Shipping Information" enabled="true">
+      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+            <stringProp name="Argument.value">{"addressInformation":{"shipping_address":{"countryId":"US","regionId":"${california_region_id}","regionCode":"CA","region":"California","street":["10441 Jefferson Blvd ste 200"],"company":"","telephone":"3109450345","fax":"","postcode":"90232","city":"Culver City","firstname":"Name","lastname":"Lastname"},"shipping_method_code":"flatrate","shipping_carrier_code":"flatrate"}}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port"/>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}rest/default/V1/guest-carts/${cart_id}/shipping-information</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/guest_checkout/checkout_billing_shipping_information.jmx</stringProp></HTTPSamplerProxy>
+    <hashTree>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Referer</stringProp>
+            <stringProp name="Header.value">${base_path}checkout/onepage/</stringProp>
+          </elementProp>
+          <elementProp name="Content-Type" elementType="Header">
+            <stringProp name="Header.name">Content-Type</stringProp>
+            <stringProp name="Header.value">application/json; charset=UTF-8</stringProp>
+          </elementProp>
+          <elementProp name="X-Requested-With" elementType="Header">
+            <stringProp name="Header.name">X-Requested-With</stringProp>
+            <stringProp name="Header.value">XMLHttpRequest</stringProp>
+          </elementProp>
+          <elementProp name="Accept" elementType="Header">
+            <stringProp name="Header.name">Accept</stringProp>
+            <stringProp name="Header.value">application/json</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert success" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="-1494218646">{"payment_methods":</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">2</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Checkout Payment Info/Place Order" enabled="true">
+      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+            <stringProp name="Argument.value">{"cartId":"${cart_id}","email":"test@example.com","paymentMethod":{"method":"checkmo","po_number":null,"additional_data":null},"billingAddress":{"countryId":"US","regionId":"${california_region_id}","regionCode":"CA","region":"California","street":["10441 Jefferson Blvd ste 200"],"company":"","telephone":"3109450345","fax":"","postcode":"90232","city":"Culver City","firstname":"Name","lastname":"Lastname"}}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port"/>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}rest/default/V1/guest-carts/${cart_id}/payment-information</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/guest_checkout/checkout_payment_info_place_order.jmx</stringProp></HTTPSamplerProxy>
+    <hashTree>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Referer</stringProp>
+            <stringProp name="Header.value">${base_path}checkout/onepage/</stringProp>
+          </elementProp>
+          <elementProp name="Content-Type" elementType="Header">
+            <stringProp name="Header.name">Content-Type</stringProp>
+            <stringProp name="Header.value">application/json; charset=UTF-8</stringProp>
+          </elementProp>
+          <elementProp name="X-Requested-With" elementType="Header">
+            <stringProp name="Header.name">X-Requested-With</stringProp>
+            <stringProp name="Header.value">XMLHttpRequest</stringProp>
+          </elementProp>
+          <elementProp name="Accept" elementType="Header">
+            <stringProp name="Header.name">Accept</stringProp>
+            <stringProp name="Header.value">application/json</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert success" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="-297987887">"[0-9]+"</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">2</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+      <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="Extract cart id" enabled="true">
+        <stringProp name="VAR">order_id</stringProp>
+        <stringProp name="JSONPATH">$</stringProp>
+        <stringProp name="DEFAULT"/>
+        <stringProp name="VARIABLE"/>
+        <stringProp name="SUBJECT">BODY</stringProp>
+      </com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="89649215">^\d+$</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">1</intProp>
+        <stringProp name="Assertion.scope">variable</stringProp>
+        <stringProp name="Scope.variable">order_id</stringProp>
+      </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Checkout success" enabled="true">
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+        <collectionProp name="Arguments.arguments"/>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port"/>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}checkout/onepage/success/</stringProp>
+      <stringProp name="HTTPSampler.method">GET</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/guest_checkout/checkout_success.jmx</stringProp></HTTPSamplerProxy>
+    <hashTree>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert success" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="494863233">Thank you for your purchase!</stringProp>
+          <stringProp name="1635682758">Your order # is</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">2</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+  </hashTree>
+
+  
+    <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="Checkout A Large Bulk Of Products By Guest" enabled="true">
+      <intProp name="ThroughputController.style">1</intProp>
+      <boolProp name="ThroughputController.perThread">false</boolProp>
+      <intProp name="ThroughputController.maxThroughput">1</intProp>
+      <stringProp name="ThroughputController.percentThroughput">${checkoutALargeBulkOfProductsByGuestPercentage}</stringProp>
+    <stringProp name="TestPlan.comments">tool/fragments/_system/scenario_controller_tmpl.jmx</stringProp></ThroughputController>
+    <hashTree>
+        <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Set Test Label" enabled="true">
+            <stringProp name="script">
+var tmpLabel = vars.get("testLabel")
+if (tmpLabel) {
+ var testLabel = " (" + tmpLabel + ")"
+     if (sampler.getClass().getName() == 'org.apache.jmeter.protocol.http.sampler.HTTPSamplerProxy') {
+         if (sampler.getName().indexOf(testLabel) == -1) {
+             sampler.setName(sampler.getName() + testLabel);
+         }
+     } else if (sampler.getName().indexOf("SetUp - ") == -1) {
+         sampler.setName("SetUp - " + sampler.getName());
+     }
+ } else {
+ 	testLabel = ""
+ }
+
+
+            </stringProp>
+            <stringProp name="scriptLanguage">javascript</stringProp>
+        <stringProp name="TestPlan.comments">tool/fragments/_system/setup_label.jmx</stringProp></JSR223PreProcessor>
+        <hashTree/>
+        <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Set Label" enabled="true">
+            <stringProp name="BeanShellSampler.query">
+                vars.put("testLabel", "Checkout A Large Bulk Of Products By Guest");
+            </stringProp>
+            <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+        </BeanShellSampler>
+        <hashTree/>
+    
+    <CookieManager guiclass="CookiePanel" testclass="CookieManager" testname="HTTP Cookie Manager" enabled="true">
+      <collectionProp name="CookieManager.cookies">
+        <elementProp name="product_list_limit" elementType="Cookie" testname="product_list_limit">
+          <stringProp name="Cookie.value">30</stringProp>
+          <stringProp name="Cookie.domain">${host}</stringProp>
+          <stringProp name="Cookie.path">/</stringProp>
+          <boolProp name="Cookie.secure">false</boolProp>
+          <longProp name="Cookie.expires">0</longProp>
+          <boolProp name="Cookie.path_specified">true</boolProp>
+          <boolProp name="Cookie.domain_specified">true</boolProp>
+        </elementProp>
+        <elementProp name="product_list_limit" elementType="Cookie" testname="form_key">
+          <stringProp name="Cookie.value">${form_key}</stringProp>
+          <stringProp name="Cookie.domain">${host}</stringProp>
+          <stringProp name="Cookie.path">${base_path}</stringProp>
+          <boolProp name="Cookie.secure">false</boolProp>
+          <longProp name="Cookie.expires">0</longProp>
+          <boolProp name="Cookie.path_specified">true</boolProp>
+          <boolProp name="Cookie.domain_specified">true</boolProp>
+        </elementProp>
+      </collectionProp>
+      <boolProp name="CookieManager.clearEachIteration">true</boolProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/http_cookie_manager.jmx</stringProp></CookieManager>
+    <hashTree/>
+  
+      <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Init Total Products In Cart" enabled="true">
+        <stringProp name="TestPlan.comments">tool/fragments/ce/common/init_total_products_in_cart_setup.jmx</stringProp>
+        <stringProp name="BeanShellSampler.query">
+vars.put("totalProductsAdded", "0");
+        </stringProp>
+        <stringProp name="BeanShellSampler.filename"/>
+        <stringProp name="BeanShellSampler.parameters"/>
+        <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+      </BeanShellSampler>
+      <hashTree/>
+    
+      <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Init Total Of Simple And Configurable Products In Cart" enabled="true">
+        <stringProp name="TestPlan.comments">tool/fragments/ce/common/init_total_simple_and_configurable_products_in_cart_setup.jmx</stringProp>
+        <stringProp name="BeanShellSampler.query">
+vars.put("totalSimpleProductsAdded", "0");
+vars.put("totalConfigurableProductsAdded", "0");
+        </stringProp>
+        <stringProp name="BeanShellSampler.filename"/>
+        <stringProp name="BeanShellSampler.parameters"/>
+        <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+      </BeanShellSampler>
+      <hashTree/>
+    
+    <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Add Bulk Of Simple Products to Cart" enabled="true">
+      <boolProp name="LoopController.continue_forever">true</boolProp>
+      <stringProp name="LoopController.loops">1</stringProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/loop_controller.jmx</stringProp></LoopController>
+    <hashTree>
+      <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter" enabled="true">
+        <stringProp name="CounterConfig.start">1</stringProp>
+        <stringProp name="CounterConfig.end"/>
+        <stringProp name="CounterConfig.incr">1</stringProp>
+        <stringProp name="CounterConfig.name">_counter</stringProp>
+        <stringProp name="CounterConfig.format"/>
+        <boolProp name="CounterConfig.per_user">true</boolProp>
+        <boolProp name="CounterConfig.reset_on_tg_iteration">true</boolProp>
+      </CounterConfig>
+      <hashTree/>
+    
+    <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Prepare Simple Product Data" enabled="true">
+      <stringProp name="BeanShellSampler.query">
+simpleProductsAdded = Integer.parseInt(vars.get("totalSimpleProductsAdded"));
+lastSimpleProduct = Integer.parseInt(vars.get("numberOfRelatedSimpleProductsInTheCart")) - 1;
+
+product = props.get("simple_products_list").get(lastSimpleProduct);
+
+vars.put("product_url_key", product.get("url_key"));
+vars.put("product_id", product.get("id"));
+vars.put("product_name", product.get("title"));
+vars.put("product_uenc", product.get("uenc"));
+vars.put("product_sku", product.get("sku"));
+
+simpleProductsAdded = simpleProductsAdded + 1;
+vars.put("totalSimpleProductsAdded", String.valueOf(simpleProductsAdded));
+      </stringProp>
+      <stringProp name="BeanShellSampler.filename"/>
+      <stringProp name="BeanShellSampler.parameters"/>
+      <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/product_browsing_and_adding_items_to_the_cart/simple_products_setup_large_bulk_of_products.jmx</stringProp></BeanShellSampler>
+    <hashTree/>
+  
+    <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Update Products Added Counter" enabled="true">
+      <stringProp name="TestPlan.comments">tool/fragments/ce/loops/update_products_added_counter.jmx</stringProp>
+      <stringProp name="BeanShellSampler.query">
+productsAdded = Integer.parseInt(vars.get("totalProductsAdded"));
+productsAdded = productsAdded + 1;
+
+vars.put("totalProductsAdded", String.valueOf(productsAdded));
+      </stringProp>
+      <stringProp name="BeanShellSampler.filename"/>
+      <stringProp name="BeanShellSampler.parameters"/>
+      <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+    </BeanShellSampler>
+    <hashTree/>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Add Bulk Of Simple Products to Cart" enabled="true">
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="product" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">${product_id}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">product</stringProp>
+          </elementProp>
+          <elementProp name="related_product" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value"/>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">related_product</stringProp>
+          </elementProp>
+          <elementProp name="qty" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">qty</stringProp>
+          </elementProp>
+          <elementProp name="form_key" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">${form_key}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">form_key</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port"/>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}checkout/cart/add/</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/product_browsing_and_adding_items_to_the_cart/simple_product_add_to_cart.jmx</stringProp></HTTPSamplerProxy>
+    <hashTree>
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Add Related Product Argument" enabled="true">
+        <stringProp name="scriptLanguage">groovy</stringProp>
+        <stringProp name="parameters"/>
+        <stringProp name="filename"/>
+        <stringProp name="cacheKey">true</stringProp>
+                <stringProp name="script">
+                    numberOfSimpleProducts = Integer.parseInt(vars.get("numberOfRelatedSimpleProductsInTheCart")) - 1;
+                    def relatedProductIds = props.get('simple_products_list').take(numberOfSimpleProducts).inject('') {acc, prod -&gt; acc + prod.get("id") + ',' };
+                    sampler.addArgument('related_product', relatedProductIds);
+
+                    simpleProductsAdded = Integer.parseInt(vars.get("totalSimpleProductsAdded"));
+                    simpleProductsAdded = simpleProductsAdded + numberOfSimpleProducts;
+                    vars.put("totalSimpleProductsAdded", String.valueOf(simpleProductsAdded));
+
+                    productsAdded = Integer.parseInt(vars.get("totalProductsAdded"));
+                    productsAdded = productsAdded + numberOfSimpleProducts;
+                    vars.put("totalProductsAdded", String.valueOf(productsAdded));
+                </stringProp>
+      <stringProp name="TestPlan.comments">tool/fragments/ce/common/related_products_add_to_cart_preprocessor.jmx</stringProp></JSR223PreProcessor>
+      <hashTree/>
+    
+    <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+      <collectionProp name="HeaderManager.headers">
+        <elementProp name="" elementType="Header">
+          <stringProp name="Header.name">X-Requested-With</stringProp>
+          <stringProp name="Header.value">XMLHttpRequest</stringProp>
+        </elementProp>
+      </collectionProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/common/http_header_manager_ajax.jmx</stringProp></HeaderManager>
+    <hashTree/>
+  </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load Cart Section - Total: ${totalProductsAdded}" enabled="true">
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="sections" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">cart,messages</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">sections</stringProp>
+          </elementProp>
+          <elementProp name="force_new_section_timestamp" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">true</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">force_new_section_timestamp</stringProp>
+          </elementProp>
+          <elementProp name="_" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">${__time()}${__Random(1,1000000)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">_</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port"/>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}customer/section/load/</stringProp>
+      <stringProp name="HTTPSampler.method">GET</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/load_cart_section_with_total_count.jmx</stringProp></HTTPSamplerProxy>
+    <hashTree>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="210217247">You added ${product_name} to your <a href="${base_path}checkout/cart/">shopping cart</a>.</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">2</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="2057973164">This product is out of stock.</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">6</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="-350323027">\"summary_count\":${totalProductsAdded}</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">2</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+    
+    <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+      <collectionProp name="HeaderManager.headers">
+        <elementProp name="" elementType="Header">
+          <stringProp name="Header.name">X-Requested-With</stringProp>
+          <stringProp name="Header.value">XMLHttpRequest</stringProp>
+        </elementProp>
+      </collectionProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/common/http_header_manager_ajax.jmx</stringProp></HeaderManager>
+    <hashTree/>
+  </hashTree>
+  </hashTree>
+  
+    <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Add Additional Configurable Products to Cart" enabled="true">
+      <boolProp name="LoopController.continue_forever">true</boolProp>
+      <stringProp name="LoopController.loops">2</stringProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/loop_controller.jmx</stringProp></LoopController>
+    <hashTree>
+      <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter" enabled="true">
+        <stringProp name="CounterConfig.start">1</stringProp>
+        <stringProp name="CounterConfig.end"/>
+        <stringProp name="CounterConfig.incr">1</stringProp>
+        <stringProp name="CounterConfig.name">_counter</stringProp>
+        <stringProp name="CounterConfig.format"/>
+        <boolProp name="CounterConfig.per_user">true</boolProp>
+        <boolProp name="CounterConfig.reset_on_tg_iteration">true</boolProp>
+      </CounterConfig>
+      <hashTree/>
+    
+    <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Prepare Configurable Product Data" enabled="true">
+      <stringProp name="BeanShellSampler.query">
+configurableProductsAdded = Integer.parseInt(vars.get("totalConfigurableProductsAdded"));
+
+product = props.get("configurable_products_list").get(configurableProductsAdded);
+
+vars.put("product_number", configurableProductsAdded.toString());
+vars.put("product_url_key", product.get("url_key"));
+vars.put("product_id", product.get("id"));
+vars.put("product_name", product.get("title"));
+vars.put("product_uenc", product.get("uenc"));
+vars.put("product_sku", product.get("sku"));
+
+configurableProductsAdded = configurableProductsAdded + 1;
+vars.put("totalConfigurableProductsAdded", String.valueOf(configurableProductsAdded));
+      </stringProp>
+      <stringProp name="BeanShellSampler.filename"/>
+      <stringProp name="BeanShellSampler.parameters"/>
+      <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/product_browsing_and_adding_items_to_the_cart/configurable_products_setup_large_number_of_products.jmx</stringProp></BeanShellSampler>
+    <hashTree/>
+  
+    <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Update Products Added Counter" enabled="true">
+      <stringProp name="TestPlan.comments">tool/fragments/ce/loops/update_products_added_counter.jmx</stringProp>
+      <stringProp name="BeanShellSampler.query">
+productsAdded = Integer.parseInt(vars.get("totalProductsAdded"));
+productsAdded = productsAdded + 1;
+
+vars.put("totalProductsAdded", String.valueOf(productsAdded));
+      </stringProp>
+      <stringProp name="BeanShellSampler.filename"/>
+      <stringProp name="BeanShellSampler.parameters"/>
+      <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+    </BeanShellSampler>
+    <hashTree/>
+  
+        <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Configurable Product ${_counter} View" enabled="true">
+            <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+                <collectionProp name="Arguments.arguments"/>
+            </elementProp>
+            <stringProp name="HTTPSampler.domain"/>
+            <stringProp name="HTTPSampler.port"/>
+            <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+            <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+            <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+            <stringProp name="HTTPSampler.contentEncoding"/>
+            <stringProp name="HTTPSampler.path">${base_path}${product_url_key}${url_suffix}</stringProp>
+            <stringProp name="HTTPSampler.method">GET</stringProp>
+            <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+            <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+            <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+            <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+            <boolProp name="HTTPSampler.monitor">false</boolProp>
+            <stringProp name="HTTPSampler.embedded_url_re"/>
+        <stringProp name="TestPlan.comments">tool/fragments/ce/product_browsing_and_adding_items_to_the_cart/product_view.jmx</stringProp></HTTPSamplerProxy>
+        <hashTree>
+            <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+                <collectionProp name="Asserion.test_strings">
+                    <stringProp name="-1787050162">&lt;span&gt;In stock&lt;/span&gt;</stringProp>
+                </collectionProp>
+                <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+                <boolProp name="Assertion.assume_success">false</boolProp>
+                <intProp name="Assertion.test_type">2</intProp>
+            </ResponseAssertion>
+            <hashTree/>
+        </hashTree>
+    
+    <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="SetUp - Get Configurable Product Options" enabled="true">
+      <boolProp name="LoopController.continue_forever">true</boolProp>
+      <stringProp name="LoopController.loops">1</stringProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/common/get_configurable_product_options.jmx</stringProp></LoopController>
+    <hashTree>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Content-Type</stringProp>
+            <stringProp name="Header.value">application/json</stringProp>
+          </elementProp>
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Accept</stringProp>
+            <stringProp name="Header.value">*/*</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+      <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="SetUp - Admin Token Retrieval" enabled="true">
+        <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">false</boolProp>
+              <stringProp name="Argument.value">{"username":"${admin_user}","password":"${admin_password}"}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain"/>
+        <stringProp name="HTTPSampler.port"/>
+        <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+        <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+        <stringProp name="HTTPSampler.contentEncoding"/>
+        <stringProp name="HTTPSampler.path">${base_path}rest/V1/integration/admin/token</stringProp>
+        <stringProp name="HTTPSampler.method">POST</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"/>
+      </HTTPSamplerProxy>
+      <hashTree>
+        <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="jp@gc - JSON Path Extractor" enabled="true">
+          <stringProp name="VAR">admin_token</stringProp>
+          <stringProp name="JSONPATH">$</stringProp>
+          <stringProp name="DEFAULT"/>
+          <stringProp name="VARIABLE"/>
+          <stringProp name="SUBJECT">BODY</stringProp>
+        </com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
+        <hashTree/>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert token not null" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="484395188">^.{10,}$</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">1</intProp>
+          <stringProp name="Assertion.scope">variable</stringProp>
+          <stringProp name="Scope.variable">admin_token</stringProp>
+        </ResponseAssertion>
+        <hashTree/>
+      </hashTree>
+      <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+        <collectionProp name="HeaderManager.headers">
+          <elementProp name="" elementType="Header">
+            <stringProp name="Header.name">Authorization</stringProp>
+            <stringProp name="Header.value">Bearer ${admin_token}</stringProp>
+          </elementProp>
+        </collectionProp>
+      </HeaderManager>
+      <hashTree/>
+      <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Configurable Product Options" enabled="true">
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain"/>
+        <stringProp name="HTTPSampler.port"/>
+        <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+        <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+        <stringProp name="HTTPSampler.contentEncoding"/>
+        <stringProp name="HTTPSampler.path">${base_path}rest/V1/configurable-products/${product_sku}/options/all</stringProp>
+        <stringProp name="HTTPSampler.method">GET</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"/>
+      </HTTPSamplerProxy>
+      <hashTree>
+        <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="JSON Path Extractor: Extract attribute_ids" enabled="true">
+          <stringProp name="VAR">attribute_ids</stringProp>
+          <stringProp name="JSONPATH">$.[*].attribute_id</stringProp>
+          <stringProp name="DEFAULT">NO_VALUE</stringProp>
+          <stringProp name="VARIABLE"/>
+          <stringProp name="SUBJECT">BODY</stringProp>
+        </com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
+        <hashTree/>
+        <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="JSON Path Extractor: Extract option_values" enabled="true">
+          <stringProp name="VAR">option_values</stringProp>
+          <stringProp name="JSONPATH">$.[*].values[0].value_index</stringProp>
+          <stringProp name="DEFAULT">NO_VALUE</stringProp>
+          <stringProp name="VARIABLE"/>
+          <stringProp name="SUBJECT">BODY</stringProp>
+        </com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Configurable Product ${_counter} Add To Cart - Total: ${totalProductsAdded}" enabled="true">
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="product" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">${product_id}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">product</stringProp>
+          </elementProp>
+          <elementProp name="related_product" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value"/>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">related_product</stringProp>
+          </elementProp>
+          <elementProp name="qty" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">1</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">qty</stringProp>
+          </elementProp>
+          <elementProp name="form_key" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">${form_key}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">form_key</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port"/>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}checkout/cart/add/</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/product_browsing_and_adding_items_to_the_cart/configurable_product_add_to_cart.jmx</stringProp></HTTPSamplerProxy>
+    <hashTree>
+        <BeanShellPreProcessor guiclass="TestBeanGUI" testclass="BeanShellPreProcessor" testname="BeanShell PreProcessor" enabled="true">
+                <boolProp name="resetInterpreter">false</boolProp>
+                <stringProp name="parameters"/>
+                <stringProp name="filename"/>
+                <stringProp name="script">
+                    try {
+                    attribute_ids = vars.get("attribute_ids");
+                    option_values = vars.get("option_values");
+                    attribute_ids = attribute_ids.replace("[","").replace("]","").replace("\"", "");
+                    option_values = option_values.replace("[","").replace("]","").replace("\"", "");
+                    attribute_ids_array = attribute_ids.split(",");
+                    option_values_array = option_values.split(",");
+                    args = ctx.getCurrentSampler().getArguments();
+                    it = args.iterator();
+                    while (it.hasNext()) {
+                        argument = it.next();
+                        if (argument.getStringValue().contains("${")) {
+                            args.removeArgument(argument.getName());
+                        }
+                    }
+                    for (int i = 0; i &lt; attribute_ids_array.length; i++) {
+                        ctx.getCurrentSampler().addArgument("super_attribute[" + attribute_ids_array[i] + "]", option_values_array[i]);
+                    }
+                    } catch (Exception e) {
+                        log.error("eror&#x2026;", e);
+                    }
+                </stringProp>
+              <stringProp name="TestPlan.comments">tool/fragments/ce/common/configurable_product_add_to_cart_preprocessor.jmx</stringProp></BeanShellPreProcessor>
+        <hashTree/>
+    
+    <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+      <collectionProp name="HeaderManager.headers">
+        <elementProp name="" elementType="Header">
+          <stringProp name="Header.name">X-Requested-With</stringProp>
+          <stringProp name="Header.value">XMLHttpRequest</stringProp>
+        </elementProp>
+      </collectionProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/common/http_header_manager_ajax.jmx</stringProp></HeaderManager>
+    <hashTree/>
+  </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Load Cart Section - Total: ${totalProductsAdded}" enabled="true">
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="sections" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">cart,messages</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">sections</stringProp>
+          </elementProp>
+          <elementProp name="force_new_section_timestamp" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">true</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">force_new_section_timestamp</stringProp>
+          </elementProp>
+          <elementProp name="_" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">true</boolProp>
+            <stringProp name="Argument.value">${__time()}${__Random(1,1000000)}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+            <boolProp name="HTTPArgument.use_equals">true</boolProp>
+            <stringProp name="Argument.name">_</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port"/>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}customer/section/load/</stringProp>
+      <stringProp name="HTTPSampler.method">GET</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/load_cart_section_with_total_count.jmx</stringProp></HTTPSamplerProxy>
+    <hashTree>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="210217247">You added ${product_name} to your <a href="${base_path}checkout/cart/">shopping cart</a>.</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">2</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="2057973164">This product is out of stock.</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">6</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="-350323027">\"summary_count\":${totalProductsAdded}</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">2</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+    
+    <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+      <collectionProp name="HeaderManager.headers">
+        <elementProp name="" elementType="Header">
+          <stringProp name="Header.name">X-Requested-With</stringProp>
+          <stringProp name="Header.value">XMLHttpRequest</stringProp>
+        </elementProp>
+      </collectionProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/common/http_header_manager_ajax.jmx</stringProp></HeaderManager>
+    <hashTree/>
+  </hashTree>
+  </hashTree>
+  
+    <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Open Cart" enabled="true">
+  <stringProp name="TestPlan.comments">tool/fragments/ce/simple_controller.jmx</stringProp>
+</GenericController>
+    <hashTree>
+      <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open Cart" enabled="true">
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain"/>
+        <stringProp name="HTTPSampler.port"/>
+        <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+        <stringProp name="HTTPSampler.protocol"/>
+        <stringProp name="HTTPSampler.contentEncoding"/>
+        <stringProp name="HTTPSampler.path">${base_path}checkout/cart/</stringProp>
+        <stringProp name="HTTPSampler.method">GET</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"/>
+      <stringProp name="TestPlan.comments">tool/fragments/ce/open_cart.jmx</stringProp></HTTPSamplerProxy>
+      <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert Cart Opened" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="-179817969">&lt;title&gt;Shopping Cart&lt;/title&gt;</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="-350323027">\"items_count\":\"${totalProductsAdded}\"</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
+  
+    <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Open Cart 2" enabled="true">
+  <stringProp name="TestPlan.comments">tool/fragments/ce/simple_controller.jmx</stringProp>
+</GenericController>
+    <hashTree>
+      <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Open Cart 2" enabled="true">
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" enabled="true">
+          <collectionProp name="Arguments.arguments"/>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain"/>
+        <stringProp name="HTTPSampler.port"/>
+        <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+        <stringProp name="HTTPSampler.protocol"/>
+        <stringProp name="HTTPSampler.contentEncoding"/>
+        <stringProp name="HTTPSampler.path">${base_path}checkout/cart/</stringProp>
+        <stringProp name="HTTPSampler.method">GET</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"/>
+      <stringProp name="TestPlan.comments">tool/fragments/ce/open_cart.jmx</stringProp></HTTPSamplerProxy>
+      <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Assert Cart Opened" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="-179817969">&lt;title&gt;Shopping Cart&lt;/title&gt;</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="-350323027">\"items_count\":\"${totalProductsAdded}\"</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+        <hashTree/>
+      </hashTree>
+    </hashTree>
   
     <GenericController guiclass="LogicControllerGui" testclass="GenericController" testname="Checkout" enabled="true">
   <stringProp name="TestPlan.comments">tool/fragments/ce/simple_controller.jmx</stringProp>
@@ -33449,6 +34572,695 @@ vars.put("coupon_code", coupons[number].code);
         <boolProp name="Assertion.assume_success">false</boolProp>
         <intProp name="Assertion.test_type">8</intProp>
       </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+
+  
+    <ThroughputController guiclass="ThroughputControllerGui" testclass="ThroughputController" testname="GraphQL Checkout A Large Bulk Of Products By Guest" enabled="true">
+      <intProp name="ThroughputController.style">1</intProp>
+      <boolProp name="ThroughputController.perThread">false</boolProp>
+      <intProp name="ThroughputController.maxThroughput">1</intProp>
+      <stringProp name="ThroughputController.percentThroughput">${graphqlCheckoutALargeBulkOfProductsByGuestPercentage}</stringProp>
+    <stringProp name="TestPlan.comments">tool/fragments/_system/scenario_controller_tmpl.jmx</stringProp></ThroughputController>
+    <hashTree>
+        <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Set Test Label" enabled="true">
+            <stringProp name="script">
+var tmpLabel = vars.get("testLabel")
+if (tmpLabel) {
+ var testLabel = " (" + tmpLabel + ")"
+     if (sampler.getClass().getName() == 'org.apache.jmeter.protocol.http.sampler.HTTPSamplerProxy') {
+         if (sampler.getName().indexOf(testLabel) == -1) {
+             sampler.setName(sampler.getName() + testLabel);
+         }
+     } else if (sampler.getName().indexOf("SetUp - ") == -1) {
+         sampler.setName("SetUp - " + sampler.getName());
+     }
+ } else {
+ 	testLabel = ""
+ }
+
+
+            </stringProp>
+            <stringProp name="scriptLanguage">javascript</stringProp>
+        <stringProp name="TestPlan.comments">tool/fragments/_system/setup_label.jmx</stringProp></JSR223PreProcessor>
+        <hashTree/>
+        <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Set Label" enabled="true">
+            <stringProp name="BeanShellSampler.query">
+                vars.put("testLabel", "GraphQL Checkout A Large Bulk Of Products By Guest");
+            </stringProp>
+            <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+        </BeanShellSampler>
+        <hashTree/>
+    
+    <HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="HTTP Header Manager" enabled="true">
+      <collectionProp name="HeaderManager.headers">
+        <elementProp name="" elementType="Header">
+          <stringProp name="Header.name">Content-Type</stringProp>
+          <stringProp name="Header.value">application/json</stringProp>
+        </elementProp>
+        <elementProp name="" elementType="Header">
+          <stringProp name="Header.name">Accept</stringProp>
+          <stringProp name="Header.value">*/*</stringProp>
+        </elementProp>
+      </collectionProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/api/header_manager_before_token.jmx</stringProp></HeaderManager>
+    <hashTree/>
+  
+      <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Init Total Products In Cart" enabled="true">
+        <stringProp name="TestPlan.comments">tool/fragments/ce/common/init_total_products_in_cart_setup.jmx</stringProp>
+        <stringProp name="BeanShellSampler.query">
+vars.put("totalProductsAdded", "0");
+        </stringProp>
+        <stringProp name="BeanShellSampler.filename"/>
+        <stringProp name="BeanShellSampler.parameters"/>
+        <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+      </BeanShellSampler>
+      <hashTree/>
+    
+      <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Init Total Of Simple And Configurable Products In Cart" enabled="true">
+        <stringProp name="TestPlan.comments">tool/fragments/ce/common/init_total_simple_and_configurable_products_in_cart_setup.jmx</stringProp>
+        <stringProp name="BeanShellSampler.query">
+vars.put("totalSimpleProductsAdded", "0");
+vars.put("totalConfigurableProductsAdded", "0");
+        </stringProp>
+        <stringProp name="BeanShellSampler.filename"/>
+        <stringProp name="BeanShellSampler.parameters"/>
+        <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+      </BeanShellSampler>
+      <hashTree/>
+    
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create Empty Cart" enabled="true">
+      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+            <stringProp name="Argument.value">{"query":"mutation {\n  createEmptyCart\n}","variables":null,"operationName":null}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+      <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/create_empty_cart.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+      <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="Extract cart id" enabled="true">
+        <stringProp name="VAR">quote_id</stringProp>
+        <stringProp name="JSONPATH">$.data.createEmptyCart</stringProp>
+        <stringProp name="DEFAULT"/>
+        <stringProp name="VARIABLE"/>
+        <stringProp name="SUBJECT">BODY</stringProp>
+      </com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
+      <hashTree/>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="1404608713">{"data":{"createEmptyCart":"</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">2</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Empty Cart" enabled="true">
+      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+            <stringProp name="Argument.value">{"query":"{\n  cart(cart_id: \"${quote_id}\") {\n    items {\n      id\n      quantity\n      product {\n        sku\n      }\n    }\n  }\n}","variables":null,"operationName":null}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+      <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/get_empty_cart.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="1901638450">{"data":{"cart":{"items":[]}}}</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">8</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Add Bulk Of Simple Products to Cart" enabled="true">
+      <boolProp name="LoopController.continue_forever">true</boolProp>
+      <stringProp name="LoopController.loops">1</stringProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/loop_controller.jmx</stringProp></LoopController>
+    <hashTree>
+      <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter" enabled="true">
+        <stringProp name="CounterConfig.start">1</stringProp>
+        <stringProp name="CounterConfig.end"/>
+        <stringProp name="CounterConfig.incr">1</stringProp>
+        <stringProp name="CounterConfig.name">_counter</stringProp>
+        <stringProp name="CounterConfig.format"/>
+        <boolProp name="CounterConfig.per_user">true</boolProp>
+        <boolProp name="CounterConfig.reset_on_tg_iteration">true</boolProp>
+      </CounterConfig>
+      <hashTree/>
+    
+    <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Prepare Simple Product Data" enabled="true">
+      <stringProp name="BeanShellSampler.query">
+simpleProductsAdded = Integer.parseInt(vars.get("totalSimpleProductsAdded"));
+lastSimpleProduct = Integer.parseInt(vars.get("numberOfRelatedSimpleProductsInTheCart")) - 1;
+
+product = props.get("simple_products_list").get(lastSimpleProduct);
+
+vars.put("product_url_key", product.get("url_key"));
+vars.put("product_id", product.get("id"));
+vars.put("product_name", product.get("title"));
+vars.put("product_uenc", product.get("uenc"));
+vars.put("product_sku", product.get("sku"));
+
+simpleProductsAdded = simpleProductsAdded + 1;
+vars.put("totalSimpleProductsAdded", String.valueOf(simpleProductsAdded));
+      </stringProp>
+      <stringProp name="BeanShellSampler.filename"/>
+      <stringProp name="BeanShellSampler.parameters"/>
+      <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/product_browsing_and_adding_items_to_the_cart/simple_products_setup_large_bulk_of_products.jmx</stringProp></BeanShellSampler>
+    <hashTree/>
+  
+    <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Update Products Added Counter" enabled="true">
+      <stringProp name="TestPlan.comments">tool/fragments/ce/loops/update_products_added_counter.jmx</stringProp>
+      <stringProp name="BeanShellSampler.query">
+productsAdded = Integer.parseInt(vars.get("totalProductsAdded"));
+productsAdded = productsAdded + 1;
+
+vars.put("totalProductsAdded", String.valueOf(productsAdded));
+      </stringProp>
+      <stringProp name="BeanShellSampler.filename"/>
+      <stringProp name="BeanShellSampler.parameters"/>
+      <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+    </BeanShellSampler>
+    <hashTree/>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Add Bulk Of Simple Products to Cart" enabled="true">
+      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+            <stringProp name="Argument.value">{"query":"mutation{ addProductsToCart( cartId: \"${quote_id}\" cartItems: [{ sku: \"${product_sku}\" quantity: 1 }, ${related_product}] ){ cart{ id items{ product{ sku } quantity } } } }","variables":null,"operationName":null}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+      <stringProp name="HTTPSampler.connect_timeout">8000000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">8000000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+      <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/large_number_of_products_in_the_card/add_simple_products_to_cart.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="2032239040">addProductsToCart</stringProp>
+            <stringProp name="675049292">"sku":"${product_sku}"</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+      <hashTree/>
+    
+      <JSR223PreProcessor guiclass="TestBeanGUI" testclass="JSR223PreProcessor" testname="Add Related Product Argument" enabled="true">
+        <stringProp name="scriptLanguage">groovy</stringProp>
+        <stringProp name="parameters"/>
+        <stringProp name="filename"/>
+        <stringProp name="cacheKey">true</stringProp>
+                <stringProp name="script">
+                    numberOfSimpleProducts = Integer.parseInt(vars.get("numberOfRelatedSimpleProductsInTheCart")) - 1;
+                    def relatedProductSKUs = props.get('simple_products_list').take(numberOfSimpleProducts).inject('') {acc, prod -&gt; acc + '{ sku: \\"' + prod.get("sku") + '\\" quantity: 1 },' };
+                    vars.put('related_product', relatedProductSKUs);
+
+                    simpleProductsAdded = Integer.parseInt(vars.get("totalSimpleProductsAdded"));
+                    simpleProductsAdded = simpleProductsAdded + numberOfSimpleProducts;
+                    vars.put("totalSimpleProductsAdded", String.valueOf(simpleProductsAdded));
+
+                    productsAdded = Integer.parseInt(vars.get("totalProductsAdded"));
+                    productsAdded = productsAdded + numberOfSimpleProducts;
+                    vars.put("totalProductsAdded", String.valueOf(productsAdded));
+                </stringProp>
+      <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/large_number_of_products_in_the_card/related_products_add_to_cart_preprocessor.jmx</stringProp></JSR223PreProcessor>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+  
+    <LoopController guiclass="LoopControlPanel" testclass="LoopController" testname="Add Additional Configurable Products to Cart" enabled="true">
+      <boolProp name="LoopController.continue_forever">true</boolProp>
+      <stringProp name="LoopController.loops">2</stringProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/loop_controller.jmx</stringProp></LoopController>
+    <hashTree>
+      <CounterConfig guiclass="CounterConfigGui" testclass="CounterConfig" testname="Counter" enabled="true">
+        <stringProp name="CounterConfig.start">1</stringProp>
+        <stringProp name="CounterConfig.end"/>
+        <stringProp name="CounterConfig.incr">1</stringProp>
+        <stringProp name="CounterConfig.name">_counter</stringProp>
+        <stringProp name="CounterConfig.format"/>
+        <boolProp name="CounterConfig.per_user">true</boolProp>
+        <boolProp name="CounterConfig.reset_on_tg_iteration">true</boolProp>
+      </CounterConfig>
+      <hashTree/>
+    
+    <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Prepare Configurable Product Data" enabled="true">
+      <stringProp name="BeanShellSampler.query">
+configurableProductsAdded = Integer.parseInt(vars.get("totalConfigurableProductsAdded"));
+
+product = props.get("configurable_products_list").get(configurableProductsAdded);
+
+vars.put("product_number", configurableProductsAdded.toString());
+vars.put("product_url_key", product.get("url_key"));
+vars.put("product_id", product.get("id"));
+vars.put("product_name", product.get("title"));
+vars.put("product_uenc", product.get("uenc"));
+vars.put("product_sku", product.get("sku"));
+
+configurableProductsAdded = configurableProductsAdded + 1;
+vars.put("totalConfigurableProductsAdded", String.valueOf(configurableProductsAdded));
+      </stringProp>
+      <stringProp name="BeanShellSampler.filename"/>
+      <stringProp name="BeanShellSampler.parameters"/>
+      <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/product_browsing_and_adding_items_to_the_cart/configurable_products_setup_large_number_of_products.jmx</stringProp></BeanShellSampler>
+    <hashTree/>
+  
+    <BeanShellSampler guiclass="BeanShellSamplerGui" testclass="BeanShellSampler" testname="SetUp - Update Products Added Counter" enabled="true">
+      <stringProp name="TestPlan.comments">tool/fragments/ce/loops/update_products_added_counter.jmx</stringProp>
+      <stringProp name="BeanShellSampler.query">
+productsAdded = Integer.parseInt(vars.get("totalProductsAdded"));
+productsAdded = productsAdded + 1;
+
+vars.put("totalProductsAdded", String.valueOf(productsAdded));
+      </stringProp>
+      <stringProp name="BeanShellSampler.filename"/>
+      <stringProp name="BeanShellSampler.parameters"/>
+      <boolProp name="BeanShellSampler.resetInterpreter">true</boolProp>
+    </BeanShellSampler>
+    <hashTree/>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Configurable Product Details by name" enabled="true">
+      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+            <stringProp name="Argument.value">{"query":"query productDetailByName($product_sku: String, $onServer: Boolean!) {\n    products(filter: { sku: { eq: $product_sku } }, sort: {name: ASC}) {\n        items {\n            id\n            sku\n            name\n            ... on ConfigurableProduct {\n                configurable_options {\n                    attribute_code\n                    attribute_id\n                    id\n                    label\n                    values {\n                        default_label\n                        label\n                        store_label\n                        use_default_value\n                        value_index\n                    }\n                }\n                variants {\n                    product {\n                        #fashion_color\n                        #fashion_size\n                        id\n                        media_gallery_entries {\n                            disabled\n                            file\n                            label\n                            position\n                        }\n                        sku\n                        stock_status\n                    }\n                }\n            }\n            meta_title @include(if: $onServer)\n            meta_keyword @include(if: $onServer)\n            meta_description @include(if: $onServer)\n        }\n    }\n}","variables":{"product_sku":"${product_sku}","onServer":false},"operationName":"productDetailByName"}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+      <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/get_configurable_product_details_by_name.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="1201352014">"sku":"${product_sku}","name":"${product_name}"</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">2</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+    
+    <com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.gui.JSONPathExtractorGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor" testname="Extract Configurable Product option" enabled="true">
+      <stringProp name="VAR">product_option</stringProp>
+      <stringProp name="JSONPATH">$.data.products.items[0].variants[0].product.sku</stringProp>
+      <stringProp name="DEFAULT"/>
+      <stringProp name="VARIABLE"/>
+      <stringProp name="SUBJECT">BODY</stringProp>
+    <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/extract_configurable_product_option.jmx</stringProp></com.atlantbh.jmeter.plugins.jsonutils.jsonpathextractor.JSONPathExtractor>
+    <hashTree/>
+  </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Configurable Product ${_counter} Add To Cart - Total: ${totalProductsAdded}" enabled="true">
+        <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">false</boolProp>
+              <stringProp name="Argument.value">{"query":"mutation { addProductsToCart( cartId: \"${quote_id}\" cartItems: [ { quantity: 1 parent_sku: \"${product_sku}\" sku: \"${product_option}\" } ] ) { cart { items { id product { name sku } quantity } } } }","variables":null,"operationName":null}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain"/>
+        <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+        <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+        <stringProp name="HTTPSampler.contentEncoding"/>
+        <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+        <stringProp name="HTTPSampler.method">POST</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"/>
+        <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/large_number_of_products_in_the_card/add_configurable_product_to_cart.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="2032239040">addProductsToCart</stringProp>
+            <stringProp name="-1221840880">"sku":"${product_option}"</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Set Billing And Shipping Address On Cart" enabled="true">
+        <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">false</boolProp>
+              <stringProp name="Argument.value">{"query":"mutation{ setBillingAddressOnCart(input: { cart_id: \"${quote_id}\" billing_address: { address: { city: \"Los Angeles\" country_code: \"US\" firstname: \"Async\" lastname: \"Test\" region_id: 12 postcode: \"90004\" street: [ \"123 Homey Lane\" ] telephone: \"6666666666\" } use_for_shipping: true } }){ cart{ id billing_address{ firstname lastname telephone country{ code } region { label region_id } city postcode street } shipping_addresses{ firstname lastname telephone country{ code } region { label region_id } city postcode street } } } }","variables":null,"operationName":null}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain"/>
+        <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+        <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+        <stringProp name="HTTPSampler.contentEncoding"/>
+        <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+        <stringProp name="HTTPSampler.method">POST</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"/>
+        <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/large_number_of_products_in_the_card/set_billing_and_shipping_address_on_cart.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="-1150683822">"firstname":"Async","lastname":"Test","telephone":"6666666666"</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Set Payment Method On Cart" enabled="true">
+        <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">false</boolProp>
+              <stringProp name="Argument.value">{"query":"mutation{ setPaymentMethodOnCart(input: { cart_id: \"${quote_id}\" payment_method: { code: \"checkmo\" } }){ cart{ id selected_payment_method{ code title } } } }","variables":null,"operationName":null}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain"/>
+        <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+        <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+        <stringProp name="HTTPSampler.contentEncoding"/>
+        <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+        <stringProp name="HTTPSampler.method">POST</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"/>
+        <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/large_number_of_products_in_the_card/set_payment_method_on_cart.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="-1549872178">Money order</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Set Guest Email On Cart" enabled="true">
+        <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">false</boolProp>
+              <stringProp name="Argument.value">{"query":"mutation { setGuestEmailOnCart( input: { cart_id: \"${quote_id}\" email: \"customer@example.com\" } ) { cart { email } } }","variables":null,"operationName":null}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain"/>
+        <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+        <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+        <stringProp name="HTTPSampler.contentEncoding"/>
+        <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+        <stringProp name="HTTPSampler.method">POST</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"/>
+        <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/large_number_of_products_in_the_card/set_guest_email_on_cart.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="634186982">{"data":{"setGuestEmailOnCart":{"cart":{"email":"customer@example.com"}}}}</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">8</intProp>
+        </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Set Shipping Method On Cart" enabled="true">
+      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+            <stringProp name="Argument.value">{"query":"mutation {\n  setShippingMethodsOnCart(input: \n    {\n      cart_id: \"${quote_id}\", \n      shipping_methods: [{\n        carrier_code: \"flatrate\"\n        method_code: \"flatrate\"\n      }]\n    }) {\n    cart {\n      shipping_addresses {\n        selected_shipping_method {\n          carrier_code\n          method_code\n        }\n      }\n    }\n  }\n}","variables":null,"operationName":null}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+      <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/large_number_of_products_in_the_card/set_shipping_method_on_cart.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+      <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+        <collectionProp name="Asserion.test_strings">
+          <stringProp name="644143859">{"data":{"setShippingMethodsOnCart":{"cart":{"shipping_addresses":[{"selected_shipping_method":{"carrier_code":"flatrate","method_code":"flatrate"}}]}}}}</stringProp>
+        </collectionProp>
+        <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+        <boolProp name="Assertion.assume_success">false</boolProp>
+        <intProp name="Assertion.test_type">8</intProp>
+      </ResponseAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Cart" enabled="true">
+      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+            <stringProp name="Argument.value">{"query":"{ cart(cart_id: \"${quote_id}\") { total_quantity email billing_address { city country { code label } firstname lastname postcode region { code label } street telephone } shipping_addresses { firstname lastname street city region { code label } country { code label } telephone available_shipping_methods { amount { currency value } available carrier_code carrier_title error_message method_code method_title price_excl_tax { value currency } price_incl_tax { value currency } } selected_shipping_method { amount { value currency } carrier_code carrier_title method_code method_title } } items { id product { name sku } quantity } available_payment_methods { code title } selected_payment_method { code title } applied_coupons { code } prices { grand_total { value currency } } } }","variables":null,"operationName":null}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+      <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/large_number_of_products_in_the_card/get_cart.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+      <com.atlantbh.jmeter.plugins.jsonutils.jsonpathassertion.JSONPathAssertion guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathassertion.gui.JSONPathAssertionGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathassertion.JSONPathAssertion" testname="jp@gc - JSON Path Assertion" enabled="true">
+        <stringProp name="JSON_PATH">$.data.cart.total_quantity</stringProp>
+        <stringProp name="EXPECTED_VALUE">${totalProductsAdded}</stringProp>
+        <boolProp name="JSONVALIDATION">true</boolProp>
+        <boolProp name="EXPECT_NULL">false</boolProp>
+        <boolProp name="INVERT">false</boolProp>
+        <boolProp name="ISREGEX">false</boolProp>
+      </com.atlantbh.jmeter.plugins.jsonutils.jsonpathassertion.JSONPathAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Get Cart 2" enabled="true">
+      <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+      <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+        <collectionProp name="Arguments.arguments">
+          <elementProp name="" elementType="HTTPArgument">
+            <boolProp name="HTTPArgument.always_encode">false</boolProp>
+            <stringProp name="Argument.value">{"query":"{ cart(cart_id: \"${quote_id}\") { total_quantity email billing_address { city country { code label } firstname lastname postcode region { code label } street telephone } shipping_addresses { firstname lastname street city region { code label } country { code label } telephone available_shipping_methods { amount { currency value } available carrier_code carrier_title error_message method_code method_title price_excl_tax { value currency } price_incl_tax { value currency } } selected_shipping_method { amount { value currency } carrier_code carrier_title method_code method_title } } items { id product { name sku } quantity } available_payment_methods { code title } selected_payment_method { code title } applied_coupons { code } prices { grand_total { value currency } } } }","variables":null,"operationName":null}</stringProp>
+            <stringProp name="Argument.metadata">=</stringProp>
+          </elementProp>
+        </collectionProp>
+      </elementProp>
+      <stringProp name="HTTPSampler.domain"/>
+      <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+      <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+      <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+      <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+      <stringProp name="HTTPSampler.contentEncoding"/>
+      <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+      <stringProp name="HTTPSampler.method">POST</stringProp>
+      <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+      <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+      <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+      <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+      <boolProp name="HTTPSampler.monitor">false</boolProp>
+      <stringProp name="HTTPSampler.embedded_url_re"/>
+      <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/large_number_of_products_in_the_card/get_cart.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+      <com.atlantbh.jmeter.plugins.jsonutils.jsonpathassertion.JSONPathAssertion guiclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathassertion.gui.JSONPathAssertionGui" testclass="com.atlantbh.jmeter.plugins.jsonutils.jsonpathassertion.JSONPathAssertion" testname="jp@gc - JSON Path Assertion" enabled="true">
+        <stringProp name="JSON_PATH">$.data.cart.total_quantity</stringProp>
+        <stringProp name="EXPECTED_VALUE">${totalProductsAdded}</stringProp>
+        <boolProp name="JSONVALIDATION">true</boolProp>
+        <boolProp name="EXPECT_NULL">false</boolProp>
+        <boolProp name="INVERT">false</boolProp>
+        <boolProp name="ISREGEX">false</boolProp>
+      </com.atlantbh.jmeter.plugins.jsonutils.jsonpathassertion.JSONPathAssertion>
+      <hashTree/>
+    </hashTree>
+  
+    <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Place The Order" enabled="true">
+        <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+        <elementProp name="HTTPsampler.Arguments" elementType="Arguments">
+          <collectionProp name="Arguments.arguments">
+            <elementProp name="" elementType="HTTPArgument">
+              <boolProp name="HTTPArgument.always_encode">false</boolProp>
+              <stringProp name="Argument.value">{"query":"mutation{ placeOrder(input: { cart_id: \"${quote_id}\" }) { order{ order_number } } }","variables":null,"operationName":null}</stringProp>
+              <stringProp name="Argument.metadata">=</stringProp>
+            </elementProp>
+          </collectionProp>
+        </elementProp>
+        <stringProp name="HTTPSampler.domain"/>
+        <stringProp name="HTTPSampler.port">${graphql_port_number}</stringProp>
+        <stringProp name="HTTPSampler.connect_timeout">60000</stringProp>
+        <stringProp name="HTTPSampler.response_timeout">200000</stringProp>
+        <stringProp name="HTTPSampler.protocol">${request_protocol}</stringProp>
+        <stringProp name="HTTPSampler.contentEncoding"/>
+        <stringProp name="HTTPSampler.path">${base_path}graphql</stringProp>
+        <stringProp name="HTTPSampler.method">POST</stringProp>
+        <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+        <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
+        <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+        <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+        <boolProp name="HTTPSampler.monitor">false</boolProp>
+        <stringProp name="HTTPSampler.embedded_url_re"/>
+        <stringProp name="TestPlan.comments">tool/fragments/ce/graphql/large_number_of_products_in_the_card/place_the_order.jmx</stringProp>
+    </HTTPSamplerProxy>
+    <hashTree>
+        <ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="Response Assertion" enabled="true">
+          <collectionProp name="Asserion.test_strings">
+            <stringProp name="653501529">{"data":{"placeOrder":{"order":{"order_number":"</stringProp>
+          </collectionProp>
+          <stringProp name="Assertion.test_field">Assertion.response_data</stringProp>
+          <boolProp name="Assertion.assume_success">false</boolProp>
+          <intProp name="Assertion.test_type">2</intProp>
+        </ResponseAssertion>
       <hashTree/>
     </hashTree>
   </hashTree>
