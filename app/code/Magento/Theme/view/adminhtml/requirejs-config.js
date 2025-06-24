@@ -5,13 +5,6 @@
 
 var config = {
     'shim': {
-        'extjs/ext-tree': [
-            'prototype'
-        ],
-        'extjs/ext-tree-checkbox': [
-            'extjs/ext-tree',
-            'extjs/defaults'
-        ],
         'jquery/editableMultiselect/js/jquery.editable': [
             'jquery'
         ]
@@ -48,7 +41,6 @@ var config = {
             'menu':                               'mage/backend/menu',
             'jstree':                             'jquery/jstree/jquery.jstree',
             'jquery-ui-modules/widget':           'jquery/ui',
-            'jquery-ui-modules/core':             'jquery/ui',
             'jquery-ui-modules/accordion':        'jquery/ui',
             'jquery-ui-modules/autocomplete':     'jquery/ui',
             'jquery-ui-modules/button':           'jquery/ui',
@@ -88,13 +80,6 @@ var config = {
         'mage/backend/bootstrap',
         'mage/adminhtml/globals'
     ],
-    config: {
-        mixins: {
-            'jquery/jquery-ui': {
-                'jquery/patches/jquery-ui-sortable': true
-            }
-        }
-    },
     'paths': {
         'jquery/ui': 'jquery/jquery-ui'
     }

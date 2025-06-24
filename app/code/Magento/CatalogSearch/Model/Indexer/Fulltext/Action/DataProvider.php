@@ -1,7 +1,7 @@
 <?php
 /**
- * Copyright © Magento, Inc. All rights reserved.
- * See COPYING.txt for license details.
+ * Copyright 2016 Adobe
+ * All Rights Reserved.
  */
 namespace Magento\CatalogSearch\Model\Indexer\Fulltext\Action;
 
@@ -161,7 +161,7 @@ class DataProvider
         StoreManagerInterface $storeManager,
         MetadataPool $metadataPool,
         int $antiGapMultiplier = 5,
-        GetSearchableProductsSelect $getSearchableProductsSelect = null
+        ?GetSearchableProductsSelect $getSearchableProductsSelect = null
     ) {
         $this->resource = $resource;
         $this->connection = $resource->getConnection();
@@ -204,7 +204,7 @@ class DataProvider
         array $staticFields,
         $productIds = null,
         $lastProductId = 0,
-        $batch = 100
+        $batch = 1000
     ) {
         $select = $this->selectSearchableProducts->execute(
             (int) $storeId,
